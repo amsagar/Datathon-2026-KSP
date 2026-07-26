@@ -71,10 +71,12 @@ agent:
   tts:
     voice-en: ${TTS_VOICE_EN:en-IN-NeerjaNeural}
     voice-kn: ${TTS_VOICE_KN:kn-IN-SapnaNeural}
-  # Ping deployed AppSail /health so the free tier stays warm (every 120s).
+  # In-process ping while an instance is already up (secondary). AppSail still
+  # scales instances down after ~5 min — use .github/workflows/appsail-keepalive.yml
+  # (external cron) as the real anti-idle fix.
   keepalive:
     enabled: ${AGENT_KEEPALIVE_ENABLED:true}
-    url: ${AGENT_KEEPALIVE_URL:https://ksp-agent-service-50044089204.development.catalystappsail.in/health}
+    url: ${AGENT_KEEPALIVE_URL:https://ksp-agent-service-50044089204.development.catalystappsail.in/}
     interval-ms: ${AGENT_KEEPALIVE_INTERVAL_MS:120000}
     initial-delay-ms: ${AGENT_KEEPALIVE_INITIAL_DELAY_MS:15000}
   storage:

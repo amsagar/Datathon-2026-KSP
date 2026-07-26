@@ -193,15 +193,49 @@ Env vars persist across redeploys.
 
 ---
 
+## Health checks & AppSail idle scale-down
+
+Backend exposes **unauthenticated** liveness (no JWT):
+
+| Path | Response |
+|------|----------|
+| `GET` / `HEAD` `/` | `{"status":"UP"}` |
+| `GET` / `HEAD` `/health` | same |
+| `GET` / `HEAD` `/api/health` | same (if something only proxies `/api/**`) |
+
+Quick check:
+
+```bash
+curl -sS "https://<your-be>.catalystappsail.in/"
+curl -sS "https://<your-be>.catalystappsail.in/health"
+```
+
+### Why the app “goes down” after inactivity
+
+AppSail is serverless: an instance stays up for about **5 minutes**, then scales down. The next request cold-starts (slow first hit). An in-process keep-alive **cannot** fix that — when the container is gone, its scheduler is gone too.
+
+**Fix:** ping the backend from **outside** every few minutes.
+
+1. **GitHub Actions (recommended)** — workflow [`.github/workflows/appsail-keepalive.yml`](.github/workflows/appsail-keepalive.yml) runs every 4 minutes and hits `/`, `/health`, `/api/health`.
+   - Merge to the **default branch** (scheduled workflows only run there).
+   - Optional repo variables: `APPSAIL_BE_URL`, `APPSAIL_UI_URL`.
+   - Run once manually: Actions → **AppSail keep-alive** → Run workflow.
+2. **Catalyst Cron** — create a cron that `GET`s your BE `/` (or `/health`) every 4–5 minutes.
+3. In-process `agent.keepalive.*` in `application.yaml` is only a secondary ping while an instance is already warm.
+
+> Keeping an instance always warm burns AppSail GB-hours (15 GB-hours/month on free tier). Turn the workflow off if you hit limits.
+
 ## Troubleshooting
 
 - **App won't start / 502:** check the AppSail app **logs** in the console. If the container listens on a port other than what Catalyst routes to, make the declared `--port` match the container's port (both images use `8080`).
+- **No health / 401 on `/`:** redeploy BE with current image (`HealthController` + Security permitAll on `/`, `/health`, `/api/health`).
 - **Backend boots with `local` profile / can't reach DB:** `SPRING_PROFILES_ACTIVE` isn't set to `prod`.
 - **UI loads but chat/SSE fails with CORS / provisional headers:** Catalyst's edge answers `OPTIONS` without CORS headers, so an `Authorization` header on stream preflight never reaches Spring. Prod stream must send the JWT as `access_token` query (no Bearer header). Redeploy UI + BE. Also keep `CORS_ALLOWED_ORIGINS` = exact `UI_URL` for the actual GET response.
 - **Chat answer arrives all at once (no token stream):** SSE is going through the UI `/api` proxy — confirm `streamApiBase` is the BE URL (UI `BASE_URL`) and redeploy UI.
 - **UI 5xx on `/api`:** `BASE_URL` on the UI isn't set or points at the wrong backend URL.
 - **Chat stream dies after a long wait:** Spring/nginx timeouts are 5h; check AppSail/gateway idle limits if cuts happen earlier.
 - **`catalyst deploy` rejects the image:** it isn't `linux/amd64` — rebuild with `./scripts/build-images.sh`.
+- **Always cold / sleeps again:** AppSail ~5 min instance TTL — enable `appsail-keepalive.yml` or an external cron; in-app keep-alive alone is not enough.
 
 ## References
 - [Deploy AppSail as a Custom Runtime from the CLI](https://docs.catalyst.zoho.com/en/serverless/help/appsail/custom-runtimes/deploy-from-cli/)

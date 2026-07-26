@@ -120,13 +120,18 @@ public class ChatClientConfig {
      * Stateless client that generates short starter-prompt suggestions for the empty chat screen from
      * an assistant's own name + system prompt (and, when personalizing, a user's memories). No memory
      * advisor — each call is self-contained. A slightly warm temperature keeps repeated regenerations
-     * varied; 256 tokens covers a small JSON array of one-line questions.
+     * varied. 256 tokens looked like it covered "a small JSON array of one-line questions" for English,
+     * but Kannada script needs far more tokens per character (complex conjuncts split into several BPE
+     * tokens each), so real Kannada generations were silently truncated mid-array — the model ran out
+     * of budget before the closing bracket, producing cut-off words and a dangling "[" that no amount
+     * of response parsing can recover, since the data was simply never generated. 768 gives real
+     * headroom for 6 Kannada questions plus JSON/markdown-fence overhead.
      */
     @Bean
     @Qualifier("suggestionsChatClient")
     public ChatClient suggestionsChatClient(ChatModel chatModel) {
         return ChatClient.builder(chatModel)
-                .defaultOptions(ChatOptions.builder().maxTokens(256).temperature(0.7).build())
+                .defaultOptions(ChatOptions.builder().maxTokens(768).temperature(0.7).build())
                 .build();
     }
 }

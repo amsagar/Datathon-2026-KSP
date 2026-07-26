@@ -14,18 +14,21 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 
 /**
- * Pings the deployed AppSail health URL on a fixed interval so the free-tier
- * instance stays warm. Runs in-process once the service is up; the first external
- * hit (or deploy) wakes it, then this job keeps {@code /health} exercised.
+ * Secondary keep-alive: pings the public AppSail URL while this JVM is already
+ * running. AppSail still tears instances down after ~5 minutes of uptime, so an
+ * <em>external</em> scheduler (GitHub Actions {@code appsail-keepalive.yml} or
+ * Catalyst Cron hitting {@code GET /}) is required to wake a new instance.
  *
  * <p>Default target:
- * {@code https://ksp-agent-service-50044089204.development.catalystappsail.in/health}
+ * {@code https://ksp-agent-service-50044089204.development.catalystappsail.in/}
  */
 @Component
 @ConditionalOnProperty(prefix = "agent.keepalive", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DeployedHealthKeepAliveJob {
 
     private static final Logger log = LoggerFactory.getLogger(DeployedHealthKeepAliveJob.class);
+    private static final String DEFAULT_URL =
+            "https://ksp-agent-service-50044089204.development.catalystappsail.in/";
 
     private final String url;
     private final HttpClient httpClient = HttpClient.newBuilder()
@@ -34,11 +37,9 @@ public class DeployedHealthKeepAliveJob {
             .build();
 
     public DeployedHealthKeepAliveJob(
-            @Value("${agent.keepalive.url:https://ksp-agent-service-50044089204.development.catalystappsail.in/health}")
+            @Value("${agent.keepalive.url:https://ksp-agent-service-50044089204.development.catalystappsail.in/}")
             String url) {
-        this.url = url == null || url.isBlank()
-                ? "https://ksp-agent-service-50044089204.development.catalystappsail.in/health"
-                : url.trim();
+        this.url = url == null || url.isBlank() ? DEFAULT_URL : url.trim();
         log.info("Deployed health keep-alive enabled → {}", this.url);
     }
 

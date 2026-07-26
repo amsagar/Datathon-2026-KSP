@@ -42,7 +42,7 @@ public class SecurityConfig {
                         // Catalyst Cron endpoints: no user JWT; authenticated by a shared secret
                         // header inside InternalCronController.
                         .requestMatchers("/api/v1/internal/cron/**").permitAll()
-                        .requestMatchers("/", "/health").permitAll()
+                        .requestMatchers("/", "/health", "/api/health").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

@@ -202,10 +202,14 @@ public class PromptSuggestionService {
         if (raw == null || raw.isBlank()) {
             return List.of();
         }
-        String cleaned = raw.strip();
+        // Strip markdown code fences (```json ... ``` or plain ``` ... ```) wherever they appear —
+        // models routinely wrap the array in a fenced block even when told "no prose, no fences",
+        // and a stray fence marker left in place used to survive as its own bogus "suggestion" via
+        // the line-fallback below.
+        String cleaned = raw.strip().replaceAll("```[a-zA-Z]*", "").strip();
+        List<String> out = new ArrayList<>();
         int start = cleaned.indexOf('[');
         int end = cleaned.lastIndexOf(']');
-        List<String> out = new ArrayList<>();
         if (start >= 0 && end > start) {
             try {
                 JsonNode arr = objectMapper.readTree(cleaned.substring(start, end + 1));
@@ -219,11 +223,51 @@ public class PromptSuggestionService {
             }
         }
         if (out.isEmpty()) {
-            for (String line : cleaned.split("\\r?\\n")) {
-                addClean(out, line.replaceAll("^[-*\\d.\\s\"]+", "").replaceAll("[\"]+$", ""));
+            for (String rawLine : cleaned.split("\\r?\\n")) {
+                String line = rawLine.strip();
+                if (line.isEmpty() || line.matches("[\\[\\]{}]+")) {
+                    continue; // stray bracket/brace-only line left over from a broken fence
+                }
+                // Multi-line JSON arrays print one element per line as `"text",` — strip that
+                // trailing comma before anything else, or the per-element checks below never match.
+                String noTrailingComma = line.replaceAll(",\\s*$", "");
+                // The model sometimes prints several comma-separated quoted suggestions on one
+                // line instead of one per line — re-parse that line as its own JSON array rather
+                // than keeping the whole quoted, comma-joined blob as a single "suggestion".
+                if (noTrailingComma.contains("\", \"") || noTrailingComma.contains("\",\"")) {
+                    String asArray = noTrailingComma.startsWith("[") ? noTrailingComma : "[" + noTrailingComma;
+                    asArray = asArray.endsWith("]") ? asArray : asArray + "]";
+                    try {
+                        JsonNode inner = objectMapper.readTree(asArray);
+                        if (inner.isArray()) {
+                            for (JsonNode n : inner) {
+                                addClean(out, n.asText(""));
+                            }
+                            continue;
+                        }
+                    } catch (Exception ignored) {
+                        // not valid as an array either — fall through to plain line cleanup
+                    }
+                }
+                // A single well-formed JSON string element on its own line — parse it properly so
+                // any escaped characters inside are unescaped correctly, not just quote-stripped.
+                if (noTrailingComma.length() > 1 && noTrailingComma.startsWith("\"") && noTrailingComma.endsWith("\"")) {
+                    try {
+                        addClean(out, objectMapper.readValue(noTrailingComma, String.class));
+                        continue;
+                    } catch (Exception ignored) {
+                        // not a valid JSON string literal either — fall through to regex cleanup
+                    }
+                }
+                addClean(out, noTrailingComma.replaceAll("^[-*\\d.\\s\"]+", "").replaceAll("[\",]+$", ""));
             }
         }
         return out.stream().limit(GENERATE_COUNT).toList();
+    }
+
+    /** Rejects anything that still looks like leftover JSON/markdown syntax rather than a question. */
+    private static boolean looksLikeJsonArtifact(String t) {
+        return t.contains("[") || t.contains("]") || t.contains("```") || t.contains("\\\"");
     }
 
     private void addClean(List<String> out, String text) {
@@ -234,7 +278,7 @@ public class PromptSuggestionService {
         if (t.length() > MAX_TEXT_LEN) {
             t = t.substring(0, MAX_TEXT_LEN).strip();
         }
-        if (!t.isBlank() && !out.contains(t)) {
+        if (!t.isBlank() && !looksLikeJsonArtifact(t) && !out.contains(t)) {
             out.add(t);
         }
     }

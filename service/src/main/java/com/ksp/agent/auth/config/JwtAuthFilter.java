@@ -22,7 +22,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private static final List<String> PUBLIC_PREFIXES = List.of(
             "/api/v1/auth/login",
-            "/health"
+            "/health",
+            "/api/health"
     );
 
     /** SSE chat stream — only path that may authenticate via {@code access_token} query. */
@@ -41,8 +42,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return true;
         }
         String path = request.getRequestURI();
+        // Exact root — AppSail / gateway liveness probes hit GET|HEAD /.
+        if ("/".equals(path)) {
+            return true;
+        }
         for (String prefix : PUBLIC_PREFIXES) {
-            if (path.startsWith(prefix)) {
+            if (path.equals(prefix) || path.startsWith(prefix + "/")) {
                 return true;
             }
         }
