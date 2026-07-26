@@ -53,8 +53,8 @@ agent:
       purge-cron: ${CHAT_TEMPORARY_PURGE_CRON:0 30 3 * * *}
   auth:
     jwt-secret: ${JWT_SECRET}
-  # Comma-separated list of UI origins allowed to call the API directly (SSE/chat
-  # bypasses the nginx proxy and hits the backend cross-origin). Set to the deployed
-  # UI URL, e.g. CORS_ALLOWED_ORIGINS=https://ksp-agent-ui-xxxxx.catalystserverless.in
+  # Comma-separated list of UI origins allowed to call the API cross-origin.
+  # Chat SSE normally goes same-origin via the UI nginx proxy; CORS still matters
+  # for any direct browser→BE calls. e.g. CORS_ALLOWED_ORIGINS=https://ksp.example.in
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}

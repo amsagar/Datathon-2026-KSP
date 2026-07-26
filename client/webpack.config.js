@@ -143,9 +143,8 @@ module.exports = (env, argv) => {
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(mode),
-        'process.env.STREAM_API_BASE': JSON.stringify(
-          process.env.STREAM_API_BASE || process.env.BASE_URL || ''
-        ),
+        // Empty = same-origin /api (webpack proxy). Set STREAM_API_BASE only for direct BE.
+        'process.env.STREAM_API_BASE': JSON.stringify(process.env.STREAM_API_BASE || ''),
       }),
     ].filter(Boolean),
     resolve: {
@@ -238,9 +237,9 @@ module.exports = (env, argv) => {
           target: API_URL,
           changeOrigin: true,
           secure: false,
-          // Match prod nginx / App Gateway budget for SSE /api/chat/stream
-          proxyTimeout: 1_800_000,
-          timeout: 1_800_000,
+          // Match prod nginx budget (5h) for SSE /api/chat/stream
+          proxyTimeout: 18_000_000,
+          timeout: 18_000_000,
         },
       ],
     },

@@ -1,8 +1,8 @@
 /**
- * Runtime API base for SSE (and related chat calls). In production, docker-defaults.sh
- * sets `window.__RUNTIME_CONFIG__.streamApiBase` from the same BASE_URL nginx uses,
- * so the browser hits the API gateway directly instead of UI nginx → proxy → gateway.
- * When empty, requests stay same-origin `/api/...` (local dev webpack proxy).
+ * Optional override API origin for SSE. Default is empty so the browser uses
+ * same-origin `/api/...` (UI nginx in prod, webpack proxy in local dev) and
+ * avoids cross-origin CORS. Set `streamApiBase` / `STREAM_API_BASE` only if you
+ * intentionally want the browser to call the backend host directly.
  */
 declare global {
   interface Window {

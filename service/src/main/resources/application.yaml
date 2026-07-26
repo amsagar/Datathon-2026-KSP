@@ -3,7 +3,8 @@ spring:
     name: ksp-agent
   mvc:
     async:
-      request-timeout: 1800000
+      # 5 hours — chat SSE turns (tools + LLM) can run a long time
+      request-timeout: 18000000
   servlet:
     multipart:
       max-file-size: 25MB
