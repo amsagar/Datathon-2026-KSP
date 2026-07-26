@@ -1,5 +1,5 @@
 import { qs } from './makeApiRequest';
-import { directApiUrl } from '@config/runtimeConfig';
+import { directApiUrl, streamApiBase } from '@config/runtimeConfig';
 import { getAuthToken, clearAuthToken, redirectToSso } from '@apiCalls/auth';
 import type {
   SseMessageEvent,
@@ -42,23 +42,28 @@ export interface ChatStreamParams {
  * `tool_result`, `clarification`, `done`, `error`. Comment lines (`: keep-alive`)
  * are ignored.
  *
- * We use `fetch` + a ReadableStream reader (rather than the browser's
- * `EventSource`) because EventSource cannot send the `Authorization` header the
- * SSO JWT requires. The SSE wire format is parsed manually below.
+ * Cross-origin prod stream cannot use an `Authorization` header: that forces a
+ * CORS preflight, and Catalyst's edge answers OPTIONS with no ACAO headers
+ * (Spring never sees it). So when `streamApiBase` is set we pass the JWT as
+ * `access_token` query instead — a "simple" GET that only needs ACAO on the
+ * response (which Spring already sends). Same-origin/local still uses Bearer.
  */
 export const openChatStream = (
   params: ChatStreamParams,
   handlers: ChatStreamHandlers
 ): ChatStreamHandle => {
+  const abort = new AbortController();
+  const token = getAuthToken();
+  // Non-empty streamApiBase ⇒ browser talks to a different host than the SPA.
+  const crossOrigin = Boolean(streamApiBase());
+
   const query = qs({
     sessionId: params.sessionId,
     message: params.message,
     styleId: params.styleId || undefined,
     lang: params.lang || undefined,
+    ...(token && crossOrigin ? { access_token: token } : {}),
   });
-
-  const abort = new AbortController();
-  const token = getAuthToken();
 
   const dispatch = (event: string, data: string) => {
     switch (event) {
@@ -152,7 +157,8 @@ export const openChatStream = (
         signal: abort.signal,
         headers: {
           Accept: 'text/event-stream',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          // Bearer only when same-origin; cross-origin uses access_token query (see above).
+          ...(!crossOrigin && token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

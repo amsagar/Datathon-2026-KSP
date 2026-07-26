@@ -25,6 +25,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             "/health"
     );
 
+    /** SSE chat stream — only path that may authenticate via {@code access_token} query. */
+    private static final String CHAT_STREAM_PATH = "/api/chat/stream";
+
     private final JwtUtil jwtUtil;
 
     public JwtAuthFilter(JwtUtil jwtUtil) {
@@ -50,13 +53,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        String token = resolveToken(request);
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7);
         try {
             Claims claims = jwtUtil.parseClaims(token);
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -82,5 +84,28 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * Bearer header everywhere; {@code access_token} query only on {@code /api/chat/stream}.
+     * Cross-origin SSE cannot send {@code Authorization} without a CORS preflight, and Catalyst's
+     * edge answers OPTIONS with no {@code Access-Control-*} headers — so the browser never reaches
+     * Spring. Query auth keeps the stream request "simple" and avoids that preflight.
+     */
+    private static String resolveToken(HttpServletRequest request) {
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String bearer = authHeader.substring(7).trim();
+            if (!bearer.isEmpty()) {
+                return bearer;
+            }
+        }
+        if (CHAT_STREAM_PATH.equals(request.getRequestURI())) {
+            String queryToken = request.getParameter("access_token");
+            if (queryToken != null && !queryToken.isBlank()) {
+                return queryToken.trim();
+            }
+        }
+        return null;
     }
 }

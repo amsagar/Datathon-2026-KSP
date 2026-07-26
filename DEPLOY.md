@@ -197,7 +197,7 @@ Env vars persist across redeploys.
 
 - **App won't start / 502:** check the AppSail app **logs** in the console. If the container listens on a port other than what Catalyst routes to, make the declared `--port` match the container's port (both images use `8080`).
 - **Backend boots with `local` profile / can't reach DB:** `SPRING_PROFILES_ACTIVE` isn't set to `prod`.
-- **UI loads but chat/SSE fails with CORS errors:** stream is the only browser→BE cross-origin call (other `/api` goes through the UI proxy, so a set `CORS_ALLOWED_ORIGINS` was never exercised by them). Confirm value is exactly `UI_URL` (no trailing slash), `SPRING_PROFILES_ACTIVE=prod`, redeploy BE. Do not add `@CrossOrigin` on controllers — Security CORS alone handles it.
+- **UI loads but chat/SSE fails with CORS / provisional headers:** Catalyst's edge answers `OPTIONS` without CORS headers, so an `Authorization` header on stream preflight never reaches Spring. Prod stream must send the JWT as `access_token` query (no Bearer header). Redeploy UI + BE. Also keep `CORS_ALLOWED_ORIGINS` = exact `UI_URL` for the actual GET response.
 - **Chat answer arrives all at once (no token stream):** SSE is going through the UI `/api` proxy — confirm `streamApiBase` is the BE URL (UI `BASE_URL`) and redeploy UI.
 - **UI 5xx on `/api`:** `BASE_URL` on the UI isn't set or points at the wrong backend URL.
 - **Chat stream dies after a long wait:** Spring/nginx timeouts are 5h; check AppSail/gateway idle limits if cuts happen earlier.
