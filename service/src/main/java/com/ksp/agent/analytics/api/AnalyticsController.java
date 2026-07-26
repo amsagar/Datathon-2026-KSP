@@ -259,9 +259,11 @@ public class AnalyticsController {
     public List<Map<String, Object>> demographics(@RequestParam(required = false) String dimension,
                                                   @RequestParam(required = false) String from,
                                                   @RequestParam(required = false) String to,
-                                                  @RequestParam(required = false) Integer districtId) {
+                                                  @RequestParam(required = false) Integer districtId,
+                                                  @RequestParam(required = false) String crimeType) {
         audit("VIEW_DEMOGRAPHICS", districtId == null ? "statewide" : "district:" + districtId);
-        return repository.demographics(dimension, orDefault(from, DEFAULT_FROM), orDefault(to, DEFAULT_TO), districtId);
+        return repository.demographics(dimension, orDefault(from, DEFAULT_FROM), orDefault(to, DEFAULT_TO),
+                districtId, crimeType);
     }
 
     /**

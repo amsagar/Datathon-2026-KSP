@@ -96,15 +96,20 @@ public class CrimeAnalyticsTools {
 
     @Tool(name = "accused_demographics", description = """
             Aggregate demographic breakdown of accused by 'age' or 'gender' (caste/religion are
-            excluded by design). JSON rows {bucket, count}. Use for sociological/demographic questions.""")
+            excluded by design). JSON rows {bucket, count}. Use for sociological/demographic questions.
+            Optionally scope to one crime type by name (e.g. "theft", "cyber crimes") — pass the name
+            directly, no need to look up an ID first; it matches against both the specific sub-head
+            (e.g. Theft) and the broader crime head (e.g. Crimes Against Property).""")
     public String accusedDemographics(
             @ToolParam(required = false, description = "'age' or 'gender' (default age)") String dimension,
             @ToolParam(required = false, description = "Start date YYYY-MM-DD") String fromDate,
             @ToolParam(required = false, description = "End date YYYY-MM-DD") String toDate,
-            @ToolParam(required = false, description = "district_id filter") Integer districtId) {
+            @ToolParam(required = false, description = "district_id filter") Integer districtId,
+            @ToolParam(required = false, description = "crime type name filter, e.g. 'theft'") String crimeType) {
         try {
             return objectMapper.writeValueAsString(repository.demographics(
-                    dimension, orDefault(fromDate, DEFAULT_FROM), orDefault(toDate, DEFAULT_TO), districtId));
+                    dimension, orDefault(fromDate, DEFAULT_FROM), orDefault(toDate, DEFAULT_TO), districtId,
+                    crimeType));
         } catch (Exception e) {
             return error("accused_demographics failed", e);
         }

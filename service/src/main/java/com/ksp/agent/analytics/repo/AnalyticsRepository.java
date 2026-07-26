@@ -312,8 +312,14 @@ public class AnalyticsRepository {
      * they are the demographic columns the accused table actually carries. Caste/religion are
      * deliberately excluded from analytics output (fairness); use for aggregate sociological context,
      * not individual profiling.
+     *
+     * @param crimeType optional free-text match against crime_sub_head.crime_head_name (e.g. "theft")
+     *                  or, failing that, crime_head.crime_group_name (e.g. "crimes against property") —
+     *                  a name rather than an ID so the model can pass it straight through without a
+     *                  separate lookup call first.
      */
-    public List<Map<String, Object>> demographics(String dimension, String from, String to, Integer districtId) {
+    public List<Map<String, Object>> demographics(String dimension, String from, String to, Integer districtId,
+                                                    String crimeType) {
         String select = "gender".equalsIgnoreCase(dimension)
                 ? "COALESCE(gm.gender_name, 'Unknown')"
                 : """
@@ -330,11 +336,15 @@ public class AnalyticsRepository {
                 JOIN case_master cm ON cm.case_master_id = a.case_master_id
                 LEFT JOIN unit u ON u.unit_id = cm.police_station_id
                 LEFT JOIN gender_master gm ON gm.gender_id = a.gender_id
+                LEFT JOIN crime_sub_head csh ON csh.crime_sub_head_id = cm.crime_minor_head_id
+                LEFT JOIN crime_head ch ON ch.crime_head_id = csh.crime_head_id
                 WHERE cm.crime_registered_date BETWEEN ?::date AND ?::date
                   AND (?::int IS NULL OR u.district_id = ?::int)
+                  AND (?::text IS NULL OR csh.crime_head_name ILIKE '%%' || ?::text || '%%'
+                                        OR ch.crime_group_name ILIKE '%%' || ?::text || '%%')
                 GROUP BY 1 ORDER BY count DESC
                 """.formatted(select);
-        return jdbcTemplate.queryForList(sql, from, to, districtId, districtId);
+        return jdbcTemplate.queryForList(sql, from, to, districtId, districtId, crimeType, crimeType, crimeType);
     }
 
     /**
