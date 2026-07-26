@@ -1,0 +1,164 @@
+@use './colors' as *;
+
+/* ChatGPT-style: compact → grow to max → scroll inside */
+
+$line: 24px;
+$max: 200px;
+$btn: 32px;
+
+.composerOuter {
+  padding: 6px 24px 16px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--bg-app, $bg_app) 30%
+  );
+}
+
+.composer {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px 6px 14px;
+  background: var(--bg-surface, $bg_surface);
+  border: 1px solid var(--border, $cream_200);
+  border-radius: 22px;
+  box-shadow: var(--shadow-subtle, 0 2px 12px rgba(43, 42, 38, 0.04));
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Multi-line: pin actions to the bottom edge (ChatGPT) */
+.composerExpanded {
+  align-items: flex-end;
+}
+
+.composer:focus-within {
+  border-color: rgba(227, 28, 37, 0.45);
+  box-shadow: 0 0 0 3px rgba(227, 28, 37, 0.16),
+    0 8px 24px rgba(43, 42, 38, 0.08);
+}
+
+.input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  height: $line;
+  min-height: $line;
+  max-height: $max;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+  color: var(--text-primary, #fff8f0);
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: $line;
+  resize: none;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(127, 127, 127, 0.45) transparent;
+
+  &::placeholder {
+    color: var(--text-muted, $muted);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(127, 127, 127, 0.4);
+    border-radius: 999px;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex-shrink: 0;
+  height: $btn;
+}
+
+.iconBtn,
+.sendBtn {
+  box-sizing: border-box;
+  width: $btn;
+  height: $btn;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 0;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  color: #e31c25;
+  transition: background 0.15s ease, opacity 0.15s ease, transform 0.15s ease;
+}
+
+.iconBtn:hover:not(:disabled) {
+  background: rgba(227, 28, 37, 0.12);
+}
+
+.iconBtn:disabled,
+.sendBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.iconBtnActive {
+  background: rgba(227, 28, 37, 0.18);
+}
+
+.iconBtnInner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.iconBtn svg,
+.sendBtn svg {
+  display: block;
+}
+
+.sendBtn {
+  background: #e31c25;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(227, 28, 37, 0.35);
+}
+
+.sendBtn:hover:not(:disabled) {
+  background: #c41820;
+}
+
+.hint {
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  margin: 8px auto 0;
+  text-align: center;
+  color: var(--text-muted, $muted);
+  font-size: 12px;
+  font-family: $font_family;
+}

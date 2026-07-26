@@ -1,0 +1,61 @@
+/* Leaflet + Tailwind seam / watermark fixes */
+
+.leaflet-container {
+  background: #abd2df !important;
+  font: inherit;
+  outline: none !important;
+}
+
+/* Kill attribution watermark */
+.leaflet-container .leaflet-control-attribution,
+.leaflet-control-attribution {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/*
+ * Leaflet sets mix-blend-mode: plus-lighter on tiles (Chrome black-line fix).
+ * On light UIs that blend often shows as a white grid instead — force normal.
+ */
+.leaflet-container img.leaflet-tile,
+.leaflet-container .leaflet-tile-pane img,
+.leaflet-container .leaflet-layer img {
+  mix-blend-mode: normal !important;
+  max-width: none !important;
+  max-height: none !important;
+  width: 257px !important;
+  height: 257px !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  image-rendering: auto;
+}
+
+.leaflet-container .leaflet-tile-container {
+  /* Avoid fractional-pixel gaps while panning/zooming */
+  transform: translate3d(0, 0, 0);
+}
+
+/* Never let global border tokens paint onto map chrome */
+.leaflet-container,
+.leaflet-container * {
+  border-color: transparent !important;
+}
+
+.leaflet-container.leaflet-touch .leaflet-bar,
+.leaflet-container .leaflet-bar {
+  border: 2px solid rgba(0, 0, 0, 0.2) !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.leaflet-container .leaflet-bar a {
+  border-bottom-color: #ccc !important;
+}

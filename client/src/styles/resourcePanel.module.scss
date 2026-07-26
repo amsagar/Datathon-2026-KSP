@@ -1,0 +1,303 @@
+@use './colors' as *;
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+  background: var(--bg-surface, $bg_surface);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border, $divider);
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary, $dark_blue);
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--text-muted, $muted);
+  margin: 0;
+}
+
+.scopeBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border, $divider);
+  background: var(--bg-subtle, $white_3);
+}
+
+.scopeLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary, $dark_blue);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.list {
+  width: 280px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border, $divider);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: $radius_md;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.row:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+}
+
+.rowSelected {
+  background: color-mix(in srgb, var(--bg-hover, $ksp_gold) 28%, transparent);
+  border-color: var(--bg-hover, $ksp_gold);
+}
+
+.rowSelected:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+}
+
+.rowMain {
+  flex: 1;
+  min-width: 0;
+}
+
+.rowName {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary, $black);
+}
+
+.rowMeta {
+  font-size: 12px;
+  color: var(--text-muted, $muted);
+}
+
+.form {
+  flex: 1;
+  padding: 18px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.fieldLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted, $muted);
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.fieldHelp {
+  font-size: 12px;
+  color: var(--text-muted, $muted);
+  margin-top: -4px;
+}
+
+.row2 {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.row2 > * {
+  flex: 1;
+  min-width: 0;
+}
+
+.formActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border, $divider);
+}
+
+.formError {
+  color: $danger;
+  font-size: 13px;
+}
+
+.importOr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0;
+  color: var(--text-muted, $muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border, $divider);
+  }
+}
+
+.importForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.importField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.importFieldLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted, $muted);
+  font-weight: 600;
+  margin: 0;
+}
+
+.importFieldHelp {
+  font-size: 12px;
+  color: var(--text-muted, $muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.toolChecks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+
+.toolCheck {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text-primary, $ink_900);
+}
+
+.placeholder {
+  color: var(--text-muted, $muted);
+  padding: 32px;
+  text-align: center;
+}
+
+.testBox {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border, $divider);
+}
+
+.testError {
+  border-color: $danger;
+  color: $danger;
+}
+
+.tabBar {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid var(--border, $divider);
+  margin-bottom: 8px;
+}
+
+.tabBar button {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-muted, $muted);
+  font-family: inherit;
+}
+
+.tabBar button:hover {
+  color: var(--text-primary, $ink_900);
+}
+
+.tabBar .tabActive {
+  color: var(--text-primary, $dark_blue);
+  border-bottom-color: $blue;
+  font-weight: 600;
+}
+
+.mcpToolList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.mcpToolRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--border, $divider);
+  border-radius: $radius_md;
+  background: var(--bg-subtle, $white_3);
+}
+
+.mcpToolMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--text-primary, $black);
+
+  span {
+    color: var(--text-muted, $muted);
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

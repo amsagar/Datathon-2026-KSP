@@ -1,0 +1,278 @@
+@use './colors' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px 12px;
+  border-bottom: 1px solid var(--border, $cream_200);
+  flex-shrink: 0;
+}
+
+.pageHeaderMain {
+  min-width: 0;
+}
+
+.pageEyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, $muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.pageTitle {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary, $ink_900);
+  letter-spacing: -0.02em;
+}
+
+.pageSubtitle {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-secondary, $ink_500);
+  max-width: 640px;
+}
+
+.emptyState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 48px 32px;
+  text-align: center;
+  color: var(--text-secondary, $ink_500);
+
+  p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary, $ink_700);
+  }
+
+  span {
+    max-width: 360px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+}
+
+.formWrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.form {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.formBody {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 12px 24px 0;
+  gap: 0;
+}
+
+.formMeta {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border, $cream_200);
+}
+
+.nameField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  max-width: 360px;
+}
+
+.toolsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.toolsSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.toolsCount {
+  font-size: 11px;
+  color: var(--text-muted, $muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.toolGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.toolGridCell {
+  display: block;
+  min-width: 0;
+}
+
+.toolCard {
+  appearance: none;
+  width: 100%;
+  border: 1px solid var(--border, $cream_200);
+  background: var(--bg-surface, $bg_surface);
+  border-radius: $radius_md;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  min-height: 40px;
+  box-shadow: inset 3px 0 0 transparent;
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.toolCard:hover {
+  border-color: var(--bg-hover, $ksp_gold);
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+}
+
+.toolCardActive {
+  border-color: var(--border-strong, $cream_300);
+  background: $pods_red_tint;
+  box-shadow: inset 3px 0 0 $pods_red;
+}
+
+.toolCardActive:hover {
+  background: $pods_red_tint;
+}
+
+.toolCardIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  background: var(--bg-subtle, $cream_100);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary, $ink_500);
+  flex-shrink: 0;
+}
+
+.toolCardActive .toolCardIcon {
+  background: var(--bg-surface, $bg_surface);
+  color: $pods_red;
+}
+
+.toolCardBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.toolCardTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary, $ink_900);
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.toolCardDesc {
+  display: none;
+}
+
+.toolCardToggle {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong, $cream_300);
+  background: var(--bg-surface, $bg_surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted, $muted);
+  flex-shrink: 0;
+}
+
+.toolCardActive .toolCardToggle {
+  border-color: transparent;
+  background: $pods_red;
+  color: #fff;
+}
+
+.promptSection {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 10px;
+  overflow: hidden;
+}
+
+.promptHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.promptCount {
+  font-size: 11px;
+  color: var(--text-muted, $muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.formFooter {
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+  padding: 10px 24px 14px;
+  border-top: 1px solid var(--border, $cream_200);
+  background: var(--bg-subtle, $cream_50);
+}
+
+.formError {
+  flex-shrink: 0;
+  margin-top: 8px;
+}

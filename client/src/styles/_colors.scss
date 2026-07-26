@@ -1,0 +1,89 @@
+// Warm cream canvas with Karnataka State Police crimson as the primary
+// accent. Legacy `$pods_red*` token names are kept so existing component
+// SCSS modules don't need to change — only values remap.
+
+// --- Core neutrals (blush / crimson-tinted paper) ---
+// Faint crimson tint so the whole app reads as the same brand family as the
+// crimson login screen, while content surfaces stay white for readability.
+$cream_50: #fdf6f5;   // app background
+$cream_100: #faece9;  // hover surfaces
+$cream_200: #f0ddd9;  // dividers / cards
+$cream_300: #e3c4bf;  // borders on focused fields
+$cream_400: #a9928d;  // muted text
+$ink_900: #2b2422;    // primary text
+$ink_700: #3d2b29;    // headings
+$ink_500: #5c524f;    // secondary text
+$ink_300: #8a7c79;    // tertiary
+
+// --- Brand accent (Karnataka flag: yellow over red) ---
+// Flag red as primary, flag yellow as the secondary accent. Legacy
+// `$pods_red*` token names are kept so existing SCSS modules don't need to
+// change — only values remap.
+$pods_red: #e31c25;          // Karnataka flag red
+$pods_red_hover: #c4151d;    // darker flag red on hover
+$pods_red_active: #9e1017;   // pressed
+$pods_red_dark: #6d0b10;     // for high-contrast outlines / focus
+$pods_red_tint: rgba(227, 28, 37, 0.08);   // subtle background wash
+$pods_red_tint_strong: rgba(227, 28, 37, 0.16);
+$ksp_gold: #ffcc00;          // Karnataka flag yellow
+$ksp_gold_deep: #e6b800;     // deeper yellow for borders / hover
+$ksp_maroon: #8f1018;        // deep red for gradients
+
+$coral: $pods_red;
+$coral_hover: $pods_red_hover;
+$coral_active: $pods_red_active;
+$coral_tint: $pods_red_tint;
+
+// --- Soft secondary accent for assistant chips / tags ---
+$sand: #e8e4d5;
+$sand_dark: #c8c2ad;
+
+// --- Backwards-compatible token aliases used across the codebase ---
+$dark_blue: $ink_700;
+$black: $ink_900;
+$gray: $ink_500;
+$blue: $coral;
+$blue_2: $coral;
+$white: rgba(0, 0, 0, 0.06);
+$white_2: $cream_200;
+$white_3: $cream_100;
+$light_dark: $ink_700;
+$light_gray: $ink_500;
+$hover_blue: $coral_tint;
+$dark_hover_blue: $coral_hover;
+
+// --- App-specific tokens ---
+$bg_app: $cream_50;
+$bg_surface: #ffffff;
+$bg_sidebar: $cream_100;
+$bg_subtle: $cream_50;
+
+$bubble_user: $cream_200;
+$bubble_user_text: $ink_900;
+$bubble_assistant: transparent;
+$bubble_assistant_border: transparent;
+
+$tool_card_bg: $cream_100;
+$tool_card_border: $cream_200;
+$tool_card_error_border: $pods_red_hover;
+
+$danger: #c81b13;
+$success: #5f8b54;
+$warning: $ksp_gold;
+$info: $coral;
+$muted: $ink_300;
+$divider: $cream_200;
+$focus_ring: $coral;
+$code_bg: $cream_100;
+
+// --- Radii ---
+$radius_sm: 6px;
+$radius_md: 10px;
+$radius_lg: 16px;
+$radius_pill: 999px;
+
+// --- Fonts ---
+// Poppins (Google Fonts) — platform-wide UI typeface.
+$font_family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue',
+  Arial, sans-serif;
+$font_mono: ui-monospace, 'SF Mono', 'Menlo', 'JetBrains Mono', monospace;

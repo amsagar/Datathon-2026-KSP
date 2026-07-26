@@ -1,0 +1,142 @@
+@use './colors' as *;
+
+.workspace {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100%;
+  background-color: var(--bg-sidebar, $bg_sidebar);
+}
+
+.chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background-color: var(--bg-app, $bg_app);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px;
+  background-color: var(--bg-app, $bg_app);
+  border-bottom: 1px solid var(--border, transparent);
+  min-height: 56px;
+  flex-shrink: 0;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerTitle {
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--text-primary, $ink_900);
+}
+
+.analyticsHost {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.headerRight {
+  margin-left: auto;
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px 16px;
+}
+
+.pickerField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pickerLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted, $muted);
+}
+
+.assistantPicker,
+.stylePicker {
+  min-width: 200px;
+  width: 200px;
+
+  :global([data-slot='select-trigger']) {
+    width: 100%;
+    background: var(--header-picker-bg, var(--bg-surface, $bg_surface));
+    border: 1px solid var(--border, $cream_200);
+    border-radius: $radius_md;
+    font-weight: 500;
+    color: var(--text-primary, $ink_900);
+    box-shadow: var(--shadow-subtle, 0 1px 2px rgba(43, 42, 38, 0.05));
+  }
+
+  &:hover :global([data-slot='select-trigger']) {
+    border-color: var(--bg-hover, $ksp_gold);
+    background: var(--bg-hover, $ksp_gold);
+    color: var(--bg-hover-fg, $ink_900);
+  }
+
+  &:focus-within :global([data-slot='select-trigger']) {
+    border-color: $coral;
+    box-shadow: 0 0 0 3px rgba(225, 37, 27, 0.15);
+  }
+}
+
+.assistantPicker {
+  min-width: 220px;
+  width: 220px;
+}
+
+.temporaryBanner {
+  margin: 12px 20px 0;
+  padding: 10px 14px;
+  border-radius: $radius_md;
+  background: color-mix(in srgb, var(--text-primary, $ink_900) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-primary, $ink_900) 8%, transparent);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted, $muted);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.temporaryBannerTitle {
+  display: block;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--text-primary, $ink_900);
+  margin-bottom: 2px;
+}
+
+.threadExport {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.empty {
+  color: var(--text-muted, $muted);
+  text-align: center;
+  margin-top: 80px;
+  font-size: 15px;
+  padding: 0 24px;
+  line-height: 1.6;
+}

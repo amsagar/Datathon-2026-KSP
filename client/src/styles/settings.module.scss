@@ -1,0 +1,197 @@
+@use './colors' as *;
+
+.page {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background: var(--bg-app, $bg_app);
+  overflow: hidden;
+}
+
+.nav {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--bg-sidebar, $bg_sidebar);
+  padding: 16px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-right: 1px solid transparent;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.navScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 8px;
+}
+
+.navFooter {
+  flex-shrink: 0;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border, $cream_200);
+}
+
+.navHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px 18px;
+  color: var(--text-secondary, $ink_500);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+
+.navHeader:hover {
+  color: var(--text-primary, $ink_900);
+}
+
+.navTitle {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary, $ink_500);
+  font-weight: 650;
+  padding: 14px 12px 6px;
+}
+
+.scopePicker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 8px 12px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--border, $cream_200);
+}
+
+.newAssistantBtn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.scopeLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, $muted);
+  font-weight: 600;
+  padding: 0 2px;
+}
+
+.navItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px 8px 14px;
+  border-radius: $radius_md;
+  color: var(--text-secondary, $ink_700);
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background-color 0.16s ease, color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+// Animated crimson accent bar — scales in on active for a premium feel.
+.navItem::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  height: 16px;
+  width: 3px;
+  border-radius: $radius_pill;
+  background: $pods_red;
+  transform: translateY(-50%) scaleY(0);
+  transform-origin: center;
+  opacity: 0;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+.navItem:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+  text-decoration: none;
+}
+
+.navItemActive,
+.navItemActive:hover {
+  background: var(--bg-active, $bg_surface);
+  border-color: var(--border, $cream_200);
+  color: $pods_red;
+  font-weight: 600;
+  box-shadow: var(--shadow-subtle, 0 1px 2px rgba(43, 42, 38, 0.06));
+}
+
+.navItemActive::before {
+  transform: translateY(-50%) scaleY(1);
+  opacity: 1;
+}
+
+.navItemDisabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.navIcon {
+  width: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary, $ink_500);
+}
+
+.navItemActive .navIcon {
+  color: $coral;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-app, $bg_app);
+  overflow: hidden;
+}
+
+.contentInner {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-surface, $bg_surface);
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  border-left: 1px solid var(--border, $cream_200);
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+// Wrapper for the motion-animated section swap — must keep the flex chain
+// intact so pages using `flex: 1` still fill the available height.
+.sectionMotion {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}

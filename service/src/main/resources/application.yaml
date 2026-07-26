@@ -1,0 +1,89 @@
+spring:
+  application:
+    name: ksp-agent
+  mvc:
+    async:
+      request-timeout: 1800000
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+  sql:
+    init:
+      mode: always
+      schema-locations:
+        - classpath:sql-models/chat-session-model.sql
+        - classpath:sql-models/assistant-model.sql
+        - classpath:sql-models/agent-tool-model.sql
+        - classpath:sql-models/agent-tool-group-model.sql
+        - classpath:sql-models/agent-skill-model.sql
+        - classpath:sql-models/agent-document-model.sql
+        - classpath:sql-models/chat-tool-event-model.sql
+        - classpath:sql-models/response-style-model.sql
+        - classpath:sql-models/mcp-server-model.sql
+        - classpath:sql-models/chat-session-summary-model.sql
+        - classpath:sql-models/llm-usage-model.sql
+        - classpath:sql-models/chat-share-model.sql
+        - classpath:sql-models/semantic-memory-model.sql
+        - classpath:sql-models/app-user-model.sql
+        - classpath:sql-models/user-audit-model.sql
+        - classpath:sql-models/crime-assistant-seed.sql
+        - classpath:sql-models/prompt-suggestion-model.sql
+        - classpath:sql-models/config-audit-model.sql
+        - classpath:sql-models/alert-model.sql
+  ai:
+    chat:
+      memory:
+        repository:
+          jdbc:
+            initialize-schema: always
+logging:
+  level:
+    com.ksp.agent.chat.audit: INFO
+    com.ksp.agent.chat.controller.ChatController: INFO
+
+agent:
+  scope-guard:
+    enabled: true
+  clarification:
+    timeout-minutes: 5
+  memory:
+    recent-window: 20
+    summary-threshold: 40
+    char-budget: 24000
+    tools:
+      enabled: true
+  http-tool:
+    connect-timeout-ms: 10000
+    read-timeout-ms: 30000
+    max-attempts: 2
+    retry-backoff-ms: 1000
+  quickml:
+    connect-timeout-ms: 10000
+    read-timeout-ms: 120000
+    streaming: false
+  storage:
+    root: ${AGENT_STORAGE_ROOT:./data/blobs}
+  auth:
+    jwt-expiration-ms: 28800000
+    jwt-issuer: ksp-agent
+  cors:
+    allowed-origins:
+      - "http://localhost:3000"
+      - "http://localhost:3001"
+      - "http://localhost:4000"
+      - "http://127.0.0.1:4000"
+      - "http://localhost:5173"
+      - "http://localhost:5174"
+
+ksp:
+  usage:
+    pricing:
+      default-rates:
+        input-per-million: 2.50
+        output-per-million: 10.00
+      models: {}

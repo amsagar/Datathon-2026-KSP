@@ -1,0 +1,47 @@
+@use './colors' as *;
+
+.wrap {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.wrapInline {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, $muted);
+  font-weight: 600;
+  padding: 0 2px;
+  line-height: 1;
+  user-select: none;
+}
+
+.info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  color: var(--text-muted, $cream_400);
+  cursor: help;
+  transition: color 0.12s ease, background-color 0.12s ease;
+}
+
+.info:hover {
+  color: var(--bg-hover-fg, $ink_700);
+  background: var(--bg-hover, $ksp_gold);
+}

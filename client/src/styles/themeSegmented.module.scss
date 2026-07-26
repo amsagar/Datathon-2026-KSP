@@ -1,0 +1,38 @@
+@use './colors' as *;
+
+.control {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--bg-subtle, $cream_200);
+  border-radius: $radius_md;
+  border: 1px solid var(--border, $cream_200);
+}
+
+.segment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: $radius_sm;
+  background: transparent;
+  color: var(--text-secondary, $ink_500);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.segment:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+}
+
+.segmentActive {
+  background: var(--bg-active, $bg_surface);
+  color: var(--text-primary, $ink_900);
+  box-shadow: var(--shadow-subtle, 0 1px 2px rgba(43, 42, 38, 0.06));
+}

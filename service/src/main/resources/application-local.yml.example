@@ -1,0 +1,66 @@
+# Template for the git-ignored `application-local.yml` (activated by the `local` Spring profile,
+# which is the default when SPRING_PROFILES_ACTIVE is unset — see README.md's local-setup section).
+#
+#   cp application-local.yml.example application-local.yml
+#
+# then fill in real values (ask a maintainer for the shared demo credentials, or point `spring.
+# datasource`/`crime.datasource` at your own local Postgres instances — see SCHEMA_FIDELITY.md for
+# the crime-DB load order if you do).
+spring:
+  datasource:
+    url: "jdbc:postgresql://<host>:<port>/<database>?sslmode=require&prepareThreshold=0"
+    username:
+    password:                      # (SECRET)
+crime:
+  datasource:
+    url: "jdbc:postgresql://<host>:<port>/<database>?sslmode=require&prepareThreshold=0"
+    username:
+    password:                      # (SECRET)
+agent:
+  encryption:
+    key:                           # (SECRET) 64-hex — generate: openssl rand -hex 32
+  llm:
+    base-url: https://api.catalyst.zoho.in
+    completions-path: /quickml/v1/project/<project-id>/glm/chat
+    catalyst-org:
+    model:
+    temperature: 0.2
+    max-tokens: 4096
+    api-key: ""
+    client-id:
+    client-secret:                 # (SECRET)
+    refresh-token:                 # (SECRET)
+    accounts-base-url: https://accounts.zoho.in
+  rag:
+    base-url: https://api.catalyst.zoho.in
+    completions-path: /quickml/v1/project/<project-id>/rag/answer
+    catalyst-org:
+    api-key: ""
+  stratus:
+    bucket-url:
+    catalyst-org:
+    api-key: ""
+  cron:
+    secret:                        # (SECRET) — guards /api/v1/internal/cron/*
+  skill-update:
+    enabled: true
+    timeout-minutes: 10
+  tool-search:
+    threshold: 15
+    max-results: 3
+  memory:
+    # Keep these at production values so local behaviour matches deployed behaviour. Low values
+    # (e.g. 2/1) truncate the model's view to ~2 messages and make multi-turn follow-ups
+    # effectively stateless — only lower them to deliberately test summarization.
+    summary-threshold: 40
+    recent-window: 20
+    semantic:
+      top-k: 6
+      min-confidence: 0.3
+      extract-min-confidence: 0.3
+  chat:
+    temporary:
+      retention-days: 30
+      purge-cron: "0 30 3 * * *"
+  auth:
+    jwt-secret:                    # (SECRET) — generate: openssl rand -base64 48

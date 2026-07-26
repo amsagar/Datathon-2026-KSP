@@ -1,0 +1,85 @@
+@use './colors' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg-base, $cream_50);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border, $cream_200);
+  background: var(--bg-surface, #fff);
+  flex-shrink: 0;
+}
+
+.headerMain {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary, $ink_700);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badge {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  padding: 2px 9px;
+  background: var(--bg-subtle, $cream_100);
+  border: 1px solid var(--border, $cream_200);
+  color: var(--text-secondary, $ink_500);
+}
+
+.openLink {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: $pods_red;
+  text-decoration: none;
+}
+
+.openLink:hover {
+  text-decoration: underline;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.centered {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  text-align: center;
+  color: var(--text-secondary, $ink_500);
+}
+
+.centeredTitle {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary, $ink_700);
+}

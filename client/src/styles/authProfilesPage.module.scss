@@ -1,0 +1,272 @@
+@use './colors' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.pageHeader {
+  flex-shrink: 0;
+  padding: 16px 22px 12px;
+  border-bottom: 1px solid var(--border, $cream_200);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pageHeaderMain {
+  min-width: 0;
+}
+
+.pageEyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, $muted);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary, $ink_900);
+  letter-spacing: -0.02em;
+}
+
+.pageSubtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text-secondary, $ink_500);
+}
+
+.embeddedActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 24px 12px;
+  flex-shrink: 0;
+}
+
+.tableWrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px 24px 24px;
+
+  :global(.ant-table) {
+    font-family: $font_family;
+  }
+
+  :global(.ant-table-thead > tr > th) {
+    background: var(--bg-subtle, $cream_50) !important;
+    color: var(--text-muted, $muted) !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border, $cream_200) !important;
+  }
+
+  :global(.ant-table-tbody > tr > td) {
+    border-bottom: 1px solid var(--border, $cream_200) !important;
+    vertical-align: middle;
+  }
+
+  :global(.ant-table-tbody > tr:hover > td) {
+    background: var(--bg-subtle, $cream_50) !important;
+  }
+}
+
+.tableWrapEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+.nameCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cellName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary, $ink_900);
+}
+
+.cellDesc {
+  font-size: 12px;
+  color: var(--text-muted, $muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.typeBadge {
+  font-size: 12px;
+  color: var(--text-primary, $ink_700);
+}
+
+.cellMuted {
+  font-size: 13px;
+  color: var(--text-muted, $muted);
+}
+
+.menuItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.menuItemDanger {
+  color: inherit;
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: min(70vh, 640px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.statusRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.statusChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: $radius_sm;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+  border: 1px solid var(--border, $cream_200);
+  background: var(--bg-subtle, $cream_50);
+  color: var(--text-secondary, $ink_500);
+}
+
+.statusChipOk {
+  border-color: rgba(95, 139, 84, 0.35);
+  background: rgba(95, 139, 84, 0.1);
+  color: $success;
+}
+
+.statusChipMuted {
+  background: var(--bg-subtle, $cream_100);
+  color: var(--text-muted, $muted);
+}
+
+.section {
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.sectionTitle {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, $muted);
+}
+
+.sectionCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--border, $cream_200);
+  border-radius: $radius_md;
+  background: var(--bg-subtle, $cream_50);
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 14px 16px;
+  align-items: end;
+}
+
+.row2Equal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 16px;
+  align-items: end;
+}
+
+@media (max-width: 640px) {
+  .row2,
+  .row2Equal {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+}
+
+.fieldAuthType {
+  min-width: 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.fieldLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted, $muted);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.fieldLabelTag {
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 500;
+}
+
+.fieldHint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary, $ink_500);
+}
+
+.inlineCode {
+  font-family: $font_mono;
+  font-size: 11px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--border, $cream_200);
+  color: var(--text-primary, $ink_700);
+}
+
+.formError {
+  color: $danger;
+  font-size: 13px;
+  margin-top: 10px;
+}

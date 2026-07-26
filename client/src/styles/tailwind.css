@@ -1,0 +1,221 @@
+/*
+ * Tailwind v4 entry (CSS-first config) + shadcn/ui theme bridge.
+ *
+ * Full Tailwind (incl. Preflight base reset) is now enabled — Ant Design has
+ * been fully removed, so there is no reset collision. Preflight is required for
+ * shadcn primitives to render correctly (e.g. the `border` utility needs
+ * Preflight's default border-style/color).
+ */
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/* Dark mode follows the app's existing selector (useThemeStore sets
+   document.documentElement.dataset.theme). Do NOT switch to a `.dark` class. */
+@custom-variant dark ([data-theme='dark'] &);
+
+/*
+ * shadcn semantic tokens sourced from the Karnataka flag palette
+ * (yellow #ffcc00 over red #e31c25). Values mirror the SCSS token system in
+ * _colors.scss / _theme.scss so both systems stay in sync.
+ */
+:root {
+  --background: #fdf6f5;
+  --foreground: #2b2422;
+  --card: #ffffff;
+  --card-foreground: #2b2422;
+  --popover: #ffffff;
+  --popover-foreground: #2b2422;
+  --primary: #e31c25;
+  --primary-foreground: #ffffff;
+  --secondary: #faece9;
+  --secondary-foreground: #3d2b29;
+  --muted: #faece9;
+  --muted-foreground: #8a7c79;
+  --accent: #ffcc00;
+  --accent-foreground: #1a0a0c;
+  --destructive: #c4151d;
+  --destructive-foreground: #ffffff;
+  --border: #f0ddd9;
+  --input: #e3c4bf;
+  --ring: #ffcc00;
+  --radius: 0.625rem;
+
+  --sidebar: #faece9;
+  --sidebar-foreground: #2b2422;
+  --sidebar-primary: #e31c25;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ffcc00;
+  --sidebar-accent-foreground: #1a0a0c;
+  --sidebar-border: #f0ddd9;
+  --sidebar-ring: #ffcc00;
+
+  --chart-1: #e31c25;
+  --chart-2: #ffcc00;
+  --chart-3: #8f1018;
+  --chart-4: #5f8b54;
+  --chart-5: #3d6ea5;
+}
+
+[data-theme='dark'] {
+  --background: #141312;
+  --foreground: #f4f1ea;
+  --card: #1f1e1c;
+  --card-foreground: #f4f1ea;
+  --popover: #1f1e1c;
+  --popover-foreground: #f4f1ea;
+  --primary: #e31c25;
+  --primary-foreground: #ffffff;
+  --secondary: #232220;
+  --secondary-foreground: #f4f1ea;
+  --muted: #232220;
+  --muted-foreground: #c4bfb4;
+  --accent: #ffcc00;
+  --accent-foreground: #1a0a0c;
+  --destructive: #e5484d;
+  --destructive-foreground: #ffffff;
+  --border: #33312e;
+  --input: #434039;
+  --ring: #ffcc00;
+
+  --sidebar: #1a1918;
+  --sidebar-foreground: #f4f1ea;
+  --sidebar-primary: #e31c25;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ffcc00;
+  --sidebar-accent-foreground: #1a0a0c;
+  --sidebar-border: #33312e;
+  --sidebar-ring: #ffcc00;
+
+  --chart-1: #e31c25;
+  --chart-2: #ffcc00;
+  --chart-3: #b0141c;
+  --chart-4: #7fae72;
+  --chart-5: #6ea0d8;
+}
+
+/* Expose the tokens above to Tailwind utilities (bg-primary, text-muted-foreground, …). */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Menlo', 'JetBrains Mono', monospace;
+}
+
+/*
+ * Without this, Tailwind's bare `border` / `border-b` utilities fall back to
+ * currentColor (near-black text). Exclude the entire Leaflet tree — borders
+ * on tile/layer nodes show up as a white grid across the map.
+ */
+@layer base {
+  *:not(:where(.leaflet-container, .leaflet-container *)) {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* react-day-picker — keep range calendars readable under Tailwind Preflight */
+.rdp-ksp.rdp-root,
+.rdp-ksp {
+  --rdp-accent-color: var(--primary);
+  --rdp-accent-background-color: color-mix(in srgb, var(--primary) 14%, transparent);
+}
+
+.rdp-ksp .rdp-months {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--rdp-months-gap, 1.25rem);
+}
+
+.rdp-ksp .rdp-month_grid {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.rdp-ksp .rdp-weekday {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted-foreground);
+}
+
+.rdp-ksp .rdp-caption_label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.rdp-ksp .rdp-button_previous,
+.rdp-ksp .rdp-button_next {
+  border-radius: 0.5rem;
+  color: var(--foreground);
+}
+
+.rdp-ksp .rdp-button_previous:hover,
+.rdp-ksp .rdp-button_next:hover {
+  background: var(--muted);
+}
+
+.rdp-ksp .rdp-day_button {
+  color: var(--foreground);
+}
+
+.rdp-ksp .rdp-day_button[data-selected-single='true'],
+.rdp-ksp .rdp-selected .rdp-day_button {
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.rdp-ksp .rdp-outside .rdp-day_button {
+  color: var(--muted-foreground);
+  opacity: 0.55;
+}

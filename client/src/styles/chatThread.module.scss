@@ -1,0 +1,263 @@
+@use './colors' as *;
+
+.thread {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-app, $bg_app);
+}
+
+.threadInner {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.messageUser {
+  align-items: flex-end;
+}
+
+.messageAssistant {
+  align-items: stretch;
+}
+
+.messageHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+  color: var(--text-secondary, $ink_500);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+.avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: $pods_red;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(140, 19, 13, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+}
+
+.senderName {
+  color: var(--text-primary, $ink_700);
+  font-weight: 600;
+}
+
+
+/* User: soft cream pill on the right with subtle depth */
+.bubbleUser {
+  max-width: 80%;
+  padding: 12px 18px;
+  border-radius: 18px 18px 4px 18px;
+  background: var(--bubble-user, $cream_200);
+  border: 1px solid var(--bubble-user-border, rgba(0, 0, 0, 0.04));
+  box-shadow: var(--shadow-subtle, 0 1px 2px rgba(0, 0, 0, 0.03));
+  color: var(--text-primary, $ink_900);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 15px;
+  animation: bubbleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Assistant: flat column; typography via MarkdownContent */
+.bubbleAssistant {
+  width: 100%;
+  min-width: 0;
+  animation: bubbleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.typing {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 14.5px;
+}
+
+.typingShimmer {
+  background: linear-gradient(
+    90deg,
+    $ink_300 0%,
+    $pods_red 50%,
+    $ink_300 100%
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  animation: shimmerText 2.4s ease-in-out infinite;
+}
+
+@keyframes shimmerText {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.typingDots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.typingDots span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: $pods_red;
+  will-change: transform, opacity;
+}
+
+.actions {
+  display: flex;
+  gap: 2px;
+  margin-top: 6px;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.message:hover .actions,
+.message:focus-within .actions,
+.actionsPinned {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.messageUser .actions {
+  justify-content: flex-end;
+  padding-right: 4px;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 320px;
+  max-width: 80%;
+  align-self: flex-end;
+}
+
+.editorActions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.threadLoading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 48px 24px;
+}
+
+.emptyHero {
+  text-align: center;
+  margin: auto;
+  padding: 48px 24px;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.emptyHeroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 8px;
+  border-radius: 999px;
+  background: var(--bg-surface, $bg_surface);
+  border: 1px solid var(--border, $cream_200);
+  box-shadow: var(--shadow-subtle, 0 1px 2px rgba(0, 0, 0, 0.02));
+  margin-bottom: 6px;
+}
+
+.emptyHeroBadgeMark {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: $pods_red;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  box-shadow: 0 1px 2px rgba(140, 19, 13, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.emptyHeroBadgeLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary, $ink_700);
+  letter-spacing: -0.005em;
+}
+
+.emptyHeroTitle {
+  font-size: 42px;
+  line-height: 1.1;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  margin: 0;
+  color: $pods_red;
+  background: linear-gradient(100deg, $pods_red 0%, $ksp_gold 55%, $ksp_gold_deep 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .emptyHeroTitle {
+    -webkit-text-fill-color: unset;
+    background: none;
+    color: $pods_red;
+  }
+}
+
+.emptyHeroAccent {
+  color: $pods_red;
+}
+
+.emptyHeroSub {
+  color: var(--text-secondary, $ink_500);
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 460px;
+}

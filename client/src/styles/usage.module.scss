@@ -1,0 +1,318 @@
+@use './colors' as *;
+
+.page {
+  padding: 32px 40px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary, $ink_900);
+  letter-spacing: -0.02em;
+}
+
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.presetTabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--bg-subtle, $cream_200);
+  border-radius: $radius_md;
+  border: 1px solid var(--border, $cream_200);
+}
+
+.presetTab {
+  padding: 6px 14px;
+  border: none;
+  border-radius: $radius_sm;
+  background: transparent;
+  color: var(--text-secondary, $ink_500);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.presetTab:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+}
+
+.presetTabActive {
+  background: var(--bg-active, $bg_surface);
+  color: var(--text-primary, $ink_900);
+  box-shadow: var(--shadow-subtle, 0 1px 2px rgba(43, 42, 38, 0.06));
+}
+
+.rangePicker {
+  min-width: 260px;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 1100px) {
+  .summaryGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .summaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.summaryCard {
+  padding: 16px 18px;
+  border-radius: $radius_md;
+  border: 1px solid var(--border, $cream_200);
+  background: var(--bg-subtle, $bg_subtle);
+}
+
+.summaryLabel {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted, $muted);
+  margin-bottom: 6px;
+}
+
+.summaryValue {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-primary, $ink_900);
+  letter-spacing: -0.02em;
+}
+
+.deltaBadge {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.deltaUp {
+  color: $pods_red_tint_strong;
+}
+
+.deltaDown {
+  color: #27ae60;
+}
+
+.deltaFlat {
+  color: var(--text-muted, $muted);
+}
+
+.contentTabs {
+  :global(.ant-tabs-nav) {
+    margin-bottom: 16px;
+  }
+}
+
+.table {
+  :global(.ant-table) {
+    background: transparent;
+  }
+}
+
+.rowLabel {
+  font-weight: 500;
+  color: var(--text-primary, $ink_900);
+}
+
+.barCell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+}
+
+.barFill {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 8px;
+  max-width: 100%;
+  border-radius: $radius_pill;
+  background: $pods_red_tint_strong;
+  pointer-events: none;
+}
+
+.barValue {
+  position: relative;
+  z-index: 1;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  color: var(--text-primary, $ink_900);
+}
+
+.exportButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.overviewStack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chartsRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .chartsRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chartCard {
+  padding: 16px 18px 12px;
+  border-radius: $radius_md;
+  border: 1px solid var(--border, $cream_200);
+  background: var(--bg-subtle, $bg_subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chartHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.chartTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, $ink_900);
+}
+
+.chartEmpty {
+  padding: 32px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted, $muted);
+}
+
+.metricToggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  background: var(--bg-subtle, $cream_200);
+  border-radius: $radius_sm;
+  border: 1px solid var(--border, $cream_200);
+}
+
+.toggleBtn {
+  padding: 4px 10px;
+  border: none;
+  border-radius: $radius_sm;
+  background: transparent;
+  color: var(--text-secondary, $ink_500);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.toggleBtn:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+}
+
+.toggleBtnActive {
+  background: var(--bg-active, $bg_surface);
+  color: var(--text-primary, $ink_900);
+  box-shadow: var(--shadow-subtle, 0 1px 2px rgba(43, 42, 38, 0.06));
+}
+
+.pieLegend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 96px;
+  overflow-y: auto;
+}
+
+.pieLegendRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-secondary, $ink_500);
+}
+
+.pieLegendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pieLegendLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pieLegendValue {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary, $ink_900);
+  font-weight: 500;
+}
+
+.sourceList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sourceRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sourceLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary, $ink_900);
+}

@@ -1,0 +1,93 @@
+@use './colors' as *;
+
+.card {
+  margin-top: 8px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--border, $cream_200);
+  background: var(--bg-subtle, $cream_50);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, $ink_700);
+  margin: 0;
+}
+
+.meta {
+  font-size: 12px;
+  color: var(--text-secondary, $ink_500);
+  margin: 0;
+}
+
+.summary {
+  font-size: 14px;
+  color: var(--text-primary, $ink_700);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.feedbackQuote {
+  font-size: 13px;
+  color: var(--text-secondary, $ink_500);
+  margin: 0;
+  font-style: italic;
+}
+
+.diff {
+  border: 1px solid var(--border, $cream_200);
+  border-radius: 8px;
+  background: var(--bg, $white);
+  overflow: auto;
+  max-height: 320px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.diffLine {
+  display: block;
+  padding: 0 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.diffSame {
+  color: var(--text-secondary, $ink_500);
+}
+
+.diffAdd {
+  background: rgba(6, 118, 71, 0.08);
+  color: #067647;
+}
+
+.diffRemove {
+  background: rgba(180, 35, 24, 0.08);
+  color: #b42318;
+}
+
+.rejectInput {
+  margin-top: 4px;
+}
+
+.error {
+  font-size: 13px;
+  color: $pods_red;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

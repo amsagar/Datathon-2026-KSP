@@ -1,0 +1,136 @@
+@use './colors' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border, $cream_200);
+  border-radius: $radius_md;
+  background: var(--bg-surface, $bg_surface);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.wrap:focus-within {
+  border-color: $pods_red;
+  box-shadow: 0 0 0 3px $pods_red_tint;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border, $cream_200);
+  background: var(--bg-subtle, $cream_50);
+}
+
+.tabs {
+  display: inline-flex;
+  background: var(--bg-subtle, $cream_100);
+  border: 1px solid var(--border, $cream_200);
+  border-radius: 999px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.tab {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 4px 12px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary, $ink_500);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  font-family: inherit;
+}
+
+.tab:hover {
+  color: var(--text-primary, $ink_900);
+}
+
+.tabActive {
+  background: var(--bg-active, $bg_surface);
+  color: var(--text-primary, $ink_900);
+  box-shadow: var(--shadow-subtle, 0 1px 2px rgba(0, 0, 0, 0.04));
+}
+
+.hint {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted, $muted);
+  font-weight: 500;
+}
+
+.textarea {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 14px 16px !important;
+  font-family: $font_mono !important;
+  font-size: 13.5px !important;
+  line-height: 1.6 !important;
+  resize: none !important;
+  color: var(--text-primary, $ink_900) !important;
+}
+
+.wrapFill {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.bodyScroll {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.textareaFill {
+  flex: 1;
+  min-height: 0;
+  display: flex !important;
+  flex-direction: column;
+}
+
+.textareaFill :global(.ant-input-textarea),
+.textareaFill :global(textarea) {
+  flex: 1;
+  min-height: 0 !important;
+  height: 100% !important;
+  overflow-y: auto !important;
+  resize: none !important;
+  background: transparent !important;
+  color: var(--text-primary, $ink_900) !important;
+}
+
+.previewFill {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.textarea:focus,
+.textarea:focus-within {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.preview {
+  padding: 14px 18px;
+}
+
+.previewEmpty {
+  padding: 28px 18px;
+  text-align: center;
+  color: var(--text-muted, $muted);
+  font-size: 13px;
+}

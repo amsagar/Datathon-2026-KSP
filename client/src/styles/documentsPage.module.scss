@@ -1,0 +1,129 @@
+@use './colors' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.pageHeader {
+  flex-shrink: 0;
+  padding: 16px 22px 12px;
+  border-bottom: 1px solid var(--border, $cream_200);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pageHeaderMain {
+  min-width: 0;
+}
+
+.pageEyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, $muted);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary, $ink_900);
+  letter-spacing: -0.02em;
+}
+
+.pageSubtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text-secondary, $ink_500);
+}
+
+.tableWrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 16px 18px 20px;
+
+  :global(.ant-table) {
+    font-family: $font_family;
+  }
+
+  :global(.ant-table-thead > tr > th) {
+    background: var(--bg-subtle, $cream_50) !important;
+    color: var(--text-muted, $muted) !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border, $cream_200) !important;
+  }
+
+  :global(.ant-table-tbody > tr > td) {
+    border-bottom: 1px solid var(--border, $cream_200) !important;
+    vertical-align: middle;
+  }
+
+  :global(.ant-table-tbody > tr:hover > td) {
+    background: var(--bg-subtle, $cream_50) !important;
+  }
+}
+
+.cellName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary, $ink_900);
+}
+
+.fileBadge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-family: $font_mono;
+  background: var(--border, $cream_200);
+  color: var(--text-secondary, $ink_500);
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted, $muted);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modalHint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary, $ink_500);
+}
+
+.menuItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.menuItemDanger {
+  color: inherit;
+}

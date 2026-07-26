@@ -1,0 +1,291 @@
+@use './colors' as *;
+
+.prose {
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: var(--text-primary, $ink_900);
+  word-wrap: break-word;
+}
+
+.proseCompact {
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.prose :is(p, ul, ol):first-child {
+  margin-top: 0;
+}
+
+.prose :is(p, ul, ol):last-child {
+  margin-bottom: 0;
+}
+
+.prose p {
+  margin: 0 0 12px;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  color: var(--text-primary, $ink_700);
+  letter-spacing: -0.01em;
+  margin: 20px 0 10px;
+  font-weight: 600;
+}
+
+.prose h1 { font-size: 1.35em; }
+.prose h2 { font-size: 1.2em; }
+.prose h3 { font-size: 1.08em; }
+.prose h4 { font-size: 1em; }
+
+.prose ul,
+.prose ol {
+  padding-left: 22px;
+  margin: 6px 0 12px;
+}
+
+.prose li {
+  margin: 4px 0;
+}
+
+.prose li > p {
+  margin: 4px 0;
+}
+
+.prose hr {
+  border: none;
+  border-top: 1px solid var(--border, $cream_200);
+  margin: 16px 0;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 16px;
+  font-size: 0.92em;
+  display: block;
+  overflow-x: auto;
+}
+
+.prose thead {
+  background: var(--code-bg, $cream_100);
+}
+
+.prose th,
+.prose td {
+  border: 1px solid var(--border, $cream_200);
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose th {
+  font-weight: 600;
+  color: var(--text-primary, $ink_700);
+  white-space: nowrap;
+}
+
+.prose tbody tr:nth-child(even) td {
+  background: var(--bg-subtle, rgba(250, 249, 245, 0.6));
+}
+
+.prose pre {
+  background: var(--code-bg, $cream_100);
+  border: 1px solid var(--border, $cream_200);
+  border-radius: $radius_md;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-family: $font_mono;
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 12px 0;
+}
+
+.prose code {
+  font-family: $font_mono;
+  font-size: 0.9em;
+  background: var(--code-bg, $cream_100);
+  border: 1px solid var(--border, $cream_200);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.prose pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.prose a {
+  color: $pods_red;
+  border-bottom: 1px solid $pods_red_tint_strong;
+  text-decoration: none;
+}
+
+.prose a:hover {
+  border-bottom-color: $pods_red;
+}
+
+.prose blockquote {
+  border-left: 3px solid var(--border-strong, $cream_300);
+  margin: 12px 0;
+  padding: 4px 0 4px 14px;
+  color: var(--text-secondary, $ink_500);
+  font-style: italic;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: var(--text-primary, $ink_700);
+}
+
+/* --- Artifacts (sandboxed HTML rendered from ```artifact blocks) --- */
+
+.artifactWrap {
+  position: relative;
+  margin: 12px 0;
+}
+
+.artifactFrame {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--border, $cream_300);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.artifactToolbar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.artifactWrap:hover .artifactToolbar,
+.artifactToolbar:focus-within {
+  opacity: 1;
+}
+
+.artifactToolbarBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--border, $cream_300);
+  border-radius: 8px;
+  background: var(--bg-surface, #fff);
+  color: var(--text-secondary, $ink_500);
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(43, 42, 38, 0.12);
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+
+.artifactToolbarBtn:hover {
+  color: $pods_red;
+  border-color: $pods_red;
+}
+
+/* Full-screen overlay */
+.artifactOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background: rgba(20, 19, 17, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.artifactOverlayInner {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+}
+
+.artifactOverlayBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border, $cream_200);
+  background: var(--bg-surface, #fbfaf7);
+}
+
+.artifactOverlayHint {
+  font-size: 12px;
+  color: var(--text-secondary, $ink_500);
+}
+
+.artifactOverlayClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--border, $cream_300);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary, $ink_500);
+  cursor: pointer;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+
+.artifactOverlayClose:hover {
+  color: $pods_red;
+  border-color: $pods_red;
+}
+
+.artifactOverlayFrame {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background: #fff;
+}
+
+.artifactPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  border: 1px dashed var(--border-strong, $cream_300);
+  border-radius: 12px;
+  background: var(--bg-surface, $cream_100);
+  margin: 12px 0;
+}
+
+.artifactPlaceholderLabel {
+  font-size: 13.5px;
+  font-weight: 500;
+  background: linear-gradient(90deg, $ink_300 0%, $pods_red 50%, $ink_300 100%);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: artifactShimmer 2.4s ease-in-out infinite;
+}
+
+@keyframes artifactShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

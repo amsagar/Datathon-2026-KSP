@@ -1,0 +1,446 @@
+@use './colors' as *;
+
+// CustomButton
+.btn {
+  font-family: $font_family;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btnPrimary {
+  background: $coral !important;
+  border-color: $coral !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(201, 99, 66, 0.16) !important;
+}
+
+.btnPrimary:hover {
+  background: $coral_hover !important;
+  border-color: $coral_hover !important;
+}
+
+.btnPrimary:active {
+  background: $coral_active !important;
+  border-color: $coral_active !important;
+}
+
+.btnDanger {
+  background: $danger !important;
+  border-color: $danger !important;
+  color: #ffffff !important;
+}
+
+.btnGhost {
+  background: transparent !important;
+  border-color: var(--border-strong, $cream_300) !important;
+  color: var(--text-secondary, $ink_700) !important;
+}
+
+.btnGhost:hover {
+  background: var(--bg-hover, $ksp_gold) !important;
+  border-color: var(--bg-hover, $ksp_gold) !important;
+  color: var(--bg-hover-fg, $ink_900) !important;
+}
+
+.btnText {
+  background: transparent !important;
+  border: none !important;
+  color: var(--text-secondary, $ink_500) !important;
+  padding: 4px 8px !important;
+  height: auto !important;
+}
+
+.btnText:hover {
+  background: var(--bg-hover, $ksp_gold) !important;
+  color: var(--bg-hover-fg, $ink_900) !important;
+}
+
+.btnFull {
+  width: 100%;
+}
+
+// CustomTooltip overlay
+.tooltipOverlay :global(.ant-tooltip-inner) {
+  background: $ink_900 !important;
+  color: #f6f4ed !important;
+  font-family: $font_family !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  border-radius: $radius_sm !important;
+  padding: 5px 10px !important;
+  min-height: auto !important;
+  box-shadow: 0 4px 14px rgba(43, 42, 38, 0.18) !important;
+}
+
+.tooltipOverlay :global(.ant-tooltip-arrow::before) {
+  background: $ink_900 !important;
+}
+
+// CustomModal
+.modalOverlay :global(.ant-modal-content) {
+  border-radius: $radius_lg;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border, $divider);
+  background: var(--bg-surface, $bg_surface) !important;
+}
+
+.modalOverlay :global(.ant-modal-mask) {
+  background: var(--modal-mask, rgba(43, 42, 38, 0.45)) !important;
+}
+
+.modalOverlay :global(.ant-modal-header) {
+  display: none;
+}
+
+.modalHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border, $divider);
+  background: var(--bg-surface, $bg_surface);
+}
+
+.modalTitle {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-primary, $dark_blue);
+  flex: 1;
+}
+
+.modalClose {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--text-muted, $muted);
+  padding: 4px 8px;
+  border-radius: $radius_sm;
+}
+
+.modalClose:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $black);
+}
+
+.modalBody {
+  padding: 18px;
+  max-height: 75vh;
+  overflow-y: auto;
+  background: var(--bg-surface, $bg_surface);
+  color: var(--text-primary, $ink_900);
+}
+
+.modalFooter {
+  padding: 12px 18px;
+  border-top: 1px solid var(--border, $divider);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  background: var(--bg-surface, $bg_surface);
+}
+
+.confirmBody {
+  font-size: 14px;
+  color: var(--text-secondary, $ink_500);
+  line-height: 1.6;
+  padding: 4px 0;
+}
+
+// CustomDrawer
+.drawer :global(.ant-drawer-header) {
+  display: none;
+}
+
+.drawerInner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-surface, $bg_surface);
+}
+
+.drawerHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border, $divider);
+  background: var(--bg-surface, $bg_surface);
+  flex-shrink: 0;
+}
+
+.drawerTitle {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-primary, $dark_blue);
+}
+
+.drawerBody {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--bg-surface, $bg_surface);
+  color: var(--text-primary, $ink_900);
+}
+
+.drawerResizer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  cursor: ew-resize;
+  z-index: 100;
+  background: transparent;
+  transition: background-color 0.2s;
+}
+
+.drawerResizerActive {
+  background: $blue;
+}
+
+// CustomInput / CustomTextarea
+.input :global(.ant-input),
+.input :global(.ant-input-affix-wrapper),
+.input :global(.ant-input-number-input),
+.textarea :global(.ant-input) {
+  border-radius: $radius_md;
+  font-family: $font_family;
+}
+
+.input :global(.ant-input:focus),
+.input :global(.ant-input-focused),
+.input :global(.ant-input-affix-wrapper:focus),
+.input :global(.ant-input-affix-wrapper-focused),
+.textarea :global(.ant-input:focus) {
+  border-color: $coral !important;
+  box-shadow: 0 0 0 3px rgba(201, 99, 66, 0.12) !important;
+}
+
+.textarea :global(.ant-input) {
+  font-size: 15px;
+  line-height: 1.55;
+  background: transparent;
+  color: var(--text-primary, $ink_900);
+  resize: none;
+
+  &::placeholder {
+    color: var(--text-muted, $muted);
+  }
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+// CustomSelect / CustomDropdown
+.select :global(.ant-select-selector) {
+  border-radius: $radius_md !important;
+  font-family: $font_family;
+}
+
+.selectPopup {
+  font-family: $font_family !important;
+  border-radius: $radius_md !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+.selectPopup :global(.ant-select-item) {
+  font-family: $font_family;
+  padding: 8px 12px;
+}
+
+.selectPopup :global(.ant-select-item-option-selected) {
+  background-color: var(--bg-active, $hover_blue) !important;
+  color: var(--text-primary, $dark_blue) !important;
+  font-weight: 500;
+}
+
+.dropdownPopup {
+  font-family: $font_family !important;
+  border-radius: $radius_md !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+.dropdownPopup :global(.ant-dropdown-menu) {
+  border-radius: $radius_md !important;
+  font-family: $font_family;
+  padding: 6px;
+  min-width: 168px;
+}
+
+.dropdownPopup :global(.ant-dropdown-menu-item) {
+  border-radius: $radius_sm;
+  font-size: 13px;
+  padding: 8px 12px !important;
+  line-height: 1.4;
+}
+
+.dropdownPopup :global(.ant-dropdown-menu-item-danger:not(.ant-dropdown-menu-item-disabled)) {
+  color: $danger !important;
+  background-color: transparent !important;
+}
+
+.dropdownPopup
+  :global(
+    .ant-dropdown-menu-item-danger:not(.ant-dropdown-menu-item-disabled):hover
+  ),
+.dropdownPopup
+  :global(
+    .ant-dropdown-menu-item-danger:not(.ant-dropdown-menu-item-disabled).ant-dropdown-menu-item-active
+  ) {
+  color: #fff !important;
+  background-color: $danger !important;
+}
+
+.dropdownPopup
+  :global(
+    .ant-dropdown-menu-item-danger:not(.ant-dropdown-menu-item-disabled):hover *
+  ),
+.dropdownPopup
+  :global(
+    .ant-dropdown-menu-item-danger:not(.ant-dropdown-menu-item-disabled).ant-dropdown-menu-item-active
+      *
+  ) {
+  color: inherit !important;
+}
+
+// CustomFilter (table column filter)
+.filter {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+  max-width: 280px;
+  background: var(--bg-surface, $bg_surface);
+  border-radius: $radius_md;
+  color: var(--text-primary, $ink_900);
+}
+
+.filterList {
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+}
+
+.filterOption {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  cursor: pointer;
+  border-radius: $radius_sm;
+  font-size: 13px;
+}
+
+.filterOption:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+}
+
+.filterActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border, $divider);
+}
+
+// CustomTag
+.tag {
+  font-family: $font_family;
+  border-radius: $radius_pill;
+  font-weight: 500;
+  font-size: 12px;
+  padding: 2px 10px;
+}
+
+// CustomFileUpload
+.upload {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.uploadDropzone {
+  border: 1px dashed var(--border, $divider);
+  border-radius: $radius_md;
+  padding: 18px;
+  text-align: center;
+  color: var(--text-muted, $muted);
+  cursor: pointer;
+  background: var(--bg-subtle, $bg_subtle);
+}
+
+.uploadDropzone:hover {
+  border-color: $blue;
+  color: $blue;
+}
+
+.uploadFile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border, $divider);
+  border-radius: $radius_md;
+  background: var(--bg-subtle, $bg_subtle);
+  font-size: 13px;
+  color: var(--text-primary, $ink_900);
+}
+
+.uploadFileName {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// CustomSwitch
+.switch:global(.ant-switch) {
+  background: var(--border-strong, $cream_300) !important;
+  min-width: 36px;
+}
+
+.switch:global(.ant-switch-checked) {
+  background: $pods_red !important;
+}
+
+.switch:global(.ant-switch:hover:not(.ant-switch-disabled)) {
+  background: var(--text-muted, $cream_400) !important;
+}
+
+.switch:global(.ant-switch-checked:hover:not(.ant-switch-disabled)) {
+  background: $pods_red_hover !important;
+}
+
+.switch:global(.ant-switch:focus-visible) {
+  outline: 2px solid $pods_red_tint_strong;
+  outline-offset: 2px;
+}
+
+// CustomEmptyState
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  color: var(--text-muted, $muted);
+  gap: 8px;
+  text-align: center;
+}
+
+.emptyTitle {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary, $ink_900);
+}

@@ -1,0 +1,565 @@
+@use './colors' as *;
+
+/* Karnataka flag palette */
+$ka_yellow: #ffcc00;
+$ka_red: #e31c25;
+$ka_red_deep: #b0141c;
+$ka_ink: #140608;
+
+.page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  overflow: hidden;
+  background: $ka_ink;
+  color: #fff8f0;
+  font-family: $font_family;
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.flagBands {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    165deg,
+    $ka_yellow 0%,
+    #f0b400 28%,
+    color-mix(in srgb, $ka_yellow 40%, $ka_red) 48%,
+    $ka_red 62%,
+    $ka_red_deep 100%
+  );
+}
+
+.flagSheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.16) 50%,
+    transparent 65%
+  );
+  animation: sheenSlide 10s ease-in-out infinite;
+}
+
+@keyframes sheenSlide {
+  0%,
+  100% {
+    transform: translateX(-10%);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateX(10%);
+    opacity: 0.65;
+  }
+}
+
+.veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 60% at 72% 50%, rgba(10, 2, 4, 0.2) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 70% at 22% 50%, rgba(10, 2, 4, 0.35) 0%, transparent 60%),
+    linear-gradient(90deg, rgba(10, 2, 4, 0.72) 0%, rgba(10, 2, 4, 0.35) 42%, rgba(10, 2, 4, 0.55) 100%);
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.72;
+}
+
+.driftA {
+  animation: driftA 16s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.driftB {
+  animation: driftB 13s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.driftC {
+  animation: driftC 18s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes driftA {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(12px, -10px);
+  }
+}
+@keyframes driftB {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-10px, 12px);
+  }
+}
+@keyframes driftC {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(8px, 8px);
+  }
+}
+
+.pulseNode {
+  animation: nodePulse 2.8s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.pulseNodeDelay {
+  animation-delay: 1s;
+}
+@keyframes nodePulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.drawLink {
+  stroke-dasharray: 140;
+  stroke-dashoffset: 140;
+  animation: drawLink 4s ease-in-out infinite;
+}
+.drawLinkDelay {
+  animation-delay: 1.2s;
+}
+@keyframes drawLink {
+  0% {
+    stroke-dashoffset: 140;
+    opacity: 0.12;
+  }
+  40%,
+  60% {
+    stroke-dashoffset: 0;
+    opacity: 0.85;
+  }
+  100% {
+    stroke-dashoffset: -140;
+    opacity: 0.12;
+  }
+}
+
+.orbitRing {
+  animation: orbitSpin 20s linear infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+@keyframes orbitSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.chatPulse {
+  animation: chatPulse 3.2s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+@keyframes chatPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.04);
+  }
+}
+
+.wave {
+  animation: waveMove 6s ease-in-out infinite;
+}
+@keyframes waveMove {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.shell {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(300px, 1.15fr) minmax(300px, 400px);
+  gap: clamp(1.5rem, 4vw, 3.25rem);
+  align-items: center;
+  width: min(1140px, 100%);
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  margin: auto;
+}
+
+.mission {
+  color: #fff8f0;
+  max-width: 38rem;
+}
+
+.missionEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: $ka_yellow;
+  margin-bottom: 0.75rem;
+}
+
+.missionEyebrow::before {
+  content: '';
+  width: 18px;
+  height: 2px;
+  background: $ka_yellow;
+}
+
+.missionBrand {
+  font-family: inherit;
+  font-size: clamp(2.15rem, 4.2vw, 3.35rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  margin: 0 0 0.7rem;
+  text-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+}
+
+.missionBrandA {
+  color: #fff8f0;
+}
+
+.missionBrandB {
+  color: $ka_yellow;
+}
+
+.missionTag {
+  margin: 0 0 0.85rem;
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  font-weight: 700;
+  line-height: 1.35;
+  color: rgba(255, 248, 240, 0.92);
+}
+
+.missionTag span {
+  color: $ka_yellow;
+}
+
+.missionLead {
+  margin: 0 0 1.25rem;
+  font-size: 0.92rem;
+  font-weight: 400;
+  line-height: 1.55;
+  color: rgba(255, 248, 240, 0.78);
+  max-width: 40em;
+}
+
+.capRail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.45rem;
+  margin: 0 0 0.15rem;
+}
+
+.capChip {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  color: rgba(255, 248, 240, 0.88);
+  padding: 0.35rem 0.55rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.capChip:nth-child(3n) {
+  border-color: rgba(255, 204, 0, 0.35);
+  color: #ffe9a8;
+}
+
+.capChip:nth-child(5n) {
+  border-color: rgba(227, 28, 37, 0.4);
+}
+
+.missionFoot {
+  margin-top: 1rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 248, 240, 0.48);
+}
+
+.cardWrap {
+  width: 100%;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(14, 6, 8, 0.88);
+  box-shadow:
+    0 28px 80px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 204, 0, 0.1) inset;
+  backdrop-filter: blur(18px);
+}
+
+.cardStripe {
+  height: 5px;
+  width: 100%;
+  background: linear-gradient(90deg, $ka_yellow 0%, $ka_yellow 50%, $ka_red 50%, $ka_red 100%);
+  transform-origin: left;
+}
+
+.cardBody {
+  padding: 1.5rem 1.65rem 1.65rem;
+}
+
+.brandMark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.cardHeading {
+  margin-top: 0.7rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: #fff8f0;
+}
+
+.subtitle {
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: rgba(255, 248, 240, 0.68);
+}
+
+.verifyRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 0.75rem;
+}
+
+.verifyPill {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 204, 0, 0.4);
+  color: $ka_yellow;
+  background: rgba(255, 204, 0, 0.08);
+}
+
+.fieldLabel {
+  color: rgba(255, 248, 240, 0.88);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.fieldIcon {
+  color: rgba(255, 204, 0, 0.75);
+}
+
+.inputDark {
+  height: 2.75rem;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  background: rgba(0, 0, 0, 0.35) !important;
+  color: #fff8f0 !important;
+  box-shadow: none !important;
+}
+
+.inputDark::placeholder {
+  color: rgba(255, 248, 240, 0.4);
+}
+
+.inputDark:focus-visible {
+  border-color: $ka_yellow !important;
+  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.22) !important;
+}
+
+.submitBtn {
+  height: 2.85rem;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff !important;
+  background: linear-gradient(90deg, $ka_red 0%, $ka_red_deep 55%, #8f1018 100%) !important;
+  box-shadow: 0 12px 28px rgba(227, 28, 37, 0.4);
+  border: 1px solid rgba(255, 204, 0, 0.25);
+}
+
+.submitBtn:hover {
+  filter: brightness(1.08);
+}
+
+.langBtn {
+  position: absolute;
+  right: 1.25rem;
+  top: 1.25rem;
+  z-index: 10;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 204, 0, 0.45);
+  background: rgba(20, 6, 8, 0.55);
+  color: $ka_yellow;
+  padding: 0.4rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+.langBtn:hover {
+  background: rgba(255, 204, 0, 0.15);
+}
+
+.footerNote {
+  margin-top: 0.9rem;
+  text-align: center;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 248, 240, 0.42);
+}
+
+.corner {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border-style: solid;
+  border-width: 0;
+}
+
+.cornerTl {
+  top: 18px;
+  left: 18px;
+  border-top: 3px solid $ka_yellow;
+  border-left: 3px solid $ka_yellow;
+}
+
+.cornerBr {
+  right: 18px;
+  bottom: 18px;
+  border-right: 3px solid rgba(255, 255, 255, 0.55);
+  border-bottom: 3px solid $ka_red;
+}
+
+.noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 25%,
+    rgba(8, 1, 2, 0.35) 75%,
+    rgba(6, 1, 2, 0.7) 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flagSheen,
+  .driftA,
+  .driftB,
+  .driftC,
+  .pulseNode,
+  .drawLink,
+  .orbitRing,
+  .chatPulse,
+  .wave {
+    animation: none !important;
+  }
+
+  .drawLink {
+    stroke-dashoffset: 0;
+    opacity: 0.5;
+  }
+}
+
+@media (max-width: 900px) {
+  .shell {
+    grid-template-columns: 1fr;
+    max-width: 460px;
+  }
+
+  .mission {
+    text-align: center;
+    max-width: none;
+  }
+
+  .missionEyebrow {
+    justify-content: center;
+  }
+
+  .missionLead {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .capRail {
+    justify-content: center;
+  }
+
+  .missionFoot {
+    text-align: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .scene {
+    opacity: 0.38;
+  }
+
+  .cardBody {
+    padding: 1.25rem 1.2rem 1.35rem;
+  }
+
+  .capChip {
+    font-size: 0.64rem;
+  }
+}

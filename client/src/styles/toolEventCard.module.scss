@@ -1,0 +1,167 @@
+@use './colors' as *;
+
+.group {
+  border: 1px solid var(--tool-card-border, $tool_card_border);
+  border-radius: $radius_md;
+  margin-bottom: 8px;
+  background: var(--tool-card-bg, $tool_card_bg);
+  overflow: hidden;
+}
+
+.groupHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+
+  &:hover {
+    background: var(--bg-hover, $ksp_gold);
+    color: var(--bg-hover-fg, $ink_900);
+  }
+}
+
+.groupStatus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.groupTitle {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.groupLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, $ink_900);
+}
+
+.groupMeta {
+  font-size: 12px;
+  color: var(--text-muted, $muted);
+  font-weight: 500;
+}
+
+.groupBody {
+  border-top: 1px solid var(--border, $divider);
+  background: var(--bg-surface, $bg_surface);
+  padding: 8px 10px 10px;
+}
+
+.groupSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card {
+  border: 1px solid var(--tool-card-border, $tool_card_border);
+  border-radius: $radius_md;
+  margin-bottom: 8px;
+  background: var(--tool-card-bg, $tool_card_bg);
+  overflow: hidden;
+}
+
+.cardNested {
+  margin-bottom: 0;
+  background: var(--bg-surface, $bg_surface);
+}
+
+.error {
+  border-color: $tool_card_error_border;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
+  font: inherit;
+
+  &:hover {
+    background: var(--bg-hover, $ksp_gold);
+    color: var(--bg-hover-fg, $ink_900);
+  }
+}
+
+.status {
+  font-size: 12px;
+  width: 18px;
+  text-align: center;
+}
+
+.name {
+  flex: 1;
+  font-family: $font_mono;
+  color: var(--text-primary, $dark_blue);
+  font-weight: 500;
+}
+
+.caret {
+  color: var(--text-muted, $muted);
+}
+
+.body {
+  padding: 4px 10px 10px;
+  border-top: 1px solid var(--border, $divider);
+  background: var(--bg-surface, $bg_surface);
+}
+
+.label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted, $muted);
+  margin: 8px 0 4px;
+}
+
+.pre {
+  margin: 0;
+  background: var(--code-bg, $code_bg);
+  border: 1px solid var(--border, $divider);
+  border-radius: $radius_sm;
+  padding: 8px;
+  overflow-x: auto;
+  font-family: $font_mono;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 280px;
+  overflow-y: auto;
+  color: var(--text-primary, $ink_900);
+}
+
+.md {
+  background: var(--code-bg, $code_bg);
+  border: 1px solid var(--border, $divider);
+  border-radius: $radius_sm;
+  padding: 10px 12px;
+  max-height: 420px;
+  overflow: auto;
+}
+
+.running,
+.empty {
+  font-size: 12px;
+  color: var(--text-muted, $muted);
+  padding: 4px 0 8px;
+}

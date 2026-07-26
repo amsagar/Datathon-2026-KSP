@@ -1,0 +1,60 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+crime:
+  datasource:
+    url: ${CRIME_DB_URL}
+    username: ${CRIME_DB_USERNAME}
+    password: ${CRIME_DB_PASSWORD}
+agent:
+  encryption:
+    key: ${AGENT_ENCRYPTION_KEY}
+  llm:
+    base-url: ${LLM_BASE_URL}
+    completions-path: ${LLM_COMPLETIONS_PATH:}
+    catalyst-org: ${LLM_CATALYST_ORG:}
+    model: ${LLM_MODEL:crm-di-glm47b_30b_it}
+    temperature: ${LLM_TEMPERATURE:0.2}
+    max-tokens: ${LLM_MAX_TOKENS:4096}
+    api-key: ${LLM_API_KEY:}
+    client-id: ${LLM_CLIENT_ID:}
+    client-secret: ${LLM_CLIENT_SECRET:}
+    refresh-token: ${LLM_REFRESH_TOKEN:}
+    accounts-base-url: ${LLM_ACCOUNTS_BASE_URL:https://accounts.zoho.in}
+  rag:
+    base-url: ${RAG_BASE_URL:}
+    completions-path: ${RAG_COMPLETIONS_PATH:}
+    catalyst-org: ${RAG_CATALYST_ORG:}
+    api-key: ${RAG_API_KEY:}
+  stratus:
+    bucket-url: ${STRATUS_BUCKET_URL:}
+    catalyst-org: ${STRATUS_CATALYST_ORG:}
+    api-key: ${STRATUS_API_KEY:}
+  cron:
+    secret: ${CRON_SECRET}
+  skill-update:
+    enabled: ${SKILL_UPDATE_ENABLED:true}
+    timeout-minutes: ${SKILL_UPDATE_TIMEOUT_MINUTES:10}
+  tool-search:
+    threshold: ${TOOL_SEARCH_THRESHOLD:15}
+    max-results: ${TOOL_SEARCH_MAX_RESULTS:3}
+  memory:
+    summary-threshold: ${MEMORY_SUMMARY_THRESHOLD:40}
+    recent-window: ${MEMORY_RECENT_WINDOW:20}
+    semantic:
+      top-k: ${MEMORY_SEMANTIC_TOP_K:6}
+      min-confidence: ${MEMORY_SEMANTIC_MIN_CONFIDENCE:0.3}
+      extract-min-confidence: ${MEMORY_SEMANTIC_EXTRACT_MIN_CONFIDENCE:0.3}
+  chat:
+    temporary:
+      retention-days: ${CHAT_TEMPORARY_RETENTION_DAYS:30}
+      purge-cron: ${CHAT_TEMPORARY_PURGE_CRON:0 30 3 * * *}
+  auth:
+    jwt-secret: ${JWT_SECRET}
+  # Comma-separated list of UI origins allowed to call the API directly (SSE/chat
+  # bypasses the nginx proxy and hits the backend cross-origin). Set to the deployed
+  # UI URL, e.g. CORS_ALLOWED_ORIGINS=https://ksp-agent-ui-xxxxx.catalystserverless.in
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}

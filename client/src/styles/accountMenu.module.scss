@@ -1,0 +1,123 @@
+@use './colors' as *;
+
+.menuPanel {
+  min-width: 220px;
+  padding: 6px;
+  border-radius: $radius_lg;
+  background: var(--bg-surface, $bg_surface);
+  border: none;
+  box-shadow:
+    0 10px 32px rgba(43, 42, 38, 0.14),
+    0 0 0 1px rgba(43, 42, 38, 0.04);
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: $radius_md;
+  background: transparent;
+  color: var(--text-primary, $ink_900);
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.12s ease;
+}
+
+.menuItem:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+}
+
+.menuItemDanger {
+  color: var(--primary, $pods_red);
+}
+
+.menuItemDanger:hover {
+  background: color-mix(in srgb, var(--primary, $pods_red) 12%, transparent);
+}
+
+.menuDivider {
+  height: 1px;
+  margin: 4px 8px;
+  background: var(--divider, $divider);
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 4px;
+  border: none;
+  border-radius: $radius_md;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.12s ease;
+}
+
+.trigger:hover {
+  background: var(--bg-hover, $ksp_gold);
+}
+
+.triggerInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.triggerName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary, $ink_900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.roleBadge {
+  flex-shrink: 0;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary, $ink_500);
+  background: var(--bg-subtle, $cream_200);
+  border: 1px solid var(--border, $cream_200);
+}
+
+.roleBadgeAdmin {
+  color: var(--primary, $pods_red);
+  background: color-mix(in srgb, var(--primary, $pods_red) 16%, transparent);
+  border-color: color-mix(in srgb, var(--primary, $pods_red) 35%, transparent);
+}
+
+.triggerEmail {
+  font-size: 11px;
+  color: var(--text-muted, $muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.triggerChevron {
+  color: var(--text-muted, $muted);
+  flex-shrink: 0;
+}

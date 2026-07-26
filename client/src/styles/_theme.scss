@@ -1,0 +1,69 @@
+// CSS custom properties for light/dark theming. Applied on html.
+
+@mixin theme-vars-light {
+  // Blush neutrals — a faint crimson tint so the app reads as the same brand
+  // family as the crimson login, while surfaces stay white for readability.
+  --bg-app: #fdf6f5;
+  --bg-surface: #ffffff;
+  --bg-card: #ffffff;
+  --bg-sidebar: #faece9;
+  --bg-subtle: #fdf6f5;
+  // Interactive hover = KSP gold (matches shadcn --accent / ghost buttons)
+  --bg-hover: #ffcc00;
+  --bg-hover-fg: #1a0a0c;
+  --bg-active: #ffffff;
+  --text-primary: #2b2422;
+  --text-secondary: #5c524f;
+  --text-muted: #8a7c79;
+  --border: #f0ddd9;
+  --border-strong: #e3c4bf;
+  --divider: #f0ddd9;
+  --bubble-user: #f6e4e1;
+  --bubble-user-border: rgba(176, 23, 34, 0.06);
+  --header-picker-bg: #ffffff;
+  --tool-card-bg: #faece9;
+  --tool-card-border: #f0ddd9;
+  --code-bg: #f7ece9;
+  --scrollbar-thumb: #ecd3cf;
+  --scrollbar-thumb-hover: #dcb5b0;
+  --shadow-subtle: 0 1px 3px rgba(109, 20, 32, 0.05);
+  --selection-bg: rgba(176, 23, 34, 0.18);
+  --modal-mask: rgba(58, 20, 24, 0.45);
+}
+
+@mixin theme-vars-dark {
+  --bg-app: #141312;
+  --bg-surface: #1f1e1c;
+  --bg-card: #1f1e1c;
+  --bg-sidebar: #1a1918;
+  --bg-subtle: #181716;
+  // Interactive hover = KSP gold (matches shadcn --accent / ghost buttons)
+  --bg-hover: #ffcc00;
+  --bg-hover-fg: #1a0a0c;
+  --bg-active: #32312e;
+  --text-primary: #f4f1ea;
+  --text-secondary: #d2cdc2;
+  --text-muted: #c4bfb4;
+  --border: #33312e;
+  --border-strong: #434039;
+  --divider: #2e2d2a;
+  --bubble-user: #2e2d2a;
+  --bubble-user-border: #3d3b36;
+  --header-picker-bg: #252422;
+  --tool-card-bg: #232220;
+  --tool-card-border: #33312e;
+  --code-bg: #232220;
+  --scrollbar-thumb: #3a3834;
+  --scrollbar-thumb-hover: #4a4840;
+  --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --selection-bg: rgba(225, 37, 27, 0.28);
+  --modal-mask: rgba(0, 0, 0, 0.65);
+}
+
+html {
+  @include theme-vars-light;
+}
+
+html[data-theme='dark'] {
+  @include theme-vars-dark;
+}

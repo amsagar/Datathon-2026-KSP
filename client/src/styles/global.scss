@@ -1,0 +1,69 @@
+@use './colors' as *;
+@use './theme';
+
+html {
+  font-size: 15px;
+}
+
+body {
+  margin: 0;
+  font-family: $font_family;
+  background-color: var(--bg-app, $bg_app);
+  color: var(--text-primary, $ink_900);
+  padding: 0;
+  overflow: auto;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+}
+
+a {
+  color: $coral;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code,
+pre {
+  font-family: $font_mono;
+}
+
+::selection {
+  background: var(--selection-bg, rgba(225, 37, 27, 0.18));
+  color: var(--text-primary, $ink_900);
+}
+
+/* Slim scrollbars in the warm palette */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb, $cream_200);
+  border-radius: $radius_pill;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover, $cream_300);
+  background-clip: content-box;
+}

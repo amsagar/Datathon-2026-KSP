@@ -1,0 +1,599 @@
+@use './colors' as *;
+
+.sidebar {
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  background-color: var(--bg-sidebar, $bg_sidebar);
+  border-right: 1px solid var(--border, transparent);
+  overflow: hidden;
+  transition: width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  color: var(--text-primary, $ink_900);
+}
+
+.sidebarResizing {
+  transition: none;
+}
+
+.sidebarCollapsed {
+  min-width: 56px;
+  border-right: 1px solid var(--border, $cream_200);
+}
+
+.sidebarRail {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 0 12px;
+  gap: 2px;
+}
+
+.railBrandBtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 6px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: $radius_md;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.12s ease;
+}
+
+.railBrandBtn:hover {
+  background: var(--bg-hover, $ksp_gold);
+}
+
+.railBrandMark {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+  transition: opacity 0.12s ease;
+}
+
+.railBrandHoverIcon {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary, $ink_700);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.railBrandBtn:hover .railBrandMark {
+  opacity: 0;
+}
+
+.railBrandBtn:hover .railBrandHoverIcon {
+  opacity: 1;
+}
+
+.railBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  border-radius: $radius_md;
+  color: var(--text-secondary, $ink_500);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.railBtn:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+}
+
+.railBtnActive {
+  background: var(--bg-active, $bg_surface);
+  color: $pods_red;
+  box-shadow: inset 0 0 0 1px var(--border, $cream_200);
+}
+
+.railBtnActive:hover {
+  background: var(--bg-active, $bg_surface);
+  color: $pods_red;
+}
+
+.railDivider {
+  width: 24px;
+  height: 1px;
+  background: var(--border, $cream_200);
+  margin: 6px 0;
+  flex-shrink: 0;
+}
+
+.railSpacer {
+  flex: 1;
+  min-height: 12px;
+}
+
+.railFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border, $cream_200);
+  width: calc(100% - 20px);
+  margin-top: 4px;
+}
+
+.railAvatar {
+  flex-shrink: 0;
+}
+
+.sidebarInner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px;
+  gap: 14px;
+  animation: sidebarContentIn 0.26s ease both;
+}
+
+@keyframes sidebarContentIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebarInner { animation: none; }
+}
+
+.resizer {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 30;
+  background: transparent;
+  transition: background-color 0.15s ease;
+}
+
+.resizer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 2px;
+  width: 2px;
+  height: 100%;
+  background: transparent;
+  transition: background-color 0.15s ease;
+}
+
+.resizer:hover::after,
+.resizerActive::after {
+  background: $coral;
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px 0;
+}
+
+.collapseBtn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  border-radius: $radius_sm;
+  color: var(--text-secondary, $ink_500);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.collapseBtn:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+}
+
+.sidebarBrand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: var(--text-primary, $ink_700);
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.sidebarBrandMark {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.newChatBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: linear-gradient(135deg, $pods_red 0%, $pods_red_hover 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  padding: 10px 14px !important;
+  border-radius: $radius_md !important;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  text-align: left;
+  justify-content: flex-start !important;
+  height: auto !important;
+  margin: 0 0 8px;
+  box-shadow: 0 2px 8px rgba(176, 23, 34, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+
+  &:hover {
+    filter: brightness(1.05);
+    box-shadow: 0 4px 14px rgba(176, 23, 34, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 5px rgba(176, 23, 34, 0.28);
+  }
+}
+
+.navSectionLabel {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary, $ink_500);
+  padding: 12px 8px 6px;
+}
+
+.analyticsNav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 4px 0 2px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: $radius_md;
+  background: transparent;
+  color: var(--text-secondary, $ink_700);
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.navItem:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+}
+
+.navItemActive {
+  background: var(--bg-active, $bg_surface);
+  color: $pods_red;
+  font-weight: 650;
+  box-shadow: inset 3px 0 0 $pods_red;
+}
+
+.navItemActive:hover {
+  background: var(--bg-active, $bg_surface);
+  color: $pods_red;
+}
+
+.toggle {
+  display: inline-flex;
+  gap: 0;
+  margin: 0 4px;
+  background: var(--bg-subtle, $cream_200);
+  padding: 2px;
+  border-radius: $radius_pill;
+}
+
+.toggleButton {
+  flex: 1;
+  background: transparent;
+  color: var(--text-secondary, $ink_500);
+  border: none;
+  border-radius: $radius_pill;
+  padding: 5px 14px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.toggleButton:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+}
+
+.toggleActive {
+  background: var(--bg-active, $bg_surface);
+  color: var(--text-primary, $ink_900);
+  box-shadow: var(--shadow-subtle, 0 1px 2px rgba(43, 42, 38, 0.06));
+}
+
+.toggleActive:hover {
+  background: var(--bg-active, $bg_surface);
+  color: var(--text-primary, $ink_900);
+}
+
+.sessionList {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 4px 8px;
+  position: relative;
+}
+
+.sessionListLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 12px;
+}
+
+.sessionListOverlay {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  background: linear-gradient(
+    180deg,
+    var(--bg-sidebar, $cream_50) 70%,
+    transparent 100%
+  );
+}
+
+.groupLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, $muted);
+  font-weight: 600;
+  padding: 12px 8px 4px;
+}
+
+.groupSessions {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.emptyList {
+  color: var(--text-muted, $muted);
+  font-size: 13px;
+  text-align: center;
+  margin-top: 32px;
+  padding: 0 12px;
+  line-height: 1.5;
+}
+
+.sessionRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: $radius_md;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.sessionRow::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 50%;
+  height: 0;
+  width: 3px;
+  border-radius: 999px;
+  background: $pods_red;
+  transform: translateY(-50%);
+  transition: height 0.18s ease;
+}
+
+.sessionRow:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+}
+
+.sessionSelected {
+  background: var(--bg-active, $bg_surface);
+  border-color: var(--border, $cream_200);
+}
+
+.sessionSelected::before {
+  height: 60%;
+}
+
+.sessionSelected:hover {
+  background: var(--bg-active, $bg_surface);
+}
+
+.sessionMain {
+  flex: 1;
+  min-width: 0;
+}
+
+.sessionTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.sessionTitle {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13.5px;
+  color: var(--text-primary, $ink_900);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.sessionTempBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted, $muted);
+  border: 1px dashed var(--border, $cream_200);
+  border-radius: 999px;
+  padding: 1px 6px;
+  line-height: 1.4;
+}
+
+.sessionTemporary .sessionTempBadge {
+  color: var(--primary, #{$pods_red});
+  border-color: currentColor;
+}
+
+.sessionMeta {
+  display: none;
+}
+
+.sessionActions {
+  display: none;
+  gap: 0;
+}
+
+.sessionRow:hover .sessionActions,
+.sessionSelected .sessionActions {
+  display: flex;
+}
+
+.renameInput {
+  flex: 1;
+  background: var(--bg-surface, $bg_surface);
+  border: 1px solid $coral;
+  border-radius: $radius_sm;
+  color: var(--text-primary, $ink_900);
+  padding: 4px 6px;
+  font: inherit;
+  font-size: 13.5px;
+}
+
+.settingsBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: transparent;
+  color: var(--text-secondary, $ink_500);
+  border: none;
+  padding: 9px 14px;
+  border-radius: $radius_md;
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  margin: 4px;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.settingsBtn:hover {
+  background: var(--bg-hover, $ksp_gold);
+  color: var(--bg-hover-fg, $ink_900);
+}
+
+.userRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 4px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--border, $cream_200);
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.userName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary, $ink_900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userEmail {
+  font-size: 11.5px;
+  color: var(--text-muted, $muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logoutBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  border-radius: $radius_sm;
+  color: var(--text-secondary, $ink_500);
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.logoutBtn:hover {
+  background: color-mix(in srgb, var(--primary, $pods_red) 16%, transparent);
+  color: var(--primary, $pods_red);
+}

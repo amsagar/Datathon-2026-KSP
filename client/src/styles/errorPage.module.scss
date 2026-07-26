@@ -1,0 +1,82 @@
+@use './colors' as *;
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  background:
+    radial-gradient(circle at top left, rgba(225, 37, 27, 0.06), transparent 42%),
+    var(--bg-app, $bg_app);
+}
+
+.card {
+  width: min(100%, 480px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  padding: 40px 32px;
+  background: var(--bg-surface, $bg_surface);
+  border: 1px solid var(--border, $cream_200);
+  border-radius: $radius_lg;
+  box-shadow: var(--shadow-subtle, 0 12px 40px rgba(43, 42, 38, 0.06));
+}
+
+.brandMark {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.status {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted, $muted);
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary, $ink_900);
+}
+
+.message {
+  margin: 0;
+  max-width: 360px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary, $ink_500);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.retryBtn {
+  min-width: 120px;
+}
+
+.backLink {
+  color: var(--text-secondary, $ink_500);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.12s ease;
+}
+
+.backLink:hover {
+  color: $coral;
+}
