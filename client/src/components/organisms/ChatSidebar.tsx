@@ -141,12 +141,12 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
     >
       {collapsed ? (
         <nav className={styles.sidebarRail} aria-label="Sidebar shortcuts">
-          <CustomTooltip title="Open sidebar" placement="right">
+          <CustomTooltip title={t('openSidebar')} placement="right">
             <button
               type="button"
               className={styles.railBrandBtn}
               onClick={onCollapse}
-              aria-label="Open sidebar"
+              aria-label={t('openSidebar')}
             >
               <KspLogo className={styles.railBrandMark} />
               <span className={styles.railBrandHoverIcon} aria-hidden>
@@ -207,12 +207,12 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                 <KspLogo className={styles.sidebarBrandMark} />
                 <span>{t('brand')}</span>
               </div>
-              <CustomTooltip title="Collapse sidebar" placement="right">
+              <CustomTooltip title={t('collapseSidebar')} placement="right">
                 <button
                   type="button"
                   className={styles.collapseBtn}
                   onClick={onCollapse}
-                  aria-label="Collapse sidebar"
+                  aria-label={t('collapseSidebar')}
                 >
                   <CustomIcon name="sidebarFold" size={15} />
                 </button>

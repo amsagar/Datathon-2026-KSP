@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useT } from '@constants/translations';
 import FormTemplate from '@templates/FormTemplate';
 import CustomInput from '@atoms/CustomInput';
 import CustomButton from '@atoms/CustomButton';
@@ -51,6 +52,7 @@ const formsEqual = (
   toolKey(a.builtinTools) === toolKey(b.builtinTools);
 
 const AssistantsPage: React.FC = () => {
+  const t = useT();
   const openNotification = useNotification();
   const {
     assistantId,
@@ -201,7 +203,7 @@ const AssistantsPage: React.FC = () => {
               resourceLabel={assistant.name}
               onReverted={refreshAssistants}
             />
-            <CustomTooltip title="Delete assistant">
+            <CustomTooltip title={t('deleteAssistant')}>
               <CustomButton
                 variant="ghost"
                 onClick={askDelete}

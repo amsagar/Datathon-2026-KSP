@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useT } from '@constants/translations';
 import FormTemplate from '@templates/FormTemplate';
 import CustomInput from '@atoms/CustomInput';
 import CustomButton from '@atoms/CustomButton';
@@ -28,6 +29,7 @@ const formsEqual = (a: CreateStyleRequest, b: CreateStyleRequest): boolean =>
   a.instructions === b.instructions;
 
 const ResponseStylesPage: React.FC = () => {
+  const t = useT();
   const openNotification = useNotification();
   const { assistantId } = useSettingsScope();
   const [items, setItems] = useState<ResponseStyleDto[]>([]);
@@ -322,7 +324,7 @@ const ResponseStylesPage: React.FC = () => {
                       resourceLabel={selectedStyle.name}
                       onReverted={refresh}
                     />
-                    <CustomTooltip title="Delete style">
+                    <CustomTooltip title={t('deleteStyle')}>
                       <CustomButton
                         variant="text"
                         size="small"

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useT } from '@constants/translations';
 import { diffLines } from 'diff';
 import CustomModal from '@atoms/CustomModal';
 import CustomButton from '@atoms/CustomButton';
@@ -669,6 +670,7 @@ const RevisionHistory: React.FC<RevisionHistoryProps> = ({
   onReverted,
   showBadge = true,
 }) => {
+  const t = useT();
   const notify = useNotification();
   const admin = isAdmin();
 
@@ -883,7 +885,7 @@ const RevisionHistory: React.FC<RevisionHistoryProps> = ({
         {showBadge && topVersion !== null && (
           <CustomTag tone="neutral">v{topVersion}</CustomTag>
         )}
-        <CustomTooltip title="View revision history">
+        <CustomTooltip title={t('viewRevisionHistory')}>
           <CustomButton
             variant="ghost"
             size="small"

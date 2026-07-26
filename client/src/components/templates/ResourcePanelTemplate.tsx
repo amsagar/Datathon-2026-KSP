@@ -1,4 +1,5 @@
 import React from 'react';
+import { useT } from '@constants/translations';
 import CustomButton from '@atoms/CustomButton';
 import CustomIcon from '@atoms/CustomIcon';
 import CustomTooltip from '@atoms/CustomTooltip';
@@ -44,6 +45,7 @@ function ResourcePanelTemplate<T extends ResourceListItem>({
   formPlaceholder = 'Select an item to edit, or create a new one.',
   children,
 }: ResourcePanelTemplateProps<T>) {
+  const t = useT();
   const askDelete = (item: T) => {
     if (!onDelete) return;
     confirm({
@@ -89,7 +91,7 @@ function ResourcePanelTemplate<T extends ResourceListItem>({
                 {item.meta && <div className={styles.rowMeta}>{item.meta}</div>}
               </div>
               {onDelete && (
-                <CustomTooltip title="Delete">
+                <CustomTooltip title={t('deleteAction')}>
                   <CustomButton
                     variant="text"
                     size="small"

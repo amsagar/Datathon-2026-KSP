@@ -258,8 +258,8 @@ const ChatWorkspace: React.FC = () => {
             <CustomTooltip
               title={
                 temporary
-                  ? 'Temporary chat: saved for 30 days then auto-deleted, and not used by long-term memory. Click to turn off.'
-                  : "Start a temporary chat — saved for 30 days then auto-deleted, and isn't used by long-term memory."
+                  ? t('temporaryChatTooltipOn')
+                  : t('temporaryChatTooltipOff')
               }
             >
               <CustomButton
@@ -267,7 +267,7 @@ const ChatWorkspace: React.FC = () => {
                 size="small"
                 shape="circle"
                 onClick={() => setTemporary(!temporary)}
-                aria-label="Toggle temporary chat"
+                aria-label={t('toggleTemporaryChat')}
                 aria-pressed={temporary}
                 disabled={!!currentSession}
                 style={temporary ? { color: 'var(--red, #c8102e)' } : undefined}
@@ -277,16 +277,14 @@ const ChatWorkspace: React.FC = () => {
             </CustomTooltip>
             <CustomTooltip
               title={
-                uiLang === 'en'
-                  ? 'Switch interface & voice language to Kannada'
-                  : 'ಇಂಗ್ಲಿಷ್‌ಗೆ ಬದಲಾಯಿಸಿ (switch to English)'
+                uiLang === 'en' ? t('switchToKannada') : t('switchToEnglish')
               }
             >
               <CustomButton
                 variant="text"
                 size="small"
                 onClick={toggleLang}
-                aria-label="Toggle language"
+                aria-label={t('toggleLanguage')}
                 style={{ fontWeight: 600 }}
               >
                 {uiLang === 'en' ? 'ಕ' : 'EN'}
@@ -336,13 +334,13 @@ const ChatWorkspace: React.FC = () => {
               </CustomTooltip>
             )}
             {currentSession && (
-              <CustomTooltip title="Share chat (view-only)">
+              <CustomTooltip title={t('shareChatViewOnly')}>
                 <CustomButton
                   variant="text"
                   size="small"
                   shape="circle"
                   onClick={() => setShareOpen(true)}
-                  aria-label="Share chat"
+                  aria-label={t('shareChat')}
                 >
                   <svg
                     width="17"

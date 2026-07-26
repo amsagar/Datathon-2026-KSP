@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useT } from '@constants/translations';
 import CustomButton from '@atoms/CustomButton';
 import CustomDropdown from '@atoms/CustomDropdown';
 import CustomIcon from '@atoms/CustomIcon';
@@ -21,6 +22,7 @@ import type {
 import * as styles from '@styles/skillsPage.module.scss';
 
 const SkillsPage: React.FC = () => {
+  const t = useT();
   const openNotification = useNotification();
   const { assistant, assistantId, refreshAssistants } = useSettingsScope();
   const uploadRef = useRef<HTMLInputElement>(null);
@@ -449,7 +451,7 @@ const SkillsPage: React.FC = () => {
               : 'Pick an assistant in the left menu to manage skills.'}
           </p>
         </div>
-        <CustomTooltip title="Upload skill (.md or .zip)">
+        <CustomTooltip title={t('uploadSkill')}>
           <CustomButton
             variant="primary"
             size="small"

@@ -7,6 +7,7 @@ import { confirm } from '@atoms/CustomConfirm';
 import { relativeTime } from '@utils/relativeTime';
 import LocalizedSessionTitle from '@molecules/LocalizedSessionTitle';
 import type { ChatSessionDto } from '@interfaces/chat.interface';
+import { useT } from '@constants/translations';
 import * as styles from '@styles/chatSidebar.module.scss';
 
 export interface SessionRowProps {
@@ -28,6 +29,7 @@ const SessionRow: React.FC<SessionRowProps> = ({
   onToggleArchive,
   onDelete,
 }) => {
+  const t = useT();
   const [renaming, setRenaming] = useState(false);
   const [renameValue, setRenameValue] = useState(session.title);
 
@@ -85,16 +87,16 @@ const SessionRow: React.FC<SessionRowProps> = ({
               className={styles.sessionTitle}
             />
             {session.temporary && (
-              <CustomTooltip title="Temporary chat — auto-deletes 30 days after its last activity">
+              <CustomTooltip title={t('temporaryChatBadgeTip')}>
                 <span className={styles.sessionTempBadge}>
                   <TemporaryChatIcon size={12} />
-                  <span>Temp</span>
+                  <span>{t('tempBadge')}</span>
                 </span>
               </CustomTooltip>
             )}
           </div>
           <div className={styles.sessionMeta}>
-            {loading ? 'Loading…' : relativeTime(session.updatedAt)}
+            {loading ? t('loadingEllipsis') : relativeTime(session.updatedAt)}
             {session.temporary &&
               ` · deletes in ${Math.max(
                 0,
@@ -107,32 +109,36 @@ const SessionRow: React.FC<SessionRowProps> = ({
         className={styles.sessionActions}
         onClick={(e) => e.stopPropagation()}
       >
-        <CustomTooltip title="Rename">
+        <CustomTooltip title={t('rename')}>
           <CustomButton
             variant="text"
             size="small"
             onClick={startRename}
-            aria-label="Rename"
+            aria-label={t('rename')}
           >
             <CustomIcon name="edit" />
           </CustomButton>
         </CustomTooltip>
-        <CustomTooltip title={session.archived ? 'Unarchive' : 'Archive'}>
+        <CustomTooltip
+          title={session.archived ? t('unarchiveAction') : t('archiveAction')}
+        >
           <CustomButton
             variant="text"
             size="small"
             onClick={onToggleArchive}
-            aria-label={session.archived ? 'Unarchive' : 'Archive'}
+            aria-label={
+              session.archived ? t('unarchiveAction') : t('archiveAction')
+            }
           >
             <CustomIcon name={session.archived ? 'undo' : 'inbox'} />
           </CustomButton>
         </CustomTooltip>
-        <CustomTooltip title="Delete">
+        <CustomTooltip title={t('deleteAction')}>
           <CustomButton
             variant="text"
             size="small"
             onClick={askDelete}
-            aria-label="Delete"
+            aria-label={t('deleteAction')}
           >
             <CustomIcon name="delete" />
           </CustomButton>
