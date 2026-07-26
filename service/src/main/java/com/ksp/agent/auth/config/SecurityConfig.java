@@ -59,13 +59,11 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
-        // All /api/** — restrict to configured SPA origins
+        // All /api/** — restrict to configured SPA origins.
+        // Always use origin patterns (not setAllowedOrigins) so a single AppSail
+        // env value binds cleanly and Authorization-bearing SSE preflights succeed.
         CorsConfiguration cfg = new CorsConfiguration();
-        if (corsProperties.isAllowCredentials()) {
-            cfg.setAllowedOriginPatterns(corsProperties.getAllowedOrigins());
-        } else {
-            cfg.setAllowedOrigins(corsProperties.getAllowedOrigins());
-        }
+        cfg.setAllowedOriginPatterns(corsProperties.getAllowedOrigins());
         cfg.setAllowedMethods(corsProperties.getAllowedMethods());
         cfg.setAllowedHeaders(corsProperties.getAllowedHeaders());
         cfg.setExposedHeaders(corsProperties.getExposedHeaders());

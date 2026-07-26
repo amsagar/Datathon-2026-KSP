@@ -9,7 +9,6 @@ import com.ksp.agent.mcp.dto.response.McpServerToolDto;
 import com.ksp.agent.mcp.service.McpServerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,7 +23,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(ApiConstants.MCP_SERVERS_PATH)
-@CrossOrigin(origins = "*")
 public class McpServerController {
 
     private final McpServerService mcpServerService;

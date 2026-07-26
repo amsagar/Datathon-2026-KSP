@@ -66,7 +66,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -95,7 +94,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(ApiConstants.CHAT_PATH)
-@CrossOrigin(origins = "*")
 public class ChatController {
 
     private static final Logger log = LoggerFactory.getLogger(ChatController.class);

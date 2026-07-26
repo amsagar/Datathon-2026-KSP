@@ -4,7 +4,6 @@ import com.ksp.agent.applicationconfig.constants.ApiConstants;
 import com.ksp.agent.chat.dto.response.SharedChatDto;
 import com.ksp.agent.chat.service.ShareService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(ApiConstants.SHARES_PATH)
-@CrossOrigin(origins = "*")
 public class ShareController {
 
     private final ShareService shareService;

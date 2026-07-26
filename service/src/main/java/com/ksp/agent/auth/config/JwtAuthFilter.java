@@ -33,6 +33,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
+        // CORS preflight must not be touched — no Authorization header on OPTIONS.
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
         String path = request.getRequestURI();
         for (String prefix : PUBLIC_PREFIXES) {
             if (path.startsWith(prefix)) {

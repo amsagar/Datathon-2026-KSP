@@ -15,7 +15,6 @@ import com.ksp.agent.audit.config.service.ConfigRevertService;
 import com.ksp.agent.applicationconfig.exceptions.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +32,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(ApiConstants.CONFIG_AUDIT_PATH)
-@CrossOrigin(origins = "*")
 public class ConfigAuditController {
 
     private final ConfigAuditService configAuditService;

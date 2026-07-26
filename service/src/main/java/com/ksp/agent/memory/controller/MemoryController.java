@@ -5,7 +5,6 @@ import com.ksp.agent.auth.service.SecurityContextService;
 import com.ksp.agent.memory.dto.response.SemanticFactDto;
 import com.ksp.agent.memory.service.SemanticMemoryService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +19,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(ApiConstants.MEMORIES_PATH)
-@CrossOrigin(origins = "*")
 public class MemoryController {
 
     private final SemanticMemoryService semanticMemoryService;

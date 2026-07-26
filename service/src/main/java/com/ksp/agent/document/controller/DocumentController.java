@@ -7,7 +7,6 @@ import com.ksp.agent.document.service.DocumentService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,7 +23,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(ApiConstants.DOCUMENTS_PATH)
-@CrossOrigin(origins = "*")
 public class DocumentController {
 
     private final DocumentService documentService;

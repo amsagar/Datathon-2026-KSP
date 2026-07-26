@@ -7,7 +7,6 @@ import com.ksp.agent.tool.auth.dto.response.ToolAuthProfileDto;
 import com.ksp.agent.tool.auth.service.ToolAuthProfileService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,7 +21,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(ApiConstants.TOOL_AUTH_PATH)
-@CrossOrigin(origins = "*")
 public class ToolAuthController {
 
     private final ToolAuthProfileService service;
