@@ -2,11 +2,11 @@ import React, { useMemo, useState } from 'react';
 import { Languages, Loader2 } from 'lucide-react';
 import CustomButton from '@atoms/CustomButton';
 import CustomTooltip from '@atoms/CustomTooltip';
-import { translateText } from '@apiCalls/translate';
 import { useNotification } from '@providers/NotificationProviders';
 import { useT } from '@constants/translations';
 import { useLangStore } from '@store/useLangStore';
 import type { UiLang } from '@utils/speech';
+import { translateMarkdown } from '@utils/translateMarkdown';
 
 export interface MessageTranslateButtonProps {
   content: string;
@@ -16,16 +16,6 @@ export interface MessageTranslateButtonProps {
   onShowTranslation: (text: string) => void;
   disabled?: boolean;
 }
-
-/** Plain text for translation — keeps paragraphs, drops code fences / heavy markdown. */
-const plainForTranslate = (markdown: string): string =>
-  markdown
-    .replace(/```[\s\S]*?```/g, '\n')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/\[(.*?)\]\(.*?\)/g, '$1')
-    .replace(/[*_>#]+/g, '')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
 
 const scriptCounts = (content: string) => {
   const kn = (content.match(/[\u0C80-\u0CFF]/g) || []).length;
@@ -70,22 +60,22 @@ const MessageTranslateButton: React.FC<MessageTranslateButtonProps> = ({
       onShowOriginal();
       return;
     }
-    if (translatedText) {
+    // Reuse cache unless a prior translate flattened a markdown table (||, no row breaks).
+    const brokenTable =
+      !!translatedText &&
+      (translatedText.match(/\|/g) || []).length >= 8 &&
+      !/\n\s*\|/.test(translatedText) &&
+      translatedText.includes('||');
+    if (translatedText && !brokenTable) {
       onShowTranslation(translatedText);
       return;
     }
-    const source = plainForTranslate(content || '');
-    if (!source) return;
+    if (!(content || '').trim()) return;
     setBusy(true);
     try {
-      const out = await translateText(source, target);
-      if (!out || out === source) {
-        // Still show result so the user sees the toggle worked; BE may no-op
-        // when scripts already match.
-        onShowTranslation(out || source);
-      } else {
-        onShowTranslation(out);
-      }
+      // Structure-aware: keeps GFM tables / fences intact (raw Google mangles pipes).
+      const out = await translateMarkdown(content, target);
+      onShowTranslation(out || content);
     } catch {
       openNotification(t('translateFailed'), 'Warning');
     } finally {
