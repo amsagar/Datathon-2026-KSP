@@ -5,6 +5,7 @@ import CustomIcon from '@atoms/CustomIcon';
 import TemporaryChatIcon from '@atoms/TemporaryChatIcon';
 import { confirm } from '@atoms/CustomConfirm';
 import { relativeTime } from '@utils/relativeTime';
+import LocalizedSessionTitle from '@molecules/LocalizedSessionTitle';
 import type { ChatSessionDto } from '@interfaces/chat.interface';
 import * as styles from '@styles/chatSidebar.module.scss';
 
@@ -79,7 +80,10 @@ const SessionRow: React.FC<SessionRowProps> = ({
       ) : (
         <div className={styles.sessionMain}>
           <div className={styles.sessionTitleRow}>
-            <span className={styles.sessionTitle}>{session.title}</span>
+            <LocalizedSessionTitle
+              title={session.title}
+              className={styles.sessionTitle}
+            />
             {session.temporary && (
               <CustomTooltip title="Temporary chat — auto-deletes 30 days after its last activity">
                 <span className={styles.sessionTempBadge}>

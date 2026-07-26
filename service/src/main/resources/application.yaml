@@ -67,6 +67,10 @@ agent:
     connect-timeout-ms: 10000
     read-timeout-ms: 120000
     streaming: false
+  # EN↔KN via therealbush/translator (https://github.com/therealbush/translator).
+  tts:
+    voice-en: ${TTS_VOICE_EN:en-IN-NeerjaNeural}
+    voice-kn: ${TTS_VOICE_KN:kn-IN-SapnaNeural}
   storage:
     root: ${AGENT_STORAGE_ROOT:./data/blobs}
   auth:

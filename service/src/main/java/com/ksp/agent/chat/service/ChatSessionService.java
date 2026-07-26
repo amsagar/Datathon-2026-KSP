@@ -27,7 +27,7 @@ public interface ChatSessionService {
 
     ChatSessionDto update(String id, UpdateSessionRequest request);
 
-    void touchAndMaybeTitle(String id, String firstMessage, String requestId);
+    void touchAndMaybeTitle(String id, String firstMessage, String requestId, String lang);
 
     void truncateFrom(String id, int messageIndex);
 

@@ -7,6 +7,7 @@ import CustomIcon from '@atoms/CustomIcon';
 import MessageBubble from '@molecules/MessageBubble';
 import MessageEditor from '@molecules/MessageEditor';
 import MessageSpeakButton from '@molecules/MessageSpeakButton';
+import MessageTranslateButton from '@molecules/MessageTranslateButton';
 import ClarifyingQuestionsCard from '@molecules/ClarifyingQuestionsCard';
 import PromptSuggestions from '@molecules/PromptSuggestions';
 import type {
@@ -62,7 +63,10 @@ const ChatThread: React.FC<ChatThreadProps> = ({
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
-  const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
+  /** Per-message on-the-fly translation overlay (original stays in store). */
+  const [translations, setTranslations] = useState<
+    Record<number, { text: string; showing: boolean; source?: string }>
+  >({});
   const t = useT();
   const reduceMotion = useReducedMotion();
   // Rows already mounted before this render skip the entrance animation
@@ -73,6 +77,24 @@ const ChatThread: React.FC<ChatThreadProps> = ({
   useEffect(() => {
     mountedCountRef.current = messages.length;
   }, [messages.length]);
+
+  // Drop cached translations when the underlying message text changes (edit/regenerate).
+  useEffect(() => {
+    setTranslations((prev) => {
+      let changed = false;
+      const next = { ...prev };
+      for (const key of Object.keys(next)) {
+        const i = Number(key);
+        const entry = next[i];
+        const src = messages[i]?.content;
+        if (!src || (entry.source && entry.source !== src)) {
+          delete next[i];
+          changed = true;
+        }
+      }
+      return changed ? next : prev;
+    });
+  }, [messages]);
   const displayName = assistantName?.trim() || '';
   const avatarInitial = (displayName[0] || 'P').toUpperCase();
 
@@ -119,7 +141,7 @@ const ChatThread: React.FC<ChatThreadProps> = ({
               <span className={styles.emptyHeroBadgeLabel}>{displayName}</span>
             </div>
           )}
-          <div className={styles.emptyHeroTitle}>{t('howCanIHelp')}</div>
+          <div className={styles.emptyHeroTitle}>{t('heyReady')}</div>
           <div className={styles.emptyHeroSub}>
             {hasSession ? t('sendToContinue') : t('pickAssistant')}
           </div>
@@ -166,6 +188,12 @@ const ChatThread: React.FC<ChatThreadProps> = ({
           const canRegenerate =
             !isUser && i > 0 && messages[i - 1]?.role === 'user' && !streaming;
           const isCopied = copiedIndex === i;
+          const tr = translations[i];
+          const showingTranslation = !!tr?.showing && !!tr.text;
+          const displayContent = showingTranslation ? tr.text : null;
+          const translateCaption = showingTranslation
+            ? t('translatedLabel')
+            : null;
 
           return (
             <motion.div
@@ -205,6 +233,8 @@ const ChatThread: React.FC<ChatThreadProps> = ({
                     showTypingDots={showTypingDots || (!!typingLabel && !m.content)}
                     typingLabel={typingLabel}
                     streaming={activeTurn}
+                    displayContent={displayContent}
+                    caption={translateCaption}
                   />
                 )
               )}
@@ -228,18 +258,40 @@ const ChatThread: React.FC<ChatThreadProps> = ({
               )}
 
               {!isEditing && !streaming && !readOnly && (
-                <div
-                  className={`${styles.actions} ${
-                    speakingIndex === i ? styles.actionsPinned : ''
-                  }`}
-                >
+                <div className={styles.actions}>
                   {isUser ? (
                     <>
+                      <MessageTranslateButton
+                        content={m.content}
+                        showingTranslation={showingTranslation}
+                        translatedText={
+                          tr?.source === m.content ? tr.text : null
+                        }
+                        onShowOriginal={() =>
+                          setTranslations((prev) => ({
+                            ...prev,
+                            [i]: {
+                              text: prev[i]?.text || '',
+                              showing: false,
+                              source: m.content,
+                            },
+                          }))
+                        }
+                        onShowTranslation={(text) =>
+                          setTranslations((prev) => ({
+                            ...prev,
+                            [i]: { text, showing: true, source: m.content },
+                          }))
+                        }
+                        disabled={!m.content}
+                      />
                       <CustomTooltip title={isCopied ? t('copied') : t('copy')}>
                         <CustomButton
                           variant="text"
                           size="small"
-                          onClick={() => void handleCopy(i, m.content)}
+                          onClick={() =>
+                            void handleCopy(i, displayContent || m.content)
+                          }
                           aria-label={t('copy')}
                         >
                           <CustomIcon name={isCopied ? 'check' : 'copy'} />
@@ -269,20 +321,40 @@ const ChatThread: React.FC<ChatThreadProps> = ({
                   ) : (
                     <>
                       <MessageSpeakButton
-                        content={m.content}
+                        content={displayContent || m.content}
                         disabled={!m.content}
-                        onSpeakingChange={(speaking) =>
-                          setSpeakingIndex((curr) => {
-                            if (speaking) return i;
-                            return curr === i ? null : curr;
-                          })
+                      />
+                      <MessageTranslateButton
+                        content={m.content}
+                        showingTranslation={showingTranslation}
+                        translatedText={
+                          tr?.source === m.content ? tr.text : null
                         }
+                        onShowOriginal={() =>
+                          setTranslations((prev) => ({
+                            ...prev,
+                            [i]: {
+                              text: prev[i]?.text || '',
+                              showing: false,
+                              source: m.content,
+                            },
+                          }))
+                        }
+                        onShowTranslation={(text) =>
+                          setTranslations((prev) => ({
+                            ...prev,
+                            [i]: { text, showing: true, source: m.content },
+                          }))
+                        }
+                        disabled={!m.content}
                       />
                       <CustomTooltip title={isCopied ? t('copied') : t('copyReply')}>
                         <CustomButton
                           variant="text"
                           size="small"
-                          onClick={() => void handleCopy(i, m.content)}
+                          onClick={() =>
+                            void handleCopy(i, displayContent || m.content)
+                          }
                           aria-label={t('copyReply')}
                           disabled={!m.content}
                         >

@@ -465,7 +465,7 @@ public class ChatController {
         // wrapToolCallback(...); the tool-execution thread later sees an empty SecurityContextHolder.
         boolean investigativeAccess = securityContextService.hasAnyRole("ADMIN", "SUPERVISOR", "INVESTIGATOR");
 
-        chatSessionService.touchAndMaybeTitle(sessionId, message, requestId);
+        chatSessionService.touchAndMaybeTitle(sessionId, message, requestId, effectiveLang);
         String systemPrompt = "";
         List<ToolCallback> toolCallbacks = new ArrayList<>();
         // Assistant entity, builtin tool keys, HTTP callbacks and the document list are each loaded

@@ -38,7 +38,10 @@ export const STRINGS = {
   },
 
   // Composer
-  messagePlaceholder: { en: 'Send a message…', kn: 'ಸಂದೇಶ ಕಳುಹಿಸಿ…' },
+  messagePlaceholder: {
+    en: 'Message Crime Intelligence…',
+    kn: 'ಅಪರಾಧ ಗುಪ್ತಚರಕ್ಕೆ ಸಂದೇಶ…',
+  },
   listening: { en: 'Listening… speak now', kn: 'ಕೇಳಿಸಿಕೊಳ್ಳುತ್ತಿದೆ… ಈಗ ಮಾತನಾಡಿ' },
   composerHint: {
     en: 'Press Enter to send · Shift + Enter for new line',
@@ -175,8 +178,16 @@ export const STRINGS = {
   toolOutput: { en: 'Output', kn: 'ಔಟ್‌ಪುಟ್' },
   readAloud: { en: 'Read aloud', kn: 'ಗಟ್ಟಿಯಾಗಿ ಓದಿ' },
   stopReadingAloud: { en: 'Stop reading aloud', kn: 'ಓದುವುದನ್ನು ನಿಲ್ಲಿಸಿ' },
+  pauseReadingAloud: { en: 'Pause', kn: 'ವಿರಾಮ' },
+  resumeReadingAloud: { en: 'Resume', kn: 'ಮುಂದುವರಿಸಿ' },
   startVoiceInput: { en: 'Start voice input', kn: 'ಧ್ವನಿ ಇನ್‌ಪುಟ್ ಪ್ರಾರಂಭಿಸಿ' },
   stopVoiceInput: { en: 'Stop voice input', kn: 'ಧ್ವನಿ ಇನ್‌ಪುಟ್ ನಿಲ್ಲಿಸಿ' },
+  acceptVoiceInput: { en: 'Use this transcript', kn: 'ಈ ಪಠ್ಯವನ್ನು ಬಳಸಿ' },
+  rejectVoiceInput: { en: 'Discard transcript', kn: 'ಪಠ್ಯವನ್ನು ತ್ಯಜಿಸಿ' },
+  voiceReviewHint: {
+    en: 'Listening — accept or discard when ready',
+    kn: 'ಕೇಳಿಸಿಕೊಳ್ಳುತ್ತಿದೆ — ಸಿದ್ಧರಾದಾಗ ಸ್ವೀಕರಿಸಿ ಅಥವಾ ತ್ಯಜಿಸಿ',
+  },
   micPermissionDenied: { en: 'Microphone access was denied.', kn: 'ಮೈಕ್ರೊಫೋನ್ ಪ್ರವೇಶವನ್ನು ನಿರಾಕರಿಸಲಾಗಿದೆ.' },
   noSpeechDetected: { en: 'No speech was detected.', kn: 'ಯಾವುದೇ ಮಾತು ಪತ್ತೆಯಾಗಿಲ್ಲ.' },
   voiceNetworkError: { en: 'A network error interrupted voice input.', kn: 'ಜಾಲಬಂಧ ದೋಷವು ಧ್ವನಿ ಇನ್‌ಪುಟ್ ಅನ್ನು ಅಡ್ಡಿಪಡಿಸಿತು.' },
@@ -192,6 +203,13 @@ export const STRINGS = {
   toolGroupSteps: { en: 'steps', kn: 'ಹಂತಗಳು' },
   exportChatToPdf: { en: 'Export chat to PDF', kn: 'ಸಂಭಾಷಣೆಯನ್ನು PDF ಗೆ ರಫ್ತು ಮಾಡಿ' },
   saveConversationAsPdf: { en: 'Save this conversation as a PDF', kn: 'ಈ ಸಂಭಾಷಣೆಯನ್ನು PDF ಆಗಿ ಉಳಿಸಿ' },
+  translateToKannada: { en: 'Show in Kannada', kn: 'ಕನ್ನಡದಲ್ಲಿ ತೋರಿಸಿ' },
+  translateToEnglish: { en: 'Show in English', kn: 'ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ ತೋರಿಸಿ' },
+  showOriginal: { en: 'Show original', kn: 'ಮೂಲವನ್ನು ತೋರಿಸಿ' },
+  translatedLabel: { en: 'Translated', kn: 'ಅನುವಾದಿತ' },
+  heyReady: { en: 'Ready when you are', kn: 'ನೀವು ಸಿದ್ಧರಾದಾಗ ಹೇಳಿ' },
+  translateFailed: { en: 'Translation failed. Please try again.', kn: 'ಅನುವಾದ ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.' },
+  ttsFailed: { en: 'Could not play Indian voice audio.', kn: 'ಭಾರತೀಯ ಧ್ವನಿ ಆಡಿಯೋ ಪ್ಲೇ ಮಾಡಲಾಗಲಿಲ್ಲ.' },
 } as const;
 
 export type StringKey = keyof typeof STRINGS;

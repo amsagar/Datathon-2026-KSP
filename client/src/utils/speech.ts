@@ -1,9 +1,8 @@
-// Voice + language helpers built on the browser Web Speech API (no backend needed).
-// Language preference drives speech recognition (kn-IN / en-IN) and the localized composer
-// strings. Read-aloud voice selection instead detects the actual answer text's script — the UI
-// toggle and the assistant's actual reply language can disagree (e.g. UI left in English while
-// the user's chat turned to Kannada), and reading English text with a kn-IN voice (or vice versa)
-// sounds wrong even though the toggle "matches".
+// Dictation uses browser SpeechRecognition (kn-IN / en-IN).
+// Read-aloud uses backend Indian neural TTS with sentence-chunk streaming for low latency.
+
+import { fetchTtsAudio } from '@apiCalls/tts';
+import { splitSpeechChunks } from '@utils/speechChunks';
 
 const LANG_KEY = 'crime_ai_lang';
 
@@ -21,9 +20,6 @@ export function speechLocale(lang: UiLang): string {
   return lang === 'kn' ? 'kn-IN' : 'en-IN';
 }
 
-// Kannada Unicode block (U+0C80–U+0CFF), same range already used for filename sanitization in
-// exportChatPdf.ts. A single Kannada character is enough signal — mixed script answers (a Kannada
-// reply citing an English proper noun) should still read with the Kannada voice.
 const KANNADA_RANGE = /[ಀ-೿]/;
 
 /** Detects the script actually present in `text`, independent of the UI language toggle. */
@@ -48,48 +44,86 @@ export function isSpeechRecognitionSupported(): boolean {
   return !!(w.SpeechRecognition || w.webkitSpeechRecognition);
 }
 
-/** Reason a dictation session ended, so callers can tell a denied mic apart from a normal stop. */
-export type DictationEndReason = 'done' | 'error';
-
-/** Coarse error category — callers map this to a localized message; kept code-only here since
- * this module has no access to the UI translation dictionary. */
+export type DictationEndReason = 'done' | 'error' | 'aborted';
 export type DictationErrorCode = 'not-allowed' | 'no-speech' | 'network' | 'other';
 
+export type DictationOptions = {
+  /** Keep listening across pauses until the caller stops (ChatGPT-style review). */
+  continuous?: boolean;
+};
+
 /**
- * Starts dictation in the given language. Returns a stop function, or null when the
- * browser has no SpeechRecognition (e.g. Firefox) — callers should hide the mic then.
- *
- * `onEnd` used to also be wired directly to `recognition.onerror`, so a denied mic permission
- * (`not-allowed`), a dropped network connection, or "no speech detected" were all silently
- * indistinguishable from the user just stopping normally. It now receives a reason and, on error,
- * a coarse error code for the caller to localize and display.
+ * Start browser dictation. Returns a stop function.
+ * With {@code continuous: true}, recognition restarts on quiet gaps until stop()/abort().
  */
 export function startDictation(
   lang: UiLang,
   onTranscript: (text: string, isFinal: boolean) => void,
-  onEnd: (reason: DictationEndReason, errorCode?: DictationErrorCode) => void
+  onEnd: (reason: DictationEndReason, errorCode?: DictationErrorCode) => void,
+  options?: DictationOptions
 ): (() => void) | null {
   const w = window as any;
   const Ctor = w.SpeechRecognition || w.webkitSpeechRecognition;
   if (!Ctor) return null;
+
+  const continuous = !!options?.continuous;
+  let stoppedByCaller = false;
+  let finalAccum = '';
+
   const recognition: SpeechRecognitionLike = new Ctor();
   recognition.lang = speechLocale(lang);
-  recognition.continuous = false;
+  recognition.continuous = continuous;
   recognition.interimResults = true;
+
   recognition.onresult = (event: any) => {
     let interim = '';
-    let final = '';
+    let finals = '';
     for (let i = event.resultIndex; i < event.results.length; i++) {
       const r = event.results[i];
-      if (r.isFinal) final += r[0].transcript;
+      if (r.isFinal) finals += r[0].transcript;
       else interim += r[0].transcript;
     }
-    if (final) onTranscript(final, true);
-    else if (interim) onTranscript(interim, false);
+    if (finals) {
+      finalAccum = continuous
+        ? `${finalAccum}${finalAccum && !finalAccum.endsWith(' ') ? ' ' : ''}${finals}`.trim()
+        : finals;
+      onTranscript(continuous ? finalAccum : finals, true);
+    } else if (interim) {
+      const draft = continuous
+        ? `${finalAccum}${finalAccum ? ' ' : ''}${interim}`.trim()
+        : interim;
+      onTranscript(draft, false);
+    }
   };
-  recognition.onend = () => onEnd('done');
+
+  recognition.onend = () => {
+    if (stoppedByCaller) {
+      onEnd('done');
+      return;
+    }
+    if (continuous) {
+      // Quiet gap — keep the session alive until accept/reject.
+      try {
+        recognition.start();
+        return;
+      } catch {
+        onEnd('done');
+        return;
+      }
+    }
+    onEnd('done');
+  };
+
   recognition.onerror = (event: any) => {
     const raw = event?.error as string | undefined;
+    if (raw === 'aborted' || stoppedByCaller) {
+      onEnd('aborted');
+      return;
+    }
+    // In continuous mode, ignore benign no-speech and keep listening via onend restart.
+    if (continuous && (raw === 'no-speech' || raw === 'aborted')) {
+      return;
+    }
     const errorCode: DictationErrorCode =
       raw === 'not-allowed' || raw === 'permission-denied'
         ? 'not-allowed'
@@ -100,53 +134,183 @@ export function startDictation(
             : 'other';
     onEnd('error', errorCode);
   };
+
   try {
     recognition.start();
   } catch {
     return null;
   }
+
   return () => {
+    stoppedByCaller = true;
     try {
-      recognition.stop();
+      recognition.onend = null;
+      recognition.abort();
     } catch {
-      // already stopped
+      try {
+        recognition.stop();
+      } catch {
+        // already stopped
+      }
     }
   };
 }
 
-// Voices load asynchronously in Chrome — getVoices() commonly returns [] on the very first call
-// after page load, so the first read-aloud of a session silently got no matching voice (kn-IN
-// stayed silent since no voice was ever assigned). Warm the list eagerly and keep it fresh via
-// voiceschanged, instead of only ever calling getVoices() lazily inside speak().
-let cachedVoices: SpeechSynthesisVoice[] = [];
-if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-  const refresh = () => {
-    cachedVoices = window.speechSynthesis.getVoices();
-  };
-  refresh();
-  window.speechSynthesis.onvoiceschanged = refresh;
-}
+let activeAudio: HTMLAudioElement | null = null;
+let speakGeneration = 0;
+let paused = false;
 
-/** Reads text aloud, preferring a voice that matches the language. Returns a cancel fn. */
-export function speak(text: string, lang: UiLang): () => void {
-  if (!('speechSynthesis' in window) || !text) return () => undefined;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  const locale = speechLocale(lang);
-  const voices = cachedVoices.length ? cachedVoices : window.speechSynthesis.getVoices();
-  const voice =
-    voices.find((v) => v.lang === locale) ||
-    voices.find((v) => v.lang.startsWith(locale.slice(0, 2)));
-  if (voice) utterance.voice = voice;
-  utterance.lang = locale;
-  window.speechSynthesis.speak(utterance);
-  return () => window.speechSynthesis.cancel();
+/** Stop any in-flight backend TTS playback. */
+export function stopSpeaking(): void {
+  speakGeneration += 1;
+  paused = false;
+  if (activeAudio) {
+    activeAudio.pause();
+    activeAudio.src = '';
+    activeAudio = null;
+  }
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
 }
 
 export function isSpeaking(): boolean {
-  return 'speechSynthesis' in window && window.speechSynthesis.speaking;
+  return !!(activeAudio && !activeAudio.paused && !activeAudio.ended);
 }
 
-export function stopSpeaking(): void {
-  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+export function isSpeakPaused(): boolean {
+  return paused && !!activeAudio;
+}
+
+/** Pause current TTS chunk (keeps session so play can resume). */
+export function pauseSpeaking(): void {
+  if (activeAudio && !activeAudio.paused) {
+    activeAudio.pause();
+    paused = true;
+  }
+}
+
+/** Resume a paused TTS chunk. */
+export function resumeSpeaking(): void {
+  if (activeAudio && activeAudio.paused && paused) {
+    paused = false;
+    void activeAudio.play().catch(() => undefined);
+  }
+}
+
+const playBlobOnce = (blob: Blob): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    activeAudio = audio;
+    paused = false;
+    const done = (err?: unknown) => {
+      URL.revokeObjectURL(url);
+      if (activeAudio === audio) activeAudio = null;
+      paused = false;
+      if (err) reject(err);
+      else resolve();
+    };
+    audio.onended = () => done();
+    audio.onerror = () => done(new Error('audio error'));
+    void audio.play().catch((e) => done(e));
+  });
+
+/**
+ * Speak immediately: synthesize + play the first sentence ASAP, prefetch the rest.
+ * Returns a cancel function. Honors {@link pauseSpeaking} between/while chunks.
+ */
+export function speakIndianStreaming(
+  text: string,
+  lang: UiLang,
+  handlers?: {
+    onStart?: () => void;
+    onEnd?: () => void;
+    onError?: () => void;
+  }
+): () => void {
+  const gen = ++speakGeneration;
+  const chunks = splitSpeechChunks(text);
+  if (!chunks.length) {
+    handlers?.onEnd?.();
+    return () => undefined;
+  }
+
+  let cancelled = false;
+  const cancel = () => {
+    cancelled = true;
+    paused = false;
+    speakGeneration += 1;
+    if (activeAudio) {
+      activeAudio.pause();
+      activeAudio.src = '';
+      activeAudio = null;
+    }
+  };
+
+  const waitWhilePaused = async () => {
+    while (paused && !cancelled && gen === speakGeneration) {
+      await new Promise((r) => setTimeout(r, 80));
+    }
+  };
+
+  void (async () => {
+    try {
+      let nextPrefetch: Promise<Blob> | null = null;
+      for (let i = 0; i < chunks.length; i++) {
+        if (cancelled || gen !== speakGeneration) return;
+        await waitWhilePaused();
+        if (cancelled || gen !== speakGeneration) return;
+
+        const blob =
+          i === 0
+            ? await fetchTtsAudio(chunks[i], lang)
+            : await (nextPrefetch ?? fetchTtsAudio(chunks[i], lang));
+        if (cancelled || gen !== speakGeneration) return;
+        if (!blob || blob.size === 0) throw new Error('empty audio');
+
+        if (i + 1 < chunks.length) {
+          nextPrefetch = fetchTtsAudio(chunks[i + 1], lang);
+        } else {
+          nextPrefetch = null;
+        }
+
+        if (i === 0) handlers?.onStart?.();
+        await waitWhilePaused();
+        if (cancelled || gen !== speakGeneration) return;
+        await playBlobOnce(blob);
+      }
+      if (!cancelled && gen === speakGeneration) handlers?.onEnd?.();
+    } catch {
+      if (!cancelled && gen === speakGeneration) handlers?.onError?.();
+    }
+  })();
+
+  return cancel;
+}
+
+/** Play a single MP3 blob. Prefer {@link speakIndianStreaming} for chat replies. */
+export function playAudioBlob(
+  blob: Blob,
+  onEnded?: () => void
+): () => void {
+  stopSpeaking();
+  const url = URL.createObjectURL(blob);
+  const audio = new Audio(url);
+  activeAudio = audio;
+  const cleanup = () => {
+    URL.revokeObjectURL(url);
+    if (activeAudio === audio) activeAudio = null;
+    onEnded?.();
+  };
+  audio.onended = cleanup;
+  audio.onerror = cleanup;
+  void audio.play().catch(() => cleanup());
+  return () => {
+    audio.onended = null;
+    audio.onerror = null;
+    audio.pause();
+    URL.revokeObjectURL(url);
+    if (activeAudio === audio) activeAudio = null;
+  };
 }

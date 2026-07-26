@@ -185,7 +185,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     }
 
     @Override
-    public void touchAndMaybeTitle(String id, String firstMessage, String requestId) {
+    public void touchAndMaybeTitle(String id, String firstMessage, String requestId, String lang) {
         String userId = securityContextService.currentUserIdOrThrow();
         ChatSession session = repository.findById(id, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Session not found: " + id));
@@ -196,7 +196,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
         repository.touch(id, now, userId);
         if (DEFAULT_TITLE.equals(session.getTitle()) && firstMessage != null && !firstMessage.isBlank()) {
             LlmUsageContext ctx = new LlmUsageContext(requestId, id, session.getAssistantId(), userId);
-            sessionTitleService.generateAndSetTitleAsync(id, userId, firstMessage, ctx);
+            sessionTitleService.generateAndSetTitleAsync(id, userId, firstMessage, lang, ctx);
         }
     }
 

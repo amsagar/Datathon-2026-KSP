@@ -44,8 +44,8 @@ public class SessionTitleService {
 
     @Async
     public void generateAndSetTitleAsync(String sessionId, String userId, String firstMessage,
-                                         LlmUsageContext usageContext) {
-        String title = generateTitle(firstMessage, usageContext, userId);
+                                         String lang, LlmUsageContext usageContext) {
+        String title = generateTitle(firstMessage, lang, usageContext, userId);
         try {
             repository.updateTitle(sessionId, title, Instant.now().getEpochSecond(), userId);
         } catch (RuntimeException e) {
@@ -53,10 +53,11 @@ public class SessionTitleService {
         }
     }
 
-    private String generateTitle(String firstMessage, LlmUsageContext usageCtx, String userId) {
+    private String generateTitle(String firstMessage, String lang, LlmUsageContext usageCtx, String userId) {
+        String titleLang = "kn".equalsIgnoreCase(lang) ? "Kannada" : "English";
         try {
             ChatResponse response = titleChatClient.prompt()
-                    .user(firstMessage)
+                    .user("Title language: " + titleLang + "\n\n" + firstMessage)
                     .call()
                     .chatResponse();
             llmUsageRecorder.recordFromResponse(usageCtx, LlmUsageSource.title, response, userId);

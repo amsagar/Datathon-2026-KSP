@@ -11,11 +11,19 @@
 
 .threadInner {
   width: 100%;
-  max-width: 760px;
+  max-width: 720px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
+}
+
+.translateCaption {
+  margin-top: 8px;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--text-muted, $muted);
 }
 
 .message {
@@ -66,16 +74,15 @@
 }
 
 
-/* User: soft cream pill on the right with subtle depth */
+/* User: ChatGPT-like soft pill, right-aligned */
 .bubbleUser {
-  max-width: 80%;
-  padding: 12px 18px;
-  border-radius: 18px 18px 4px 18px;
+  max-width: 85%;
+  padding: 10px 16px;
+  border-radius: 22px;
   background: var(--bubble-user, $cream_200);
   border: 1px solid var(--bubble-user-border, rgba(0, 0, 0, 0.04));
-  box-shadow: var(--shadow-subtle, 0 1px 2px rgba(0, 0, 0, 0.03));
   color: var(--text-primary, $ink_900);
-  line-height: 1.6;
+  line-height: 1.55;
   white-space: pre-wrap;
   word-wrap: break-word;
   font-size: 15px;
@@ -142,14 +149,6 @@
   display: flex;
   gap: 2px;
   margin-top: 6px;
-  opacity: 0;
-  transform: translateY(2px);
-  transition: opacity 0.18s ease, transform 0.18s ease;
-}
-
-.message:hover .actions,
-.message:focus-within .actions,
-.actionsPinned {
   opacity: 1;
   transform: translateY(0);
 }
@@ -230,10 +229,10 @@
 }
 
 .emptyHeroTitle {
-  font-size: 42px;
-  line-height: 1.1;
-  font-weight: 650;
-  letter-spacing: -0.025em;
+  font-size: 36px;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.03em;
   margin: 0;
   color: $pods_red;
   background: linear-gradient(100deg, $pods_red 0%, $ksp_gold 55%, $ksp_gold_deep 100%);

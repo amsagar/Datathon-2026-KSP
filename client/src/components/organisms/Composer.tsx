@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { ArrowUp, Mic, Square } from 'lucide-react';
+import { ArrowUp, Check, Mic, Square, X } from 'lucide-react';
 import { motion } from 'motion/react';
 import { isSpeechRecognitionSupported, startDictation } from '@utils/speech';
 import { useLangStore } from '@store/useLangStore';
@@ -19,6 +19,7 @@ export interface ComposerProps {
 const MIN_H = 24;
 /** Cap before inner scroll — ChatGPT-style */
 const MAX_H = 200;
+const WAVE_BARS = 28;
 
 const Composer: React.FC<ComposerProps> = ({
   streaming,
@@ -29,6 +30,7 @@ const Composer: React.FC<ComposerProps> = ({
 }) => {
   const [value, setValue] = useState('');
   const [listening, setListening] = useState(false);
+  const [draftTranscript, setDraftTranscript] = useState('');
   const [expanded, setExpanded] = useState(false);
   const stopDictationRef = useRef<(() => void) | null>(null);
   const baseValueRef = useRef('');
@@ -43,7 +45,6 @@ const Composer: React.FC<ComposerProps> = ({
   const fitHeight = () => {
     const el = taRef.current;
     if (!el) return;
-    // Shrink → measure content → grow (cap at MAX_H, then scroll)
     el.style.height = 'auto';
     const content = el.scrollHeight;
     const next = Math.min(Math.max(content, MIN_H), MAX_H);
@@ -53,10 +54,16 @@ const Composer: React.FC<ComposerProps> = ({
   };
 
   useLayoutEffect(() => {
-    fitHeight();
-  }, [value]);
+    if (!listening) fitHeight();
+  }, [value, listening]);
 
   useEffect(() => () => stopDictationRef.current?.(), []);
+
+  const stopListening = () => {
+    stopDictationRef.current?.();
+    stopDictationRef.current = null;
+    setListening(false);
+  };
 
   const submit = () => {
     if (streaming) {
@@ -65,23 +72,36 @@ const Composer: React.FC<ComposerProps> = ({
     }
     const text = value.trim();
     if (!text || blocked) return;
-    stopDictationRef.current?.();
+    stopListening();
     setValue('');
     onSend(text);
   };
 
-  const toggleMic = () => {
-    if (listening) {
-      stopDictationRef.current?.();
-      return;
-    }
+  const rejectVoice = () => {
+    stopListening();
+    setDraftTranscript('');
+    setValue(baseValueRef.current.trimEnd());
+  };
+
+  const acceptVoice = () => {
+    const next = `${baseValueRef.current}${draftTranscript}`.trim();
+    stopListening();
+    setDraftTranscript('');
+    setValue(next);
+    requestAnimationFrame(() => taRef.current?.focus());
+  };
+
+  const startVoice = () => {
+    if (listening || blocked) return;
     baseValueRef.current = value ? `${value.trimEnd()} ` : '';
+    setDraftTranscript('');
     const stop = startDictation(
       voiceLang,
-      (transcript) => setValue(baseValueRef.current + transcript),
+      (transcript) => setDraftTranscript(transcript),
       (reason, errorCode) => {
-        setListening(false);
         if (reason === 'error') {
+          setListening(false);
+          stopDictationRef.current = null;
           const message =
             errorCode === 'not-allowed'
               ? t('micPermissionDenied')
@@ -92,7 +112,9 @@ const Composer: React.FC<ComposerProps> = ({
                   : t('voiceInputFailed');
           openNotification(message, 'Warning');
         }
+        // continuous mode: 'done' only after accept/reject abort
       },
+      { continuous: true }
     );
     if (stop) {
       stopDictationRef.current = stop;
@@ -103,66 +125,108 @@ const Composer: React.FC<ComposerProps> = ({
   return (
     <div className={styles.composerOuter}>
       <div
-        className={`${styles.composer} ${expanded ? styles.composerExpanded : ''}`}
+        className={`${styles.composer} ${expanded && !listening ? styles.composerExpanded : ''} ${
+          listening ? styles.composerListening : ''
+        }`}
       >
-        <textarea
-          ref={taRef}
-          className={styles.input}
-          value={value}
-          rows={1}
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              submit();
-            }
-          }}
-          placeholder={listening ? t('listening') : resolvedPlaceholder}
-          disabled={!!blocked}
-          aria-label={resolvedPlaceholder}
-        />
+        {listening ? (
+          <div className={styles.voiceStage} aria-live="polite">
+            <div className={styles.wave} aria-hidden>
+              {Array.from({ length: WAVE_BARS }, (_, i) => (
+                <motion.span
+                  key={i}
+                  className={styles.waveBar}
+                  animate={{ scaleY: [0.25, 1, 0.35, 0.85, 0.25] }}
+                  transition={{
+                    duration: 0.9 + (i % 5) * 0.08,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                    delay: (i % 7) * 0.05,
+                  }}
+                />
+              ))}
+            </div>
+            <span className={styles.voiceDraft}>
+              {draftTranscript || t('listening')}
+            </span>
+          </div>
+        ) : (
+          <textarea
+            ref={taRef}
+            className={styles.input}
+            value={value}
+            rows={1}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                submit();
+              }
+            }}
+            placeholder={resolvedPlaceholder}
+            disabled={!!blocked}
+            aria-label={resolvedPlaceholder}
+          />
+        )}
+
         <div className={styles.actions}>
-          {isSpeechRecognitionSupported() && (
-            <button
-              type="button"
-              className={`${styles.iconBtn} ${listening ? styles.iconBtnActive : ''}`}
-              onClick={toggleMic}
-              disabled={!!blocked}
-              aria-label={listening ? t('stopVoiceInput') : t('startVoiceInput')}
-              aria-pressed={listening}
-            >
-              <motion.span
-                className={styles.iconBtnInner}
-                animate={listening ? { scale: [1, 1.08, 1] } : { scale: 1 }}
-                transition={
-                  listening
-                    ? { duration: 1.1, repeat: Infinity, ease: 'easeInOut' }
-                    : { duration: 0.15 }
-                }
+          {listening ? (
+            <>
+              <button
+                type="button"
+                className={styles.iconBtn}
+                onClick={rejectVoice}
+                aria-label={t('rejectVoiceInput')}
+                title={t('rejectVoiceInput')}
               >
-                <Mic size={16} strokeWidth={2} />
-              </motion.span>
-            </button>
+                <X size={18} strokeWidth={2.25} />
+              </button>
+              <button
+                type="button"
+                className={styles.acceptBtn}
+                onClick={acceptVoice}
+                aria-label={t('acceptVoiceInput')}
+                title={t('acceptVoiceInput')}
+              >
+                <Check size={18} strokeWidth={2.5} />
+              </button>
+            </>
+          ) : (
+            <>
+              {isSpeechRecognitionSupported() && (
+                <button
+                  type="button"
+                  className={styles.iconBtn}
+                  onClick={startVoice}
+                  disabled={!!blocked}
+                  aria-label={t('startVoiceInput')}
+                >
+                  <Mic size={16} strokeWidth={2} />
+                </button>
+              )}
+              <motion.button
+                type="button"
+                className={styles.sendBtn}
+                onClick={submit}
+                disabled={!canSend}
+                aria-label={streaming ? 'Stop' : 'Send'}
+                whileHover={canSend ? { scale: 1.06 } : undefined}
+                whileTap={canSend ? { scale: 0.92 } : undefined}
+                transition={{ type: 'spring', stiffness: 500, damping: 28 }}
+              >
+                {streaming ? (
+                  <Square size={12} strokeWidth={2.5} fill="currentColor" />
+                ) : (
+                  <ArrowUp size={16} strokeWidth={2.5} />
+                )}
+              </motion.button>
+            </>
           )}
-          <motion.button
-            type="button"
-            className={styles.sendBtn}
-            onClick={submit}
-            disabled={!canSend}
-            aria-label={streaming ? 'Stop' : 'Send'}
-            whileHover={canSend ? { scale: 1.06 } : undefined}
-            whileTap={canSend ? { scale: 0.92 } : undefined}
-            transition={{ type: 'spring', stiffness: 500, damping: 28 }}
-          >
-            {streaming ? (
-              <Square size={12} strokeWidth={2.5} fill="currentColor" />
-            ) : (
-              <ArrowUp size={16} strokeWidth={2.5} />
-            )}
-          </motion.button>
         </div>
       </div>
-      <span className={styles.hint}>{t('composerHint')}</span>
+      <span className={styles.hint}>
+        {listening ? t('voiceReviewHint') : t('composerHint')}
+      </span>
     </div>
   );
 };

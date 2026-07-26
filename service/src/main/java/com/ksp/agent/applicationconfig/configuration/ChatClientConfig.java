@@ -61,10 +61,10 @@ public class ChatClientConfig {
     @Qualifier("titleChatClient")
     public ChatClient titleChatClient(ChatModel chatModel,
                                       @Value("classpath:prompts/title-generator-system.md") Resource titlePrompt) {
-        // A title is 3-6 words; 24 tokens is plenty and keeps the call cheap and fast.
+        // Kannada titles need more tokens than English for the same 3–6 words.
         return ChatClient.builder(chatModel)
                 .defaultSystem(titlePrompt)
-                .defaultOptions(ChatOptions.builder().maxTokens(24).temperature(0.0).build())
+                .defaultOptions(ChatOptions.builder().maxTokens(48).temperature(0.0).build())
                 .build();
     }
 

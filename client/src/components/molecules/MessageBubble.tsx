@@ -13,6 +13,10 @@ export interface MessageBubbleProps {
   typingLabel?: string;
   /** True while this message is still receiving SSE chunks. */
   streaming?: boolean;
+  /** When set, render this instead of message.content (e.g. on-the-fly translation). */
+  displayContent?: string | null;
+  /** Small caption under the bubble when showing a translation. */
+  caption?: string | null;
 }
 
 /** Three dots with a staggered pulse, driven by motion (respects reduced-motion). */
@@ -47,17 +51,20 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   showTypingDots,
   typingLabel,
   streaming,
+  displayContent,
+  caption,
 }) => {
   const isUser = message.role === 'user';
   const bubbleClass = isUser ? styles.bubbleUser : styles.bubbleAssistant;
   const t = useT();
+  const body = displayContent != null ? displayContent : message.content;
 
   return (
     <div className={bubbleClass}>
       {isUser ? (
-        message.content
-      ) : message.content ? (
-        <MarkdownContent source={message.content} streaming={streaming} />
+        body
+      ) : body ? (
+        <MarkdownContent source={body} streaming={streaming} />
       ) : showTypingDots ? (
         <span
           className={styles.typing}
@@ -68,6 +75,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
           <TypingDots />
         </span>
       ) : null}
+      {caption ? <div className={styles.translateCaption}>{caption}</div> : null}
     </div>
   );
 };

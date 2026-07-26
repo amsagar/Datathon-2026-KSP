@@ -76,7 +76,14 @@ export const API_ENDPOINTS = {
     url: () => `${BASE_PATH}/chat/skill-update-decisions`,
     method: 'POST',
   },
-
+  CHAT_TRANSLATE: {
+    url: () => `${BASE_PATH}/chat/translate`,
+    method: 'POST',
+  },
+  CHAT_TTS: {
+    url: () => `${BASE_PATH}/chat/tts`,
+    method: 'POST',
+  },
   // ---------- auth / SSO ----------
   AUTH_ME: {
     url: () => `${BASE_PATH}/v1/auth/me`,
