@@ -2,6 +2,7 @@ import React from 'react';
 import CustomRangePicker from '@atoms/CustomRangePicker';
 import type { Dayjs } from 'dayjs';
 import type { UsageDatePreset } from '@utils/usageDateRange';
+import { useT, type StringKey } from '@constants/translations';
 import * as pageStyles from '@styles/usage.module.scss';
 import * as modalStyles from '@styles/accountPreferencesModal.module.scss';
 
@@ -13,11 +14,11 @@ interface UsageDateFilterProps {
   compact?: boolean;
 }
 
-const PRESETS: { key: UsageDatePreset; label: string }[] = [
-  { key: 'today', label: 'Today' },
-  { key: '7d', label: '7 days' },
-  { key: '30d', label: '30 days' },
-  { key: 'custom', label: 'Custom' },
+const PRESETS: { key: UsageDatePreset; labelKey: StringKey }[] = [
+  { key: 'today', labelKey: 'Today' },
+  { key: '7d', labelKey: 'usage7Days' },
+  { key: '30d', labelKey: 'usage30Days' },
+  { key: 'custom', labelKey: 'usageCustom' },
 ];
 
 const UsageDateFilter: React.FC<UsageDateFilterProps> = ({
@@ -27,10 +28,11 @@ const UsageDateFilter: React.FC<UsageDateFilterProps> = ({
   onCustomRangeChange,
   compact,
 }) => {
+  const t = useT();
   const styles = compact ? modalStyles : pageStyles;
   return (
   <div className={styles.filterBar}>
-    <div className={styles.presetTabs} role="tablist" aria-label="Date range">
+    <div className={styles.presetTabs} role="tablist" aria-label={t('usageDateRangeAria')}>
       {PRESETS.map((p) => (
         <button
           key={p.key}
@@ -40,7 +42,7 @@ const UsageDateFilter: React.FC<UsageDateFilterProps> = ({
           className={`${styles.presetTab} ${preset === p.key ? styles.presetTabActive : ''}`}
           onClick={() => onPresetChange(p.key)}
         >
-          {p.label}
+          {t(p.labelKey)}
         </button>
       ))}
     </div>

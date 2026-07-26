@@ -9,7 +9,7 @@
 }
 
 .nav {
-  width: 240px;
+  width: 260px;
   flex-shrink: 0;
   background: var(--bg-sidebar, $bg_sidebar);
   padding: 16px 12px 10px;
@@ -103,8 +103,17 @@
   cursor: pointer;
   text-decoration: none;
   border: 1px solid transparent;
+  white-space: nowrap;
+  min-width: 0;
   transition: background-color 0.16s ease, color 0.16s ease,
     box-shadow 0.16s ease;
+}
+
+.navLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 // Animated crimson accent bar — scales in on active for a premium feel.
@@ -151,6 +160,7 @@
 
 .navIcon {
   width: 16px;
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;

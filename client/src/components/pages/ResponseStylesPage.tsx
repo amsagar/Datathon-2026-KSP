@@ -91,17 +91,17 @@ const ResponseStylesPage: React.FC = () => {
       return;
     }
     confirm({
-      title: 'Discard unsaved changes?',
-      body: 'You have unsaved edits for this style.',
+      title: t('discardUnsavedTitle'),
+      body: t('discardUnsavedBody'),
       danger: true,
-      okText: 'Discard',
+      okText: t('discard'),
       onOk: action,
     });
   };
 
   const startNew = () => {
     if (!assistantId) {
-      openNotification('Pick an assistant first', 'Warning');
+      openNotification(t('pickAssistantFirst'), 'Warning');
       return;
     }
     discardIfDirty(() => {
@@ -132,7 +132,7 @@ const ResponseStylesPage: React.FC = () => {
 
   const save = async () => {
     if (!form.name.trim() || !form.instructions.trim()) {
-      setError('Name and instructions are required.');
+      setError(t('nameInstructionsRequired'));
       return;
     }
     setSaving(true);
@@ -185,10 +185,10 @@ const ResponseStylesPage: React.FC = () => {
 
   const remove = (s: ResponseStyleDto) => {
     confirm({
-      title: `Delete "${s.name}"?`,
-      body: 'This removes the response style.',
+      title: `${t('deleteAction')} "${s.name}"?`,
+      body: t('responseStylesEmptyHint'),
       danger: true,
-      okText: 'Delete',
+      okText: t('deleteAction'),
       onOk: async () => {
         try {
           await stylesApi.delete(s.id);
@@ -208,18 +208,15 @@ const ResponseStylesPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <header className={styles.pageHeader}>
-        <div className={styles.pageEyebrow}>Chat</div>
-        <h1 className={styles.pageTitle}>Response styles</h1>
-        <p className={styles.pageSubtitle}>
-          Reusable instruction snippets for chat. Star one style per assistant
-          to use it as the default in new chats.
-        </p>
+        <div className={styles.pageEyebrow}>{t('chatSection')}</div>
+        <h1 className={styles.pageTitle}>{t('responseStylesTitle')}</h1>
+        <p className={styles.pageSubtitle}>{t('responseStylesSubtitle')}</p>
       </header>
 
       <div className={styles.workspace}>
         <aside className={styles.sidebar}>
           <div className={styles.sidebarHeader}>
-            <span className={styles.sidebarTitle}>Styles</span>
+            <span className={styles.sidebarTitle}>{t('stylesListLabel')}</span>
             <CustomButton
               variant="primary"
               size="small"
@@ -227,24 +224,22 @@ const ResponseStylesPage: React.FC = () => {
               onClick={startNew}
             >
               <CustomIcon name="plus" size={14} />
-              New
+              {t('newLabel')}
             </CustomButton>
           </div>
           <div className={styles.styleList}>
             {!assistantId && (
-              <div className={styles.emptyList}>
-                Pick an assistant in the left menu
-              </div>
+              <div className={styles.emptyList}>{t('pickAssistantLeft')}</div>
             )}
             {assistantId && items.length === 0 && editingId !== 'new' && (
-              <div className={styles.emptyList}>No styles yet</div>
+              <div className={styles.emptyList}>{t('noStylesYet')}</div>
             )}
             {editingId === 'new' && (
               <button
                 type="button"
                 className={`${styles.styleRow} ${styles.styleRowActive}`}
               >
-                <span className={styles.styleRowName}>New style</span>
+                <span className={styles.styleRowName}>{t('newStyle')}</span>
               </button>
             )}
             {items.map((s) => (
@@ -267,8 +262,8 @@ const ResponseStylesPage: React.FC = () => {
                 <CustomTooltip
                   title={
                     s.defaultStyle
-                      ? 'Default for new chats'
-                      : 'Set as default for new chats'
+                      ? t('defaultForNewChats')
+                      : t('setDefaultForNewChats')
                   }
                 >
                   <button
@@ -302,18 +297,16 @@ const ResponseStylesPage: React.FC = () => {
           {!editingId ? (
             <div className={styles.editorEmpty}>
               <CustomIcon name="style" size={28} />
-              <p>Select or create a style</p>
-              <span>
-                Response styles shape tone and format when pinned in a chat.
-              </span>
+              <p>{t('selectOrCreateStyle')}</p>
+              <span>{t('responseStylesEmptyHint')}</span>
             </div>
           ) : (
             <>
               <div className={styles.editorHeader}>
                 <h2 className={styles.editorTitle}>
                   {editingId === 'new'
-                    ? 'New style'
-                    : form.name.trim() || 'Untitled style'}
+                    ? t('newStyle')
+                    : form.name.trim() || t('untitledStyle')}
                 </h2>
                 {selectedStyle && (
                   <div className="flex items-center gap-2">
@@ -329,7 +322,7 @@ const ResponseStylesPage: React.FC = () => {
                         variant="text"
                         size="small"
                         onClick={() => remove(selectedStyle)}
-                        aria-label="Delete style"
+                        aria-label={t('deleteStyle')}
                       >
                         <CustomIcon name="delete" size={15} />
                       </CustomButton>
@@ -349,18 +342,20 @@ const ResponseStylesPage: React.FC = () => {
                 <div className={styles.formBody}>
                   <div className={styles.formMeta}>
                     <div className={styles.field}>
-                      <label className={styles.fieldLabel}>Name</label>
+                      <label className={styles.fieldLabel}>{t('nameLabel')}</label>
                       <CustomInput
                         value={form.name}
                         onChange={(e) =>
                           setForm((f) => ({ ...f, name: e.target.value }))
                         }
-                        placeholder="e.g. Investigator briefing"
+                        placeholder={t('styleNamePlaceholder')}
                         fullWidth
                       />
                     </div>
                     <div className={styles.field}>
-                      <label className={styles.fieldLabel}>Description</label>
+                      <label className={styles.fieldLabel}>
+                        {t('descriptionLabel')}
+                      </label>
                       <CustomInput
                         value={form.description || ''}
                         onChange={(e) =>
@@ -369,7 +364,7 @@ const ResponseStylesPage: React.FC = () => {
                             description: e.target.value,
                           }))
                         }
-                        placeholder="Short summary in the picker"
+                        placeholder={t('styleDescPlaceholder')}
                         fullWidth
                       />
                     </div>
@@ -377,9 +372,12 @@ const ResponseStylesPage: React.FC = () => {
 
                   <div className={styles.instructionsSection}>
                     <div className={styles.instructionsHeader}>
-                      <label className={styles.fieldLabel}>Instructions</label>
+                      <label className={styles.fieldLabel}>
+                        {t('instructionsLabel')}
+                      </label>
                       <span className={styles.charCount}>
-                        {form.instructions.length.toLocaleString()} chars
+                        {form.instructions.length.toLocaleString()}{' '}
+                        {t('charsLabel')}
                       </span>
                     </div>
                     <MarkdownEditor
@@ -388,8 +386,8 @@ const ResponseStylesPage: React.FC = () => {
                       onChange={(next) =>
                         setForm((f) => ({ ...f, instructions: next }))
                       }
-                      placeholder="How should responses read when this style is pinned? Markdown supported — use Preview to check rendering."
-                      ariaLabel="Style instructions"
+                      placeholder={t('styleInstructionsPlaceholder')}
+                      ariaLabel={t('styleInstructionsAria')}
                     />
                   </div>
 
@@ -403,7 +401,7 @@ const ResponseStylesPage: React.FC = () => {
                     loading={saving}
                     disabled={!canSave}
                   >
-                    Save
+                    {t('save')}
                   </CustomButton>
                   {editingId === 'new' && (
                     <CustomButton
@@ -411,11 +409,11 @@ const ResponseStylesPage: React.FC = () => {
                       onClick={cancel}
                       disabled={saving}
                     >
-                      Cancel
+                      {t('cancel')}
                     </CustomButton>
                   )}
                   {isDirty && (
-                    <span className={styles.dirtyHint}>Unsaved changes</span>
+                    <span className={styles.dirtyHint}>{t('unsavedChanges')}</span>
                   )}
                 </div>
               </FormTemplate>

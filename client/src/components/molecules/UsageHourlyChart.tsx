@@ -10,6 +10,7 @@ import {
 } from 'recharts';
 import type { UsageBreakdownRowDto } from '@interfaces/usage.interface';
 import { formatTokens } from '@utils/usageDateRange';
+import { useT } from '@constants/translations';
 import * as styles from '@styles/usage.module.scss';
 
 interface UsageHourlyChartProps {
@@ -21,6 +22,7 @@ const hourLabel = (hourKey: string): string => `${hourKey.padStart(2, '0')}:00`;
 
 /** 24-bar chart of usage by hour-of-day (UTC) — the service backfills all 24 hours with zeros. */
 const UsageHourlyChart: React.FC<UsageHourlyChartProps> = ({ rows, loading }) => {
+  const t = useT();
   const data = useMemo(
     () =>
       rows.map((r) => ({
@@ -33,9 +35,9 @@ const UsageHourlyChart: React.FC<UsageHourlyChartProps> = ({ rows, loading }) =>
 
   return (
     <div className={styles.chartCard}>
-      <span className={styles.chartTitle}>Usage by hour (UTC)</span>
+      <span className={styles.chartTitle}>{t('usageByHour')}</span>
       {!loading && data.length === 0 ? (
-        <div className={styles.chartEmpty}>No usage in this period</div>
+        <div className={styles.chartEmpty}>{t('usageNoUsageInPeriod')}</div>
       ) : (
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={data} margin={{ top: 8, right: 16, bottom: 4, left: 0 }}>
@@ -63,7 +65,7 @@ const UsageHourlyChart: React.FC<UsageHourlyChartProps> = ({ rows, loading }) =>
               }}
               formatter={(value: any, name: any) => [
                 name === 'totalTokens' ? formatTokens(Number(value)) : value,
-                name === 'totalTokens' ? 'Tokens' : 'Requests',
+                name === 'totalTokens' ? t('usageTokens') : t('usageRequests'),
               ]}
             />
             <Bar dataKey="totalTokens" fill="var(--chart-2)" radius={[3, 3, 0, 0]} />

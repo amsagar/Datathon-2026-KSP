@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import type { UsageDailyRowDto } from '@interfaces/usage.interface';
 import { formatCurrency, formatTokens } from '@utils/usageDateRange';
+import { useT } from '@constants/translations';
 import * as styles from '@styles/usage.module.scss';
 
 interface UsageTrendChartProps {
@@ -22,6 +23,7 @@ type Metric = 'tokens' | 'cost';
 
 /** Dual-axis daily trend: an area for tokens-or-spend (toggle) plus a request-count line. */
 const UsageTrendChart: React.FC<UsageTrendChartProps> = ({ rows, loading }) => {
+  const t = useT();
   const [metric, setMetric] = useState<Metric>('tokens');
 
   const chartData = useMemo(
@@ -34,14 +36,19 @@ const UsageTrendChart: React.FC<UsageTrendChartProps> = ({ rows, loading }) => {
     [rows, metric]
   );
 
-  const metricLabel = metric === 'tokens' ? 'Tokens' : 'Estimated cost';
+  const metricLabel =
+    metric === 'tokens' ? t('usageTokens') : t('usageEstimatedCost');
   const metricFormat = metric === 'tokens' ? formatTokens : formatCurrency;
 
   return (
     <div className={styles.chartCard}>
       <div className={styles.chartHeader}>
-        <span className={styles.chartTitle}>Usage trend</span>
-        <div className={styles.metricToggle} role="tablist" aria-label="Trend metric">
+        <span className={styles.chartTitle}>{t('usageTrend')}</span>
+        <div
+          className={styles.metricToggle}
+          role="tablist"
+          aria-label={t('usageTrendMetricAria')}
+        >
           <button
             type="button"
             role="tab"
@@ -49,7 +56,7 @@ const UsageTrendChart: React.FC<UsageTrendChartProps> = ({ rows, loading }) => {
             className={`${styles.toggleBtn} ${metric === 'tokens' ? styles.toggleBtnActive : ''}`}
             onClick={() => setMetric('tokens')}
           >
-            Tokens
+            {t('usageTokens')}
           </button>
           <button
             type="button"
@@ -58,12 +65,12 @@ const UsageTrendChart: React.FC<UsageTrendChartProps> = ({ rows, loading }) => {
             className={`${styles.toggleBtn} ${metric === 'cost' ? styles.toggleBtnActive : ''}`}
             onClick={() => setMetric('cost')}
           >
-            Cost
+            {t('usageCost')}
           </button>
         </div>
       </div>
       {!loading && chartData.length === 0 ? (
-        <div className={styles.chartEmpty}>No usage in this period</div>
+        <div className={styles.chartEmpty}>{t('usageNoUsageInPeriod')}</div>
       ) : (
         <ResponsiveContainer width="100%" height={280}>
           <ComposedChart data={chartData} margin={{ top: 8, right: 24, bottom: 8, left: 4 }}>
@@ -107,7 +114,7 @@ const UsageTrendChart: React.FC<UsageTrendChartProps> = ({ rows, loading }) => {
               labelStyle={{ color: 'var(--muted-foreground)', marginBottom: 4, fontWeight: 600 }}
               formatter={(value: any, name: any) =>
                 name === 'requestCount'
-                  ? [value, 'Requests']
+                  ? [value, t('usageRequests')]
                   : [metricFormat(Number(value)), metricLabel]
               }
             />
@@ -124,7 +131,7 @@ const UsageTrendChart: React.FC<UsageTrendChartProps> = ({ rows, loading }) => {
               yAxisId="requests"
               type="monotone"
               dataKey="requestCount"
-              name="Requests"
+              name={t('usageRequests')}
               stroke="var(--chart-3)"
               strokeWidth={2}
               dot={false}

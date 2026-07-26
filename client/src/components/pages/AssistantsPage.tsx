@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useT } from '@constants/translations';
+import { useT, type StringKey } from '@constants/translations';
 import FormTemplate from '@templates/FormTemplate';
 import CustomInput from '@atoms/CustomInput';
 import CustomButton from '@atoms/CustomButton';
@@ -31,6 +31,19 @@ const TOOL_ICONS: Record<string, CustomIconName> = {
   glob: 'inbox',
   shell: 'tool',
   ask_user_question: 'message',
+};
+
+const TOOL_I18N: Record<string, { title: StringKey; desc: StringKey }> = {
+  file_system: { title: 'toolLabelFileSystem', desc: 'toolDescFileSystem' },
+  grep: { title: 'toolLabelGrep', desc: 'toolDescGrep' },
+  glob: { title: 'toolLabelGlob', desc: 'toolDescGlob' },
+  shell: { title: 'toolLabelShell', desc: 'toolDescShell' },
+  crime_db: { title: 'toolLabelCrimeDb', desc: 'toolDescCrimeDb' },
+  crime_analytics: {
+    title: 'toolLabelCrimeAnalytics',
+    desc: 'toolDescCrimeAnalytics',
+  },
+  ask_user_question: { title: 'toolLabelAskUser', desc: 'toolDescAskUser' },
 };
 
 const parseToolLabel = (label: string): { title: string; desc: string } => {
@@ -121,7 +134,7 @@ const AssistantsPage: React.FC = () => {
 
   const save = async () => {
     if (!form.name.trim() || !form.systemPrompt.trim()) {
-      setError('Name and system prompt are required.');
+      setError(t('nameAndSystemPromptRequired'));
       return;
     }
     if (!isDirty) return;
@@ -168,20 +181,30 @@ const AssistantsPage: React.FC = () => {
       title: `Delete "${assistant.name}"?`,
       body: 'This removes the assistant and its scoped configuration. This cannot be undone.',
       danger: true,
-      okText: 'Delete',
+      okText: t('deleteAction'),
       onOk: () => remove(assistant),
     });
   };
 
+  const localizeTool = (
+    tool: BuiltinToolDto
+  ): { title: string; desc: string } => {
+    const mapped = TOOL_I18N[tool.key];
+    if (mapped) {
+      return { title: t(mapped.title), desc: t(mapped.desc) };
+    }
+    return parseToolLabel(tool.label);
+  };
+
   const pageTitle = creatingAssistant
-    ? 'New assistant'
-    : assistant?.name || 'General';
+    ? t('newAssistant')
+    : assistant?.name || t('generalTitle');
 
   const pageSubtitle = creatingAssistant
-    ? 'Set a name, system prompt, and built-in tools. Other settings unlock after you save.'
+    ? t('assistantCreateSubtitle')
     : assistant
-      ? 'Name, system prompt, and built-in tools for this assistant.'
-      : 'Use New assistant in the left menu, or pick an existing assistant from the dropdown.';
+      ? t('assistantEditSubtitle')
+      : t('assistantEmptySubtitle');
 
   const showForm = creatingAssistant || !!assistant;
   const enabledCount = form.builtinTools.length;
@@ -190,7 +213,7 @@ const AssistantsPage: React.FC = () => {
     <div className={pageStyles.page}>
       <header className={pageStyles.pageHeader}>
         <div className={pageStyles.pageHeaderMain}>
-          <div className={pageStyles.pageEyebrow}>General</div>
+          <div className={pageStyles.pageEyebrow}>{t('generalTitle')}</div>
           <h1 className={pageStyles.pageTitle}>{pageTitle}</h1>
           <p className={pageStyles.pageSubtitle}>{pageSubtitle}</p>
         </div>
@@ -210,7 +233,7 @@ const AssistantsPage: React.FC = () => {
                 aria-label="Delete assistant"
               >
                 <CustomIcon name="delete" size={15} />
-                Delete
+                {t('deleteAction')}
               </CustomButton>
             </CustomTooltip>
           </div>
@@ -220,11 +243,8 @@ const AssistantsPage: React.FC = () => {
       {!showForm ? (
         <div className={pageStyles.emptyState}>
           <CustomIcon name="robot" size={28} />
-          <p>No assistant selected</p>
-          <span>
-            Click <strong>New assistant</strong> in the left menu to create one,
-            or pick an assistant from the dropdown above the settings links.
-          </span>
+          <p>{t('noAssistantSelected')}</p>
+          <span>{t('assistantEmptyHint')}</span>
         </div>
       ) : (
         <FormTemplate
@@ -238,52 +258,55 @@ const AssistantsPage: React.FC = () => {
           <div className={pageStyles.formBody}>
             <div className={pageStyles.formMeta}>
               <div className={pageStyles.nameField}>
-                <label className={styles.fieldLabel}>Name</label>
+                <label className={styles.fieldLabel}>{t('nameLabel')}</label>
                 <CustomInput
                   value={form.name}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, name: e.target.value }))
                   }
-                  placeholder="e.g. Crime Intelligence"
+                  placeholder={t('assistantNamePlaceholder')}
                   fullWidth
                 />
               </div>
 
               <div className={pageStyles.toolsSection}>
                 <div className={pageStyles.toolsSectionHeader}>
-                  <label className={styles.fieldLabel}>Built-in tools</label>
+                  <label className={styles.fieldLabel}>
+                    {t('builtinToolsLabel')}
+                  </label>
                   <span className={pageStyles.toolsCount}>
                     {enabledCount}/{builtins.length}
                   </span>
                 </div>
-                <p className={styles.fieldHelp}>
-                  Enable capabilities for this assistant. Use Ask user when the agent
-                  should clarify missing or ambiguous input before acting.
-                </p>
+                <p className={styles.fieldHelp}>{t('builtinToolsHelp')}</p>
                 {builtins.length === 0 ? (
                   <div className={styles.fieldHelp}>
-                    No built-in tools available.
+                    {t('noBuiltinTools')}
                   </div>
                 ) : (
                   <div className={pageStyles.toolGrid}>
-                    {builtins.map((t) => {
-                      const active = form.builtinTools.includes(t.key);
-                      const { title, desc } = parseToolLabel(t.label);
-                      const icon = TOOL_ICONS[t.key] || 'tool';
+                    {builtins.map((tool) => {
+                      const active = form.builtinTools.includes(tool.key);
+                      const { title, desc } = localizeTool(tool);
+                      const icon = TOOL_ICONS[tool.key] || 'tool';
                       return (
-                        <div key={t.key} className={pageStyles.toolGridCell}>
+                        <div key={tool.key} className={pageStyles.toolGridCell}>
                           <CustomTooltip
-                            title={desc || t.label}
+                            title={desc || tool.label}
                             placement="top"
                           >
                             <button
                               type="button"
-                              onClick={() => toggleTool(t.key)}
+                              onClick={() => toggleTool(tool.key)}
                               className={`${pageStyles.toolCard} ${
                                 active ? pageStyles.toolCardActive : ''
                               }`}
                               aria-pressed={active}
-                              aria-label={`${title}${active ? ', enabled' : ', disabled'}`}
+                              aria-label={`${title}, ${
+                                active
+                                  ? t('toolEnabledSuffix')
+                                  : t('toolDisabledSuffix')
+                              }`}
                             >
                               <span className={pageStyles.toolCardIcon}>
                                 <CustomIcon name={icon} size={13} />
@@ -311,9 +334,11 @@ const AssistantsPage: React.FC = () => {
 
             <div className={pageStyles.promptSection}>
               <div className={pageStyles.promptHeader}>
-                <label className={styles.fieldLabel}>System prompt</label>
+                <label className={styles.fieldLabel}>
+                  {t('systemPromptLabel')}
+                </label>
                 <span className={pageStyles.promptCount}>
-                  {form.systemPrompt.length.toLocaleString()} chars
+                  {form.systemPrompt.length.toLocaleString()} {t('charsLabel')}
                 </span>
               </div>
               <MarkdownEditor
@@ -322,8 +347,8 @@ const AssistantsPage: React.FC = () => {
                 onChange={(next) =>
                   setForm((f) => ({ ...f, systemPrompt: next }))
                 }
-                placeholder="Describe how this assistant should behave. Markdown is supported — switch to Preview to see it rendered."
-                ariaLabel="System prompt"
+                placeholder={t('systemPromptPlaceholder')}
+                ariaLabel={t('systemPromptLabel')}
               />
             </div>
 
@@ -337,7 +362,7 @@ const AssistantsPage: React.FC = () => {
               loading={saving}
               disabled={!canSave || saving}
             >
-              {creatingAssistant ? 'Create assistant' : 'Save changes'}
+              {creatingAssistant ? t('createAssistant') : t('saveChanges')}
             </CustomButton>
             {creatingAssistant && (
               <CustomButton
@@ -345,7 +370,7 @@ const AssistantsPage: React.FC = () => {
                 onClick={cancelCreateAssistant}
                 disabled={saving}
               >
-                Cancel
+                {t('cancel')}
               </CustomButton>
             )}
           </div>

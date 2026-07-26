@@ -13,6 +13,7 @@ import { authApi } from '@apiCalls/services';
 import { useNotification } from '@providers/NotificationProviders';
 import type { UserProfileResponse } from '@apiCalls/auth';
 import type { ProfileUpdateRequest } from '@interfaces/user.interface';
+import { useT } from '@constants/translations';
 
 /** Editable slice of the profile, mirrored into local form state. */
 interface ProfileForm {
@@ -74,6 +75,7 @@ const primaryBtnClass =
   'bg-gradient-to-r from-[#b01722] to-[#8f101a] text-white shadow-md shadow-[#b01722]/25 hover:from-[#c01a26] hover:to-[#a01218]';
 
 const ProfilePage: React.FC = () => {
+  const t = useT();
   const notify = useNotification();
   const reduceMotion = useReducedMotion();
 
@@ -175,11 +177,11 @@ const ProfilePage: React.FC = () => {
   const changePassword = async () => {
     setPwError(null);
     if (newPassword.length < 8) {
-      setPwError('New password must be at least 8 characters.');
+      setPwError(t('passwordMinLength'));
       return;
     }
     if (newPassword !== confirmPassword) {
-      setPwError('New password and confirmation do not match.');
+      setPwError(t('passwordMismatch'));
       return;
     }
     setChangingPw(true);
@@ -196,7 +198,23 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  const displayName = profile?.name?.trim() || profile?.upn || 'Your account';
+  const displayName = profile?.name?.trim() || profile?.upn || t('yourAccount');
+  const roleLabel = (role: string): string => {
+    switch (role.toUpperCase()) {
+      case 'ADMIN':
+        return t('roleAdmin');
+      case 'SUPERVISOR':
+        return t('roleSupervisor');
+      case 'INVESTIGATOR':
+        return t('roleInvestigator');
+      case 'ANALYST':
+        return t('roleAnalyst');
+      case 'POLICYMAKER':
+        return t('rolePolicymaker');
+      default:
+        return t('roleUser');
+    }
+  };
   const setField =
     (key: keyof ProfileForm) => (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm((f) => ({ ...f, [key]: e.target.value }));
@@ -205,13 +223,13 @@ const ProfilePage: React.FC = () => {
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
       <header className="flex-shrink-0 border-b border-border px-6 pb-4 pt-5 sm:px-8">
         <div className="text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-          Account
+          {t('accountLabel')}
         </div>
         <h1 className="mt-1 m-0 text-2xl font-semibold tracking-tight text-foreground">
-          My profile
+          {t('myProfile')}
         </h1>
         <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-muted-foreground">
-          Update your personal details and manage your sign-in password.
+          {t('profileSubtitle')}
         </p>
       </header>
 
@@ -220,7 +238,7 @@ const ProfilePage: React.FC = () => {
           initial={reduceMotion ? false : { opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto flex w-full max-w-4xl flex-col gap-6"
+          className="mx-auto flex w-full max-w-6xl flex-col gap-6"
         >
           {/* Profile card */}
           <section className={cardClass}>
@@ -230,10 +248,10 @@ const ProfilePage: React.FC = () => {
               </span>
               <div>
                 <h2 className="m-0 text-sm font-semibold text-foreground">
-                  Profile information
+                  {t('profileInfoTitle')}
                 </h2>
                 <p className="m-0 text-xs text-muted-foreground">
-                  How you appear across Crime Intelligence
+                  {t('profileInfoSubtitle')}
                 </p>
               </div>
             </div>
@@ -286,7 +304,7 @@ const ProfilePage: React.FC = () => {
                             tone="error"
                             className="border-transparent bg-primary/12 text-primary"
                           >
-                            Admin
+                            {t('roleAdmin')}
                           </CustomTag>
                         )}
                       </div>
@@ -305,12 +323,12 @@ const ProfilePage: React.FC = () => {
                                   : undefined
                               }
                             >
-                              {r}
+                              {roleLabel(r)}
                             </CustomTag>
                           ))
                         ) : (
                           <span className="text-sm text-muted-foreground">
-                            No roles assigned
+                            {t('noRolesAssigned')}
                           </span>
                         )}
                       </div>
@@ -320,8 +338,10 @@ const ProfilePage: React.FC = () => {
                       <CustomFileUpload
                         accept="image/*"
                         compact
-                        buttonLabel={uploading ? 'Uploading…' : 'Upload photo'}
-                        dropLabel="Drop image or click"
+                        buttonLabel={
+                          uploading ? t('uploadingPhoto') : t('uploadPhoto')
+                        }
+                        dropLabel={t('dropImageOrClick')}
                         disabled={uploading}
                         onChange={(f) => void handleUpload(f)}
                       />
@@ -331,44 +351,44 @@ const ProfilePage: React.FC = () => {
                   <div className="mt-6 grid grid-cols-1 gap-x-5 gap-y-4 sm:grid-cols-2">
                     <div>
                       <label className={fieldLabel} htmlFor="pf-name">
-                        Display name
+                        {t('displayName')}
                       </label>
                       <CustomInput
                         id="pf-name"
                         value={form.displayName}
                         onChange={setField('displayName')}
-                        placeholder="Your name"
+                        placeholder={t('yourNamePlaceholder')}
                         className="h-10 rounded-lg shadow-sm"
                       />
                     </div>
                     <div>
                       <label className={fieldLabel} htmlFor="pf-email">
-                        Email
+                        {t('emailLabel')}
                       </label>
                       <CustomInput
                         id="pf-email"
                         type="email"
                         value={form.email}
                         onChange={setField('email')}
-                        placeholder="you@example.com"
+                        placeholder={t('emailPlaceholder')}
                         className="h-10 rounded-lg shadow-sm"
                       />
                     </div>
                     <div>
                       <label className={fieldLabel} htmlFor="pf-phone">
-                        Phone
+                        {t('phoneLabel')}
                       </label>
                       <CustomInput
                         id="pf-phone"
                         value={form.phone}
                         onChange={setField('phone')}
-                        placeholder="+91 …"
+                        placeholder={t('phonePlaceholder')}
                         className="h-10 rounded-lg shadow-sm"
                       />
                     </div>
                     <div>
                       <label className={fieldLabel} htmlFor="pf-dob">
-                        Date of birth
+                        {t('dateOfBirth')}
                       </label>
                       <CustomDatePicker
                         id="pf-dob"
@@ -376,32 +396,32 @@ const ProfilePage: React.FC = () => {
                         onChange={(v) =>
                           setForm((f) => ({ ...f, dateOfBirth: v }))
                         }
-                        placeholder="dd/mm/yyyy"
+                        placeholder={t('dobPlaceholder')}
                         className="h-10"
                         max={new Date().toISOString().slice(0, 10)}
                       />
                     </div>
                     <div>
                       <label className={fieldLabel} htmlFor="pf-designation">
-                        Designation
+                        {t('designationLabel')}
                       </label>
                       <CustomInput
                         id="pf-designation"
                         value={form.designation}
                         onChange={setField('designation')}
-                        placeholder="e.g. Sub-Inspector"
+                        placeholder={t('designationPlaceholder')}
                         className="h-10 rounded-lg shadow-sm"
                       />
                     </div>
                     <div>
                       <label className={fieldLabel} htmlFor="pf-department">
-                        Department
+                        {t('departmentLabel')}
                       </label>
                       <CustomInput
                         id="pf-department"
                         value={form.department}
                         onChange={setField('department')}
-                        placeholder="e.g. Cyber Crime"
+                        placeholder={t('departmentPlaceholder')}
                         className="h-10 rounded-lg shadow-sm"
                       />
                     </div>
@@ -420,15 +440,15 @@ const ProfilePage: React.FC = () => {
                   icon={<Save className="size-4" aria-hidden />}
                   className={cn(isDirty && !saving && primaryBtnClass)}
                 >
-                  Save changes
+                  {t('saveChanges')}
                 </CustomButton>
                 {isDirty ? (
                   <span className="text-xs font-medium text-primary">
-                    Unsaved changes
+                    {t('unsavedChanges')}
                   </span>
                 ) : (
                   <span className="text-xs text-muted-foreground">
-                    All changes saved
+                    {t('allChangesSaved')}
                   </span>
                 )}
               </div>
@@ -443,10 +463,10 @@ const ProfilePage: React.FC = () => {
               </span>
               <div>
                 <h2 className="m-0 text-sm font-semibold text-foreground">
-                  Change password
+                  {t('changePassword')}
                 </h2>
                 <p className="m-0 text-xs text-muted-foreground">
-                  Use at least 8 characters for a new password
+                  {t('changePasswordHint')}
                 </p>
               </div>
             </div>
@@ -455,7 +475,7 @@ const ProfilePage: React.FC = () => {
               <div className="grid grid-cols-1 gap-x-5 gap-y-4 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <label className={fieldLabel} htmlFor="pw-current">
-                    Current password
+                    {t('currentPassword')}
                   </label>
                   <CustomInput
                     id="pw-current"
@@ -469,7 +489,7 @@ const ProfilePage: React.FC = () => {
                 </div>
                 <div>
                   <label className={fieldLabel} htmlFor="pw-new">
-                    New password
+                    {t('newPassword')}
                   </label>
                   <CustomInput
                     id="pw-new"
@@ -477,13 +497,13 @@ const ProfilePage: React.FC = () => {
                     autoComplete="new-password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="At least 8 characters"
+                    placeholder={t('atLeast8Chars')}
                     className="h-10 rounded-lg shadow-sm"
                   />
                 </div>
                 <div>
                   <label className={fieldLabel} htmlFor="pw-confirm">
-                    Confirm new password
+                    {t('confirmNewPassword')}
                   </label>
                   <CustomInput
                     id="pw-confirm"
@@ -491,7 +511,7 @@ const ProfilePage: React.FC = () => {
                     autoComplete="new-password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Re-enter new password"
+                    placeholder={t('reenterNewPassword')}
                     className="h-10 rounded-lg shadow-sm"
                   />
                 </div>
@@ -524,7 +544,7 @@ const ProfilePage: React.FC = () => {
                     primaryBtnClass,
                 )}
               >
-                Update password
+                {t('updatePassword')}
               </CustomButton>
             </div>
           </section>

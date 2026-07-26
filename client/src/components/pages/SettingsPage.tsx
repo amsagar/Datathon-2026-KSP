@@ -12,6 +12,7 @@ import {
 import { settingsPath } from '@constants/routePaths';
 import { getAuthUser, isAdmin } from '@apiCalls/auth';
 import { authApi, configAuditApi } from '@apiCalls/services';
+import { StringKey, useT } from '@constants/translations';
 import ProfilePage from './ProfilePage';
 import UsersPage from './UsersPage';
 import AuditLogPage from './AuditLogPage';
@@ -47,7 +48,7 @@ type ScopeGroup = 'Account' | 'Platform' | 'Assistant';
 
 interface SectionDef {
   key: SectionKey;
-  label: string;
+  labelKey: StringKey;
   icon: CustomIconName;
   group: ScopeGroup;
   Component: React.ComponentType;
@@ -56,77 +57,77 @@ interface SectionDef {
 const SECTIONS: SectionDef[] = [
   {
     key: 'profile',
-    label: 'My profile',
+    labelKey: 'myProfile',
     icon: 'profile',
     group: 'Account',
     Component: ProfilePage,
   },
   {
     key: 'usage',
-    label: 'Usage',
+    labelKey: 'navUsage',
     icon: 'usage',
     group: 'Account',
     Component: UsagePage,
   },
   {
     key: 'memory',
-    label: 'Memory',
+    labelKey: 'navMemory',
     icon: 'star',
     group: 'Account',
     Component: MemoriesPage,
   },
   {
     key: 'users',
-    label: 'Users & roles',
+    labelKey: 'navUsersRoles',
     icon: 'users',
     group: 'Platform',
     Component: UsersPage,
   },
   {
     key: 'audit',
-    label: 'Audit log',
+    labelKey: 'navAuditLog',
     icon: 'audit',
     group: 'Platform',
     Component: AuditLogPage,
   },
   {
     key: 'assistants',
-    label: 'General',
+    labelKey: 'navGeneral',
     icon: 'robot',
     group: 'Assistant',
     Component: AssistantsPage,
   },
   {
     key: 'tools',
-    label: 'HTTP tools',
+    labelKey: 'navHttpTools',
     icon: 'tool',
     group: 'Assistant',
     Component: ToolsPage,
   },
   {
     key: 'skills',
-    label: 'Skills',
+    labelKey: 'navSkills',
     icon: 'skill',
     group: 'Assistant',
     Component: SkillsPage,
   },
   {
     key: 'documents',
-    label: 'Documents',
+    labelKey: 'navDocuments',
     icon: 'document',
     group: 'Assistant',
     Component: DocumentsPage,
   },
   {
     key: 'mcp-servers',
-    label: 'MCP servers',
+    labelKey: 'navMcpServers',
     icon: 'mcp',
     group: 'Assistant',
     Component: McpServersPage,
   },
   {
     key: 'response-styles',
-    label: 'Response styles',
+    labelKey: 'navResponseStyles',
     icon: 'style',
     group: 'Assistant',
     Component: ResponseStylesPage,
@@ -135,14 +136,15 @@ const SECTIONS: SectionDef[] = [
 
 const GROUP_ORDER: ScopeGroup[] = ['Account', 'Platform', 'Assistant'];
 
-const GROUP_LABELS: Record<ScopeGroup, string> = {
-  Account: 'Account',
-  Platform: 'Platform',
-  Assistant: 'For this assistant',
+const GROUP_LABEL_KEYS: Record<ScopeGroup, StringKey> = {
+  Account: 'settingsGroupAccount',
+  Platform: 'settingsGroupPlatform',
+  Assistant: 'settingsGroupAssistant',
 };
 
 const SettingsInner: React.FC<{ section: SectionKey }> = ({ section }) => {
   const navigate = useNavigate();
+  const t = useT();
   const {
     assistants,
     assistantId,
@@ -153,13 +155,7 @@ const SettingsInner: React.FC<{ section: SectionKey }> = ({ section }) => {
   } = useSettingsScope();
   const active = SECTIONS.find((s) => s.key === section)!;
   const ActiveComponent = active.Component;
-  // The assistant scope picker is only relevant to the per-assistant sections.
   const isAccountSection = active.group !== 'Assistant';
-  // Non-admins only ever see the Account group (Usage) by default; the assistant-management
-  // sections stay admin-only. The backend enforces this regardless via @PreAuthorize. The one
-  // exception is "Audit log": when an admin has flipped the read-access toggle on, non-admin
-  // roles (Supervisor/Investigator/Analyst/Policymaker) can view it read-only, so we fetch that
-  // flag here (default hidden until resolved, to avoid a flash of a nav item they can't use).
   const admin = isAdmin();
   const [nonAdminAuditAccess, setNonAdminAuditAccess] = useState(false);
 
@@ -214,7 +210,7 @@ const SettingsInner: React.FC<{ section: SectionKey }> = ({ section }) => {
 
   const assistantOptions =
     assistants.length === 0
-      ? [{ value: '', label: 'No assistants yet' }]
+      ? [{ value: '', label: t('noAssistantsYet') }]
       : assistants.map((a) => ({ value: a.id, label: a.name }));
 
   const handleNewAssistant = () => {
@@ -228,12 +224,12 @@ const SettingsInner: React.FC<{ section: SectionKey }> = ({ section }) => {
         <div className={styles.navScroll}>
           <div className={styles.navHeader} onClick={() => navigate('/')}>
             <CustomIcon name="arrowLeft" size={13} />
-            Back to chat
+            {t('backToChat')}
           </div>
 
           {!isAccountSection && (
             <div className={styles.scopePicker}>
-              <label className={styles.scopeLabel}>Assistant</label>
+              <label className={styles.scopeLabel}>{t('assistant')}</label>
               <CustomButton
                 variant="primary"
                 fullWidth
@@ -241,7 +237,7 @@ const SettingsInner: React.FC<{ section: SectionKey }> = ({ section }) => {
                 onClick={handleNewAssistant}
               >
                 <CustomIcon name="plus" size={14} />
-                New assistant
+                {t('newAssistant')}
               </CustomButton>
               <CustomSelect
                 options={assistantOptions}
@@ -249,10 +245,10 @@ const SettingsInner: React.FC<{ section: SectionKey }> = ({ section }) => {
                 onChange={(v) => setAssistantId(v as string)}
                 placeholder={
                   creatingAssistant
-                    ? 'Creating new assistant…'
+                    ? t('creatingNewAssistant')
                     : loading
-                      ? 'Loading…'
-                      : 'Switch assistant'
+                      ? t('loadingEllipsis')
+                      : t('switchAssistant')
                 }
                 fullWidth
                 disabled={
@@ -267,7 +263,7 @@ const SettingsInner: React.FC<{ section: SectionKey }> = ({ section }) => {
             if (items.length === 0) return null;
             return (
               <React.Fragment key={group}>
-                <div className={styles.navTitle}>{GROUP_LABELS[group]}</div>
+                <div className={styles.navTitle}>{t(GROUP_LABEL_KEYS[group])}</div>
                 {items.map((it) => {
                   const isGeneral = it.key === 'assistants';
                   const scopedDisabled =
@@ -296,7 +292,7 @@ const SettingsInner: React.FC<{ section: SectionKey }> = ({ section }) => {
                       <span className={styles.navIcon}>
                         <CustomIcon name={it.icon} size={15} />
                       </span>
-                      {it.label}
+                      <span className={styles.navLabel}>{t(it.labelKey)}</span>
                     </NavLink>
                   );
                 })}
@@ -339,7 +335,6 @@ const SettingsInner: React.FC<{ section: SectionKey }> = ({ section }) => {
 
 const SettingsPage: React.FC = () => {
   const { section } = useParams<{ section?: string }>();
-  // Admins land on assistant management; non-admins only have the Usage page.
   const admin = isAdmin();
   const defaultSection: SectionKey = admin ? 'assistants' : 'usage';
   if (!section) return <Navigate to={settingsPath(defaultSection)} replace />;
@@ -348,13 +343,6 @@ const SettingsPage: React.FC = () => {
   }
   const active = SECTIONS.find((s) => s.key === section);
   if (!active) return <Navigate to={settingsPath(defaultSection)} replace />;
-  // Block non-admins from admin-only (assistant) sections, even via direct URL — except
-  // "Audit log", which is conditionally readable by non-admins when an admin has enabled
-  // the read-access toggle. We can't synchronously know the toggle's value here (it's an
-  // async fetch), so we let the route through and rely on the backend's own
-  // @PreAuthorize("hasRole('ADMIN') or @auditAccessSettingsService.isNonAdminReadEnabled()")
-  // check on every underlying request: if the toggle is actually off, the page's data
-  // fetches simply come back empty/403 rather than exposing anything.
   if (!admin && active.group !== 'Account' && active.key !== 'audit') {
     return <Navigate to={settingsPath('usage')} replace />;
   }

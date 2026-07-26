@@ -29,6 +29,7 @@ import type {
   ImportToolsResult,
 } from '@interfaces/toolGroup.interface';
 import type { ToolAuthProfileDto } from '@interfaces/auth.interface';
+import { useT } from '@constants/translations';
 import * as styles from '@styles/toolsPage.module.scss';
 
 const EMPTY: CreateToolRequest = {
@@ -122,6 +123,7 @@ const groupFormsEqual = (
 };
 
 const ToolsPage: React.FC = () => {
+  const t = useT();
   const openNotification = useNotification();
   const { assistant, assistantId } = useSettingsScope();
   const [items, setItems] = useState<AgentToolDto[]>([]);
@@ -279,10 +281,10 @@ const ToolsPage: React.FC = () => {
       return;
     }
     confirm({
-      title: 'Discard unsaved changes?',
-      body: 'You have unsaved edits.',
+      title: t('discardUnsavedTitle'),
+      body: t('discardUnsavedBody'),
       danger: true,
-      okText: 'Discard',
+      okText: t('discard'),
       onOk: action,
     });
   };
@@ -326,7 +328,7 @@ const ToolsPage: React.FC = () => {
       setCreatingGroup(true);
       setSelectedGroupId(null);
       setEditingId(null);
-      setGroupForm({ ...EMPTY_GROUP, name: 'New group' });
+      setGroupForm({ ...EMPTY_GROUP, name: t('newGroup') });
       setError('');
     });
   };
@@ -598,16 +600,16 @@ const ToolsPage: React.FC = () => {
   const authSummary = useMemo(() => {
     if (form.authProfileId) {
       const profile = profiles.find((p) => p.id === form.authProfileId);
-      return profile ? `Profile · ${profile.name}` : 'Auth profile';
+      return profile ? `Profile · ${profile.name}` : t('authProfileLabel');
     }
     if (form.authType && form.authType !== 'none') {
       const typeLabel =
-        TOOL_AUTH_TYPES.find((t) => t.value === form.authType)?.label ||
+        TOOL_AUTH_TYPES.find((x) => x.value === form.authType)?.label ||
         form.authType;
       return `Inline · ${typeLabel}`;
     }
-    return 'None';
-  }, [form.authProfileId, form.authType, profiles]);
+    return t('noneLabel');
+  }, [form.authProfileId, form.authType, profiles, t]);
 
   const runTest = async () => {
     if (!editingId || editingId === 'new') return;
@@ -625,21 +627,23 @@ const ToolsPage: React.FC = () => {
   };
 
   const profileOptions = [
-    { value: '', label: 'None (inline auth)' },
+    { value: '', label: t('noneInlineAuth') },
     ...profiles.map((p) => ({ value: p.id, label: p.name })),
   ];
 
   const groupOptions = [
-    { value: '', label: 'No group' },
+    { value: '', label: t('noGroup') },
     ...groups.map((g) => ({ value: g.id, label: g.name })),
   ];
 
   const headerTitle =
-    editingId === 'new' ? 'New tool' : form.name.trim() || 'Untitled tool';
+    editingId === 'new'
+      ? t('newTool')
+      : form.name.trim() || t('untitledTool');
 
   const groupHeaderTitle = creatingGroup
-    ? 'New group'
-    : groupForm.name.trim() || 'Untitled group';
+    ? t('newGroup')
+    : groupForm.name.trim() || t('untitledGroup');
 
   const groupMenuItems = (group: ToolGroupDto) => [
     {
@@ -647,7 +651,7 @@ const ToolsPage: React.FC = () => {
       label: (
         <span className={styles.menuItem}>
           <CustomIcon name="plus" size={14} />
-          Add tool
+          {t('addTool')}
         </span>
       ),
       onClick: () => startNew(group.id),
@@ -657,7 +661,7 @@ const ToolsPage: React.FC = () => {
       label: (
         <span className={`${styles.menuItem} ${styles.menuItemDanger}`}>
           <CustomIcon name="delete" size={14} />
-          Delete group
+          {t('deleteGroup')}
         </span>
       ),
       danger: true,
@@ -668,7 +672,7 @@ const ToolsPage: React.FC = () => {
   const headerEndpoint =
     form.host.trim() || form.endpoint.trim()
       ? `${form.method} · ${form.host.trim()}${form.endpoint.trim()}`
-      : `${form.method} · configure endpoint`;
+      : `${form.method} · ${t('configureEndpoint')}`;
 
   const actionMenuItems = [
     {
@@ -676,7 +680,7 @@ const ToolsPage: React.FC = () => {
       label: (
         <span className={styles.menuItem}>
           <CustomIcon name="key" size={14} />
-          Authentication
+          {t('authentication')}
         </span>
       ),
       onClick: () => setAuthModalOpen(true),
@@ -688,7 +692,7 @@ const ToolsPage: React.FC = () => {
             label: (
               <span className={`${styles.menuItem} ${styles.menuItemDanger}`}>
                 <CustomIcon name="delete" size={14} />
-                Delete
+                {t('deleteAction')}
               </span>
             ),
             danger: true,
@@ -710,13 +714,13 @@ const ToolsPage: React.FC = () => {
       <div className={styles.page}>
         <header className={styles.pageHeader}>
           <div className={styles.pageHeaderMain}>
-            <h1 className={styles.pageTitle}>HTTP tools</h1>
+            <h1 className={styles.pageTitle}>{t('httpToolsTitle')}</h1>
             <p className={styles.pageSubtitle}>
               {activeSectionTab === 'tools'
                 ? assistant
-                  ? `Endpoints ${assistant.name} can call as tools.`
-                  : 'Register HTTP endpoints the assistant can call as tools.'
-                : 'Reusable HTTP auth configurations referenced by tools.'}
+                  ? t('toolsSubtitleForAssistant')
+                  : t('toolsSubtitle')
+                : t('authProfilesSubtitle')}
             </p>
           </div>
           {activeSectionTab === 'tools' && (
@@ -728,7 +732,7 @@ const ToolsPage: React.FC = () => {
                 disabled={!assistantId}
               >
                 <CustomIcon name="upload" size={14} />
-                Import
+                {t('importTools')}
               </CustomButton>
               {!catalogEmpty && (
                 <CustomButton
@@ -738,7 +742,7 @@ const ToolsPage: React.FC = () => {
                   onClick={() => startNew()}
                 >
                   <CustomIcon name="plus" size={14} />
-                  New tool
+                  {t('newTool')}
                 </CustomButton>
               )}
             </div>
@@ -748,8 +752,8 @@ const ToolsPage: React.FC = () => {
         <div className={styles.sectionTabs}>
           <CustomTabs
             items={[
-              { key: 'tools', label: 'Tools' },
-              { key: 'auth-profiles', label: 'Auth profiles' },
+              { key: 'tools', label: t('toolsTab') },
+              { key: 'auth-profiles', label: t('authProfilesTab') },
             ]}
             activeKey={activeSectionTab}
             onChange={(key) => setActiveSectionTab(key as 'tools' | 'auth-profiles')}
@@ -762,7 +766,7 @@ const ToolsPage: React.FC = () => {
         <div className={styles.workspace}>
           <aside className={styles.sidebar}>
             <div className={styles.sidebarHeader}>
-              <span className={styles.sidebarTitle}>Catalog</span>
+              <span className={styles.sidebarTitle}>{t('catalog')}</span>
               <div className={styles.sidebarHeaderActions}>
                 <CustomButton
                   variant="ghost"
@@ -770,7 +774,7 @@ const ToolsPage: React.FC = () => {
                   disabled={!assistantId}
                   onClick={startNewGroup}
                 >
-                  New group
+                  {t('newGroup')}
                 </CustomButton>
               </div>
             </div>
@@ -778,9 +782,7 @@ const ToolsPage: React.FC = () => {
               {assistantId && legacyUngroupedCount > 0 && (
                 <div className={styles.legacyBanner}>
                   <p>
-                    {legacyUngroupedCount} imported tool
-                    {legacyUngroupedCount === 1 ? '' : 's'} from before groups
-                    existed.
+                    {legacyUngroupedCount} {t('legacyImportsBanner')}
                   </p>
                   <CustomButton
                     variant="ghost"
@@ -788,19 +790,19 @@ const ToolsPage: React.FC = () => {
                     loading={backfilling}
                     onClick={() => void organizeLegacyImports()}
                   >
-                    Organize into groups
+                    {t('organizeIntoGroups')}
                   </CustomButton>
                 </div>
               )}
               {!assistantId && (
                 <div className={styles.emptyList}>
-                  Pick an assistant in the left menu to manage tools.
+                  {t('pickAssistantForTools')}
                 </div>
               )}
               {catalogEmpty && (
                 <div className={styles.emptyList}>
-                  <p className={styles.emptyListTitle}>No tools yet</p>
-                  <p>Import an OpenAPI/Postman collection or add an endpoint.</p>
+                  <p className={styles.emptyListTitle}>{t('noToolsYet')}</p>
+                  <p>{t('toolsEmptyHint')}</p>
                 </div>
               )}
 
@@ -861,7 +863,7 @@ const ToolsPage: React.FC = () => {
                         ))}
                         {groupTools.length === 0 && (
                           <div className={styles.emptyList}>
-                            No tools in this group
+                            {t('noToolsInGroup')}
                           </div>
                         )}
                       </div>
@@ -872,7 +874,9 @@ const ToolsPage: React.FC = () => {
 
               {toolsByGroup.ungrouped.length > 0 && (
                 <>
-                  <div className={styles.sidebarSectionLabel}>Ungrouped</div>
+                  <div className={styles.sidebarSectionLabel}>
+                    {t('ungrouped')}
+                  </div>
                   {toolsByGroup.ungrouped.map((t) => (
                     <button
                       key={t.id}
@@ -905,9 +909,9 @@ const ToolsPage: React.FC = () => {
                     <span
                       className={`${styles.methodBadge} ${methodBadgeClass('GET')}`}
                     >
-                      NEW
+                      {t('newBadge')}
                     </span>
-                    <span className={styles.toolRowName}>New tool</span>
+                    <span className={styles.toolRowName}>{t('newTool')}</span>
                   </div>
                 </button>
               )}
@@ -920,44 +924,34 @@ const ToolsPage: React.FC = () => {
                 <CustomIcon name="tool" size={36} />
                 {!assistantId ? (
                   <>
-                    <p>Pick an assistant</p>
-                    <span>
-                      Choose an assistant in the settings sidebar to manage its
-                      HTTP tools.
-                    </span>
+                    <p>{t('pickAnAssistant')}</p>
+                    <span>{t('pickAssistantToolsDesc')}</span>
                   </>
                 ) : catalogEmpty ? (
                   <>
-                    <p>No HTTP tools yet</p>
-                    <span>
-                      Register an endpoint manually, or import an OpenAPI /
-                      Postman collection so {assistant?.name || 'the assistant'}{' '}
-                      can call it.
-                    </span>
+                    <p>{t('noToolsYet')}</p>
+                    <span>{t('toolsEmptyEditorHint')}</span>
                     <div className={styles.editorEmptyActions}>
                       <CustomButton
                         variant="primary"
                         onClick={() => startNew()}
                       >
                         <CustomIcon name="plus" size={14} />
-                        New tool
+                        {t('newTool')}
                       </CustomButton>
                       <CustomButton
                         variant="secondary"
                         onClick={() => setImportOpen(true)}
                       >
                         <CustomIcon name="upload" size={14} />
-                        Import
+                        {t('importLabel')}
                       </CustomButton>
                     </div>
                   </>
                 ) : (
                   <>
-                    <p>Select a group or tool</p>
-                    <span>
-                      Expand a group in the catalog to browse tools, or create a
-                      new endpoint.
-                    </span>
+                    <p>{t('selectGroupOrTool')}</p>
+                    <span>{t('selectGroupOrToolDesc')}</span>
                   </>
                 )}
               </div>
@@ -976,14 +970,14 @@ const ToolsPage: React.FC = () => {
                         onClick={() => setTestModalOpen(true)}
                       >
                         <CustomIcon name="play" size={14} />
-                        Test
+                        {t('testLabel')}
                       </CustomButton>
                     )}
                     <CustomSwitch
                       checked={!!form.enabled}
                       onChange={toggleEnabled}
                       ariaLabel={
-                        form.enabled ? 'Disable tool' : 'Enable tool'
+                        form.enabled ? t('statusDisabled') : t('enabledLabel')
                       }
                     />
                     <CustomDropdown
@@ -993,7 +987,7 @@ const ToolsPage: React.FC = () => {
                       <CustomButton
                         variant="text"
                         size="small"
-                        aria-label="Tool actions"
+                        aria-label={t('colActions')}
                       >
                         <CustomIcon name="more" size={16} />
                       </CustomButton>
@@ -1010,7 +1004,7 @@ const ToolsPage: React.FC = () => {
                   >
                   <div className={styles.formGrid}>
                     <div>
-                      <label className={styles.fieldLabel}>Name</label>
+                      <label className={styles.fieldLabel}>{t('nameLabel')}</label>
                       <CustomInput
                         value={form.name}
                         onChange={(e) =>
@@ -1021,7 +1015,7 @@ const ToolsPage: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className={styles.fieldLabel}>Method</label>
+                      <label className={styles.fieldLabel}>{t('methodLabel')}</label>
                       <CustomSelect
                         options={HTTP_METHODS.map((m) => ({
                           value: m,
@@ -1038,7 +1032,9 @@ const ToolsPage: React.FC = () => {
                       />
                     </div>
                     <div className={styles.formGridFull}>
-                      <label className={styles.fieldLabel}>Description</label>
+                      <label className={styles.fieldLabel}>
+                        {t('descriptionLabel')}
+                      </label>
                       <CustomInput
                         value={form.description || ''}
                         onChange={(e) =>
@@ -1047,12 +1043,12 @@ const ToolsPage: React.FC = () => {
                             description: e.target.value,
                           }))
                         }
-                        placeholder="What does this tool do?"
+                        placeholder={t('toolDescPlaceholder')}
                         fullWidth
                       />
                     </div>
                     <div className={styles.formGridFull}>
-                      <label className={styles.fieldLabel}>Group</label>
+                      <label className={styles.fieldLabel}>{t('groupLabel')}</label>
                       <CustomSelect
                         options={groupOptions}
                         value={form.groupId || ''}
@@ -1063,7 +1059,7 @@ const ToolsPage: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className={styles.fieldLabel}>Host</label>
+                      <label className={styles.fieldLabel}>{t('hostLabel')}</label>
                       <CustomInput
                         value={form.host}
                         onChange={(e) =>
@@ -1074,7 +1070,9 @@ const ToolsPage: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className={styles.fieldLabel}>Endpoint</label>
+                      <label className={styles.fieldLabel}>
+                        {t('endpointLabel')}
+                      </label>
                       <CustomInput
                         value={form.endpoint}
                         onChange={(e) =>
@@ -1089,7 +1087,7 @@ const ToolsPage: React.FC = () => {
                     </div>
                     <div className={styles.formGridFull}>
                       <label className={styles.fieldLabel}>
-                        Request schema
+                        {t('requestSchemaLabel')}
                       </label>
                       <JsonEditor
                         value={form.requestSchema || ''}
@@ -1115,7 +1113,7 @@ const ToolsPage: React.FC = () => {
                     loading={saving}
                     disabled={!canSave}
                   >
-                    Save
+                    {t('save')}
                   </CustomButton>
                   {editingId === 'new' && (
                     <CustomButton
@@ -1123,11 +1121,13 @@ const ToolsPage: React.FC = () => {
                       onClick={cancel}
                       disabled={saving}
                     >
-                      Cancel
+                      {t('cancel')}
                     </CustomButton>
                   )}
                   {isDirty && (
-                    <span className={styles.dirtyHint}>Unsaved changes</span>
+                    <span className={styles.dirtyHint}>
+                      {t('unsavedChanges')}
+                    </span>
                   )}
                 </div>
               </>
@@ -1139,7 +1139,7 @@ const ToolsPage: React.FC = () => {
                     {selectedGroup?.sourceType &&
                       selectedGroup.sourceType !== 'manual' && (
                         <p className={styles.editorEndpoint}>
-                          Imported · {selectedGroup.sourceType.replace('_', ' ')}
+                          {selectedGroup.sourceType.replace('_', ' ')}
                         </p>
                       )}
                     {groupForm.description && (
@@ -1156,7 +1156,7 @@ const ToolsPage: React.FC = () => {
                         onClick={() => startNew(selectedGroup.id)}
                       >
                         <CustomIcon name="plus" size={14} />
-                        Add tool
+                        {t('addTool')}
                       </CustomButton>
                     )}
                     <button
@@ -1166,11 +1166,15 @@ const ToolsPage: React.FC = () => {
                       }`}
                       onClick={toggleGroupEnabled}
                       title={
-                        groupForm.enabled ? 'Disable group' : 'Enable group'
+                        groupForm.enabled
+                          ? t('statusDisabled')
+                          : t('enabledLabel')
                       }
                     >
                       <span className={styles.enableDot} />
-                      {groupForm.enabled ? 'Enabled' : 'Disabled'}
+                      {groupForm.enabled
+                        ? t('enabledLabel')
+                        : t('statusDisabled')}
                     </button>
                     {!creatingGroup && selectedGroup && (
                       <CustomDropdown
@@ -1180,7 +1184,7 @@ const ToolsPage: React.FC = () => {
                         <CustomButton
                           variant="text"
                           size="small"
-                          aria-label="Group actions"
+                          aria-label={t('colActions')}
                         >
                           <CustomIcon name="more" size={16} />
                         </CustomButton>
@@ -1198,7 +1202,9 @@ const ToolsPage: React.FC = () => {
                   >
                     <div className={styles.formGrid}>
                       <div className={styles.formGridFull}>
-                        <label className={styles.fieldLabel}>Name</label>
+                        <label className={styles.fieldLabel}>
+                          {t('nameLabel')}
+                        </label>
                         <CustomInput
                           value={groupForm.name}
                           onChange={(e) =>
@@ -1213,7 +1219,7 @@ const ToolsPage: React.FC = () => {
                       </div>
                       <div className={styles.formGridFull}>
                         <label className={styles.fieldLabel}>
-                          Description
+                          {t('descriptionLabel')}
                         </label>
                         <CustomInput
                           value={groupForm.description || ''}
@@ -1223,7 +1229,7 @@ const ToolsPage: React.FC = () => {
                               description: e.target.value,
                             }))
                           }
-                          placeholder="What endpoints does this group contain?"
+                          placeholder={t('groupDescPlaceholder')}
                           fullWidth
                         />
                       </div>
@@ -1239,7 +1245,7 @@ const ToolsPage: React.FC = () => {
                     loading={groupSaving}
                     disabled={!canSaveGroup}
                   >
-                    Save
+                    {t('save')}
                   </CustomButton>
                   {creatingGroup && (
                     <CustomButton
@@ -1247,11 +1253,13 @@ const ToolsPage: React.FC = () => {
                       onClick={clearGroupSelection}
                       disabled={groupSaving}
                     >
-                      Cancel
+                      {t('cancel')}
                     </CustomButton>
                   )}
                   {isGroupDirty && (
-                    <span className={styles.dirtyHint}>Unsaved changes</span>
+                    <span className={styles.dirtyHint}>
+                      {t('unsavedChanges')}
+                    </span>
                   )}
                 </div>
               </>
@@ -1330,7 +1338,7 @@ const ToolsPage: React.FC = () => {
 
       <CustomModal
         open={authModalOpen}
-        title={`Authentication · ${form.name.trim() || 'Tool'}`}
+        title={`${t('authentication')} · ${form.name.trim() || t('toolsTab')}`}
         onClose={() => setAuthModalOpen(false)}
         width="md"
         footer={
@@ -1341,15 +1349,15 @@ const ToolsPage: React.FC = () => {
               if (await save()) setAuthModalOpen(false);
             }}
           >
-            Done
+            {t('done')}
           </CustomButton>
         }
       >
         <div className={styles.authModalBody}>
           <p className={styles.authModalSummary}>
-            Current: <strong>{authSummary}</strong>
+            <strong>{authSummary}</strong>
           </p>
-          <label className={styles.fieldLabel}>Auth profile</label>
+          <label className={styles.fieldLabel}>{t('authProfileLabel')}</label>
           <CustomSelect
             options={profileOptions}
             value={form.authProfileId || ''}

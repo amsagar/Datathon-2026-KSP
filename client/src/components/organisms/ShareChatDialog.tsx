@@ -7,6 +7,7 @@ import { confirm } from '@atoms/CustomConfirm';
 import { sessionsApi, sharesApi } from '@apiCalls/services';
 import { useNotification } from '@providers/NotificationProviders';
 import type { ShareLinkDto } from '@interfaces/chat.interface';
+import { useT } from '@constants/translations';
 import * as styles from '@styles/shareDialog.module.scss';
 
 export interface ShareChatDialogProps {
@@ -23,6 +24,7 @@ const ShareChatDialog: React.FC<ShareChatDialogProps> = ({
   sessionId,
   onClose,
 }) => {
+  const t = useT();
   const openNotification = useNotification();
   const [link, setLink] = useState<ShareLinkDto | null>(null);
   const [loading, setLoading] = useState(false);
@@ -87,7 +89,7 @@ const ShareChatDialog: React.FC<ShareChatDialogProps> = ({
   };
 
   return (
-    <CustomModal open={open} onClose={onClose} title="Share chat" width="md">
+    <CustomModal open={open} onClose={onClose} title={t('shareChatTitle')} width="md">
       <p className={styles.note}>
         Anyone signed in to the platform with this link can view the conversation up to
         now — they can&apos;t reply or continue it. New messages won&apos;t appear

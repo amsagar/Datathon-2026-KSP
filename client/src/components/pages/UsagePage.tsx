@@ -30,9 +30,11 @@ import {
   type UsageDatePreset,
 } from '@utils/usageDateRange';
 import { exportUsageCsv } from '@utils/usageCsvExport';
+import { useT } from '@constants/translations';
 import * as styles from '@styles/usage.module.scss';
 
 const UsagePage: React.FC = () => {
+  const t = useT();
   const openNotification = useNotification();
   const [preset, setPreset] = useState<UsageDatePreset>('7d');
   const [customRange, setCustomRange] = useState<[Dayjs, Dayjs] | null>([
@@ -91,7 +93,7 @@ const UsagePage: React.FC = () => {
     loadData();
   }, [loadData]);
 
-  const userTabLabel = isAdmin ? 'By user' : 'My usage';
+  const userTabLabel = isAdmin ? t('usageByUser') : t('usageMyUsage');
 
   const handleExport = () => {
     exportUsageCsv({
@@ -110,7 +112,7 @@ const UsagePage: React.FC = () => {
   const tabItems = [
     {
       key: 'overview',
-      label: 'Overview',
+      label: t('usageOverview'),
       children: (
         <div className={styles.overviewStack}>
           <UsageSummaryCards
@@ -126,7 +128,7 @@ const UsagePage: React.FC = () => {
           <UsageHourlyChart rows={hourly} loading={loading} />
           <UsageBreakdownTable
             rows={summary?.daily ?? []}
-            labelHeader="Date"
+            labelHeader={t('colDate')}
             loading={loading}
           />
         </div>
@@ -134,33 +136,33 @@ const UsagePage: React.FC = () => {
     },
     {
       key: 'model',
-      label: 'By model',
+      label: t('usageByModel'),
       children: (
         <UsageBreakdownTable
           rows={byModel}
-          labelHeader="Model"
+          labelHeader={t('model')}
           loading={loading}
         />
       ),
     },
     {
       key: 'assistant',
-      label: 'By assistant',
+      label: t('usageByAssistant'),
       children: (
         <UsageBreakdownTable
           rows={byAssistant}
-          labelHeader="Assistant"
+          labelHeader={t('assistant')}
           loading={loading}
         />
       ),
     },
     {
       key: 'source',
-      label: 'By source',
+      label: t('usageBySource'),
       children: (
         <UsageBreakdownTable
           rows={bySource}
-          labelHeader="Source"
+          labelHeader={t('usageColSource')}
           loading={loading}
         />
       ),
@@ -171,7 +173,7 @@ const UsagePage: React.FC = () => {
       children: (
         <UsageBreakdownTable
           rows={byUser}
-          labelHeader={isAdmin ? 'User' : 'Account'}
+          labelHeader={isAdmin ? t('roleUser') : t('accountLabel')}
           loading={loading}
         />
       ),
@@ -181,7 +183,7 @@ const UsagePage: React.FC = () => {
   return (
     <div className={styles.page}>
       <div className={styles.pageHeader}>
-        <h1 className={styles.title}>Usage</h1>
+        <h1 className={styles.title}>{t('usageTitle')}</h1>
         <UsageDateFilter
           preset={preset}
           onPresetChange={setPreset}
@@ -196,7 +198,7 @@ const UsagePage: React.FC = () => {
           disabled={loading}
         >
           <Download className="size-4" aria-hidden />
-          Export CSV
+          {t('usageExportCsv')}
         </CustomButton>
       </div>
       <CustomTabs

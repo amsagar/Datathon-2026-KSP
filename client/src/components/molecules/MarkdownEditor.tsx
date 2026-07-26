@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import CustomTextarea from '@atoms/CustomTextarea';
 import MarkdownContent from '@molecules/MarkdownContent';
+import { useT } from '@constants/translations';
 import * as styles from '@styles/markdownEditor.module.scss';
 
 export interface MarkdownEditorProps {
@@ -31,6 +32,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   className,
   ariaLabel,
 }) => {
+  const t = useT();
   const [mode, setMode] = useState<Mode>('edit');
 
   return (
@@ -44,7 +46,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         .join(' ')}
     >
       <div className={styles.toolbar}>
-        <div className={styles.tabs} role="tablist" aria-label="Editor mode">
+        <div className={styles.tabs} role="tablist" aria-label={t('editorMode')}>
           <button
             type="button"
             role="tab"
@@ -52,7 +54,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             className={`${styles.tab} ${mode === 'edit' ? styles.tabActive : ''}`}
             onClick={() => setMode('edit')}
           >
-            Edit
+            {t('editLabel')}
           </button>
           <button
             type="button"
@@ -61,10 +63,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             className={`${styles.tab} ${mode === 'preview' ? styles.tabActive : ''}`}
             onClick={() => setMode('preview')}
           >
-            Preview
+            {t('previewLabel')}
           </button>
         </div>
-        <span className={styles.hint}>Markdown</span>
+        <span className={styles.hint}>{t('markdownLabel')}</span>
       </div>
 
       <div className={fillHeight ? styles.bodyScroll : undefined}>
@@ -97,7 +99,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                 : styles.previewEmpty
             }
           >
-            Nothing to preview yet.
+            {t('nothingToPreview')}
           </div>
         )}
       </div>

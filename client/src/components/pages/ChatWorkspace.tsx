@@ -129,7 +129,7 @@ const ChatWorkspace: React.FC = () => {
 
   const assistantOptions =
     assistants.length === 0
-      ? [{ value: '', label: 'No assistants yet' }]
+      ? [{ value: '', label: t('noAssistantsYet') }]
       : assistants.map((a) => ({ value: a.id, label: a.name }));
 
   const defaultStyleId = useMemo(
@@ -143,13 +143,13 @@ const ChatWorkspace: React.FC = () => {
       label: s.name,
     }));
     if (named.length === 0) {
-      return [{ value: '', label: 'Default style' }];
+      return [{ value: '', label: t('defaultStyle') }];
     }
     if (defaultStyleId) {
       return named;
     }
-    return [{ value: '', label: 'Default style' }, ...named];
-  }, [responseStyles, defaultStyleId]);
+    return [{ value: '', label: t('defaultStyle') }, ...named];
+  }, [responseStyles, defaultStyleId, t]);
 
   const effectiveStyleId = currentSession
     ? currentSession.styleId || defaultStyleId || ''
@@ -157,11 +157,11 @@ const ChatWorkspace: React.FC = () => {
 
   const stylePlaceholder =
     responseStyles.length === 0
-      ? 'Default style'
+      ? t('defaultStyle')
       : defaultStyleId
         ? responseStyles.find((s) => s.id === defaultStyleId)?.name ||
-          'Style'
-        : 'Default style';
+          t('style')
+        : t('defaultStyle');
 
   return (
     <CustomLayout className={styles.workspace}>
@@ -213,8 +213,8 @@ const ChatWorkspace: React.FC = () => {
               label={t('style')}
               info={
                 currentSession
-                  ? 'Apply a saved response style to shape how the assistant replies in this chat. Manage styles in Settings → Response styles.'
-                  : 'Pre-pick a response style for your next chat. Manage styles in Settings → Response styles.'
+                  ? t('styleInfoSession')
+                  : t('styleInfoNewChat')
               }
             >
               <CustomSelect
@@ -241,8 +241,8 @@ const ChatWorkspace: React.FC = () => {
               label={t('assistant')}
               info={
                 currentSession
-                  ? 'The assistant is locked once a chat is started. Create a new chat to pick a different assistant.'
-                  : 'Pick which assistant handles this new chat. Configure assistants in Settings → Assistants.'
+                  ? t('assistantInfoSession')
+                  : t('assistantInfoNewChat')
               }
             >
               <CustomSelect

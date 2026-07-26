@@ -443,7 +443,7 @@ const SkillsPage: React.FC = () => {
     <div className={styles.page}>
       <header className={styles.pageHeader}>
         <div className={styles.pageHeaderMain}>
-          <div className={styles.pageEyebrow}>Skills</div>
+          <div className={styles.pageEyebrow}>{t('skillsTitle')}</div>
           <h1 className={styles.pageTitle}>Skill library</h1>
           <p className={styles.pageSubtitle}>
             {assistant

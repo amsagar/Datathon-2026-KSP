@@ -16,6 +16,7 @@ import { documentsApi } from '@apiCalls/services';
 import { useNotification } from '@providers/NotificationProviders';
 import { relativeTime } from '@utils/relativeTime';
 import type { DocumentDto } from '@interfaces/document.interface';
+import { useT } from '@constants/translations';
 import * as styles from '@styles/documentsPage.module.scss';
 
 const fileExtension = (name: string): string => {
@@ -25,6 +26,7 @@ const fileExtension = (name: string): string => {
 };
 
 const DocumentsPage: React.FC = () => {
+  const t = useT();
   const openNotification = useNotification();
   const { assistant, assistantId } = useSettingsScope();
   const [items, setItems] = useState<DocumentDto[]>([]);
@@ -254,7 +256,7 @@ const DocumentsPage: React.FC = () => {
         <header className={styles.pageHeader}>
           <div className={styles.pageHeaderMain}>
             <div className={styles.pageEyebrow}>Knowledge</div>
-            <h1 className={styles.pageTitle}>Documents</h1>
+            <h1 className={styles.pageTitle}>{t('documentsTitle')}</h1>
             <p className={styles.pageSubtitle}>
               {assistant
                 ? `Reference documents ${assistant.name} can retrieve from (RAG).`
@@ -275,17 +277,17 @@ const DocumentsPage: React.FC = () => {
         <div className={styles.tableWrap}>
           {!assistantId ? (
             <CustomEmptyState
-              title="No assistant selected"
+              title={t('noAssistantSelected')}
               description="Pick an assistant in the left menu to manage documents."
             />
           ) : items.length === 0 && !loading ? (
             <CustomEmptyState
-              title="No documents yet"
+              title={t('noDocumentsYet')}
               description="Upload PDF, Markdown, text, or Word files for RAG retrieval."
               action={
                 <CustomButton variant="primary" onClick={openUpload}>
                   <CustomIcon name="upload" size={14} />
-                  Upload document
+                  {t('uploadDocument')}
                 </CustomButton>
               }
             />
@@ -302,7 +304,7 @@ const DocumentsPage: React.FC = () => {
 
       <CustomModal
         open={uploadOpen}
-        title="Upload document"
+        title={t('uploadDocument')}
         onClose={() => {
           if (!uploading) setUploadOpen(false);
         }}
@@ -314,7 +316,7 @@ const DocumentsPage: React.FC = () => {
               onClick={() => setUploadOpen(false)}
               disabled={uploading}
             >
-              Cancel
+              {t('cancel')}
             </CustomButton>
             <CustomButton
               variant="primary"
@@ -344,7 +346,7 @@ const DocumentsPage: React.FC = () => {
 
       <CustomModal
         open={editOpen}
-        title="Rename document"
+        title={t('renameDocument')}
         onClose={() => {
           if (!saving) setEditOpen(false);
         }}
@@ -356,7 +358,7 @@ const DocumentsPage: React.FC = () => {
               onClick={() => setEditOpen(false)}
               disabled={saving}
             >
-              Cancel
+              {t('cancel')}
             </CustomButton>
             <CustomButton
               variant="primary"
@@ -364,7 +366,7 @@ const DocumentsPage: React.FC = () => {
               loading={saving}
               disabled={!editName.trim()}
             >
-              Save
+              {t('save')}
             </CustomButton>
           </>
         }

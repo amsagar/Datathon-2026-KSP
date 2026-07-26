@@ -16,6 +16,7 @@ import { isAdmin } from '@apiCalls/auth';
 import type { AuditEntryDto } from '@interfaces/user.interface';
 import type { ConfigAuditEventDto } from '@interfaces/configAudit.interface';
 import { RESOURCE_TYPES } from '@interfaces/configAudit.interface';
+import { useT } from '@constants/translations';
 import * as styles from '@styles/usersPage.module.scss';
 
 const PAGE_SIZE = 50;
@@ -34,16 +35,6 @@ const KNOWN_ACTIONS = [
   'LOGIN_SUCCESS',
   'LOGIN_FAILED',
 ] as const;
-
-const ACTION_OPTIONS = [
-  { value: 'all', label: 'All actions' },
-  ...KNOWN_ACTIONS.map((a) => ({ value: a, label: a.replace(/_/g, ' ') })),
-];
-
-const RESOURCE_TYPE_OPTIONS = [
-  { value: 'all', label: 'All resources' },
-  ...RESOURCE_TYPES.map((t) => ({ value: t, label: t.replace(/_/g, ' ') })),
-];
 
 /** A single unified row the table renders, tagging its origin feed so the new "Resource"
  * column can stay blank for legacy rows (which have no resource-type concept). */
@@ -96,6 +87,7 @@ const serverError = (err: unknown): string | null =>
   null;
 
 const AuditLogPage: React.FC = () => {
+  const t = useT();
   const notify = useNotification();
   const admin = isAdmin();
 
@@ -265,9 +257,28 @@ const AuditLogPage: React.FC = () => {
 
   const total = legacyTotal + configTotal;
 
+  const actionOptions = useMemo(
+    () => [
+      { value: 'all', label: t('allActions') },
+      ...KNOWN_ACTIONS.map((a) => ({ value: a, label: a.replace(/_/g, ' ') })),
+    ],
+    [t]
+  );
+
+  const resourceTypeOptions = useMemo(
+    () => [
+      { value: 'all', label: t('allResources') },
+      ...RESOURCE_TYPES.map((rt) => ({
+        value: rt,
+        label: rt.replace(/_/g, ' '),
+      })),
+    ],
+    [t]
+  );
+
   const columns: CustomTableColumnsType<MergedRow> = [
     {
-      title: 'Time',
+      title: t('colTime'),
       key: 'time',
       width: 180,
       render: (_: unknown, record) => (
@@ -275,7 +286,7 @@ const AuditLogPage: React.FC = () => {
       ),
     },
     {
-      title: 'Actor',
+      title: t('colActor'),
       key: 'actor',
       width: 160,
       render: (_: unknown, record) =>
@@ -284,11 +295,11 @@ const AuditLogPage: React.FC = () => {
             {record.actor}
           </span>
         ) : (
-          <span className={styles.cellMuted}>system</span>
+          <span className={styles.cellMuted}>{t('systemActor')}</span>
         ),
     },
     {
-      title: 'Action',
+      title: t('colAction'),
       key: 'action',
       width: 160,
       render: (_: unknown, record) => (
@@ -298,7 +309,7 @@ const AuditLogPage: React.FC = () => {
       ),
     },
     {
-      title: 'Resource',
+      title: t('colResource'),
       key: 'resource',
       width: 200,
       render: (_: unknown, record) =>
@@ -314,7 +325,7 @@ const AuditLogPage: React.FC = () => {
         ),
     },
     {
-      title: 'Details',
+      title: t('colDetails'),
       key: 'details',
       render: (_: unknown, record) =>
         record.details ? (
@@ -334,21 +345,17 @@ const AuditLogPage: React.FC = () => {
   const hasFilters = !!debouncedSearch || action !== 'all' || resourceType !== 'all';
 
   const rangeLabel = useMemo(() => {
-    if (total === 0) return 'No entries';
-    return `${pageStart}–${pageEnd} of ${total}`;
-  }, [total, pageStart, pageEnd]);
+    if (total === 0) return t('noEntries');
+    return `${pageStart}–${pageEnd} ${t('ofTotal')} ${total}`;
+  }, [total, pageStart, pageEnd, t]);
 
   return (
     <div className={styles.page}>
       <header className={styles.pageHeader}>
         <div className={styles.pageHeaderMain}>
-          <div className={styles.pageEyebrow}>Platform</div>
-          <h1 className={styles.pageTitle}>Audit log</h1>
-          <p className={styles.pageSubtitle}>
-            A record of user, access, and administrative events across the
-            platform, including every change to assistants, skills, response
-            styles, and UI templates.
-          </p>
+          <div className={styles.pageEyebrow}>{t('settingsGroupPlatform')}</div>
+          <h1 className={styles.pageTitle}>{t('auditLogTitle')}</h1>
+          <p className={styles.pageSubtitle}>{t('auditSubtitle')}</p>
         </div>
       </header>
 
@@ -357,19 +364,17 @@ const AuditLogPage: React.FC = () => {
           <div className="flex items-center justify-between rounded-md border border-border bg-muted/30 px-4 py-3">
             <div className="pr-4">
               <div className="text-sm font-medium text-foreground">
-                Allow read-only access for non-admin roles
+                {t('allowReadonlyAccess')}
               </div>
               <p className="text-xs text-muted-foreground">
-                Lets Supervisor, Investigator, Analyst, and Policymaker roles view the
-                audit history and revisions (read-only) below and on assistant/skill/
-                response-style/template pages. Revert always stays admin-only.
+                {t('allowReadonlyAccessDesc')}
               </p>
             </div>
             <CustomSwitch
               checked={nonAdminReadEnabled}
               onChange={(checked) => void toggleNonAdminRead(checked)}
               disabled={savingSettings}
-              ariaLabel="Allow non-admin read access to audit history"
+              ariaLabel={t('allowNonAdminReadAria')}
             />
           </div>
         )}
@@ -379,7 +384,7 @@ const AuditLogPage: React.FC = () => {
             <CustomInput
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search actor, target, or details"
+              placeholder={t('searchAuditPlaceholder')}
               allowClear
               prefix={<CustomIcon name="search" size={14} />}
             />
@@ -388,16 +393,16 @@ const AuditLogPage: React.FC = () => {
             <CustomSelect
               value={action}
               onChange={(v) => setAction(v || 'all')}
-              options={ACTION_OPTIONS}
-              placeholder="All actions"
+              options={actionOptions}
+              placeholder={t('allActions')}
             />
           </div>
           <div className={styles.toolbarFilter}>
             <CustomSelect
               value={resourceType}
               onChange={(v) => setResourceType(v || 'all')}
-              options={RESOURCE_TYPE_OPTIONS}
-              placeholder="All resources"
+              options={resourceTypeOptions}
+              placeholder={t('allResources')}
             />
           </div>
         </div>
@@ -406,11 +411,11 @@ const AuditLogPage: React.FC = () => {
           {!loading && merged.length === 0 ? (
             <CustomEmptyState
               icon={<CustomIcon name="audit" size={40} />}
-              title={hasFilters ? 'No matching events' : 'No audit events yet'}
+              title={hasFilters ? t('noMatchingEvents') : t('noAuditEventsYet')}
               description={
                 hasFilters
-                  ? 'Try adjusting your search, action, or resource filter.'
-                  : 'Platform activity will appear here as it happens.'
+                  ? t('tryAdjustingAuditFilters')
+                  : t('auditEmptyDescription')
               }
             />
           ) : (
@@ -434,7 +439,7 @@ const AuditLogPage: React.FC = () => {
                 onClick={() => setOffset((o) => Math.max(0, o - PAGE_SIZE))}
                 icon={<ChevronLeft className="size-4" />}
               >
-                Previous
+                {t('previous')}
               </CustomButton>
               <CustomButton
                 variant="ghost"
@@ -442,7 +447,7 @@ const AuditLogPage: React.FC = () => {
                 disabled={!canNext || loading}
                 onClick={() => setOffset((o) => o + PAGE_SIZE)}
               >
-                Next
+                {t('next')}
                 <ChevronRight className="size-4" />
               </CustomButton>
             </div>

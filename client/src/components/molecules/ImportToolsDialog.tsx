@@ -8,6 +8,7 @@ import { TOOL_IMPORT_KINDS } from '@constants/toolSourceKinds';
 import { toolsApi } from '@apiCalls/services';
 import { useNotification } from '@providers/NotificationProviders';
 import type { ToolImportKind } from '@interfaces/tool.interface';
+import { useT } from '@constants/translations';
 import * as styles from '@styles/resourcePanel.module.scss';
 
 import type { ImportToolsResult } from '@interfaces/toolGroup.interface';
@@ -33,6 +34,7 @@ const ImportToolsDialog: React.FC<ImportToolsDialogProps> = ({
   onClose,
   onImported,
 }) => {
+  const t = useT();
   const openNotification = useNotification();
   const [kind, setKind] = useState<ToolImportKind>('openapi');
   const [file, setFile] = useState<File | null>(null);
@@ -125,7 +127,7 @@ const ImportToolsDialog: React.FC<ImportToolsDialogProps> = ({
         reset();
         onClose();
       }}
-      title="Import tools"
+      title={t('importTools')}
       width="lg"
       footer={
         <>
@@ -137,7 +139,7 @@ const ImportToolsDialog: React.FC<ImportToolsDialogProps> = ({
             }}
             disabled={busy}
           >
-            Cancel
+            {t('cancel')}
           </CustomButton>
           <CustomButton
             variant="primary"

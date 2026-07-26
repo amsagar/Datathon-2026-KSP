@@ -20,6 +20,7 @@ import type {
   McpAuthType,
   McpTransport,
 } from '@interfaces/mcp.interface';
+import { useT } from '@constants/translations';
 import * as styles from '@styles/resourcePanel.module.scss';
 
 const EMPTY: CreateMcpServerRequest = {
@@ -35,6 +36,7 @@ const EMPTY: CreateMcpServerRequest = {
 };
 
 const McpServersPage: React.FC = () => {
+  const t = useT();
   const openNotification = useNotification();
   const { assistant, assistantId } = useSettingsScope();
   const [items, setItems] = useState<McpServerDto[]>([]);
@@ -215,7 +217,7 @@ const McpServersPage: React.FC = () => {
 
   return (
     <ResourcePanelTemplate
-      title="MCP Servers"
+      title={t('mcpServersTitle')}
       subtitle={
         assistant
           ? `External MCP servers exposing tools to ${assistant.name}.`
@@ -396,26 +398,26 @@ const McpServersPage: React.FC = () => {
               <CustomSpinner size="small" />
             ) : tools.length === 0 ? (
               <CustomEmptyState
-                title="No tools yet"
+                title={t('noToolsYet')}
                 description="Run discovery to load tools from the server."
               />
             ) : (
               <div className={styles.mcpToolList}>
-                {tools.map((t) => (
-                  <div key={t.id} className={styles.mcpToolRow}>
+                {tools.map((tool) => (
+                  <div key={tool.id} className={styles.mcpToolRow}>
                     <div className={styles.mcpToolMeta}>
-                      <strong>{t.name}</strong>
-                      {t.description && <span>{t.description}</span>}
-                      {!t.enabled && (
+                      <strong>{tool.name}</strong>
+                      {tool.description && <span>{tool.description}</span>}
+                      {!tool.enabled && (
                         <CustomTag tone="neutral">disabled</CustomTag>
                       )}
                     </div>
                     <CustomButton
                       variant="ghost"
                       size="small"
-                      onClick={() => toggleTool(t, !t.enabled)}
+                      onClick={() => toggleTool(tool, !tool.enabled)}
                     >
-                      {t.enabled ? 'Disable' : 'Enable'}
+                      {tool.enabled ? 'Disable' : 'Enable'}
                     </CustomButton>
                   </div>
                 ))}

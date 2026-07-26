@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import type { UsageBreakdownRowDto } from '@interfaces/usage.interface';
 import { formatCurrency, formatTokens } from '@utils/usageDateRange';
+import { useT } from '@constants/translations';
 import * as styles from '@styles/usage.module.scss';
 
 interface UsageModelShareProps {
@@ -19,13 +20,14 @@ const COLORS = [
 
 /** Donut chart of token share per model, with an "Est. cost" figure in the tooltip. */
 const UsageModelShare: React.FC<UsageModelShareProps> = ({ rows, loading }) => {
+  const t = useT();
   const data = useMemo(() => rows.filter((r) => r.totalTokens > 0), [rows]);
 
   return (
     <div className={styles.chartCard}>
-      <span className={styles.chartTitle}>Model share</span>
+      <span className={styles.chartTitle}>{t('usageModelShare')}</span>
       {!loading && data.length === 0 ? (
-        <div className={styles.chartEmpty}>No usage in this period</div>
+        <div className={styles.chartEmpty}>{t('usageNoUsageInPeriod')}</div>
       ) : (
         <>
           <ResponsiveContainer width="100%" height={200}>
@@ -52,7 +54,7 @@ const UsageModelShare: React.FC<UsageModelShareProps> = ({ rows, loading }) => {
                   color: 'var(--popover-foreground)',
                 }}
                 formatter={(value: any, _name: any, entry: any) => [
-                  `${formatTokens(Number(value))} tokens · ${formatCurrency(
+                  `${formatTokens(Number(value))} ${t('usageTokens')} · ${formatCurrency(
                     (entry?.payload as UsageBreakdownRowDto | undefined)?.estimatedCostUsd ?? 0
                   )}`,
                   (entry?.payload as UsageBreakdownRowDto | undefined)?.key ?? '',

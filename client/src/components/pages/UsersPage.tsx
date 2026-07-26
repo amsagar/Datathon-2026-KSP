@@ -18,20 +18,26 @@ import { getAuthUser } from '@apiCalls/auth';
 import { useNotification } from '@providers/NotificationProviders';
 import { APP_ROLES } from '@interfaces/user.interface';
 import type { AppRole, UserDto } from '@interfaces/user.interface';
+import { useT, type StringKey } from '@constants/translations';
 import { Check, ChevronDown, ChevronRight, Copy } from 'lucide-react';
 import * as styles from '@styles/usersPage.module.scss';
 
 type StatusFilter = 'all' | 'active' | 'disabled';
 
-const ROLE_DESCRIPTIONS: Record<AppRole, string> = {
-  ADMIN:
-    'Full platform administration: user management, assistants, tools, skills, all analytics.',
-  SUPERVISOR:
-    'Investigative analytics incl. risk scores + network; team oversight.',
-  INVESTIGATOR:
-    'Case investigation: risk scores, network exploration, offenders.',
-  ANALYST: 'Crime analytics and network views (read-only intelligence).',
-  POLICYMAKER: 'High-level dashboards and aggregate reporting.',
+const ROLE_DESC_KEYS: Record<AppRole, StringKey> = {
+  ADMIN: 'roleDescAdmin',
+  SUPERVISOR: 'roleDescSupervisor',
+  INVESTIGATOR: 'roleDescInvestigator',
+  ANALYST: 'roleDescAnalyst',
+  POLICYMAKER: 'roleDescPolicymaker',
+};
+
+const ROLE_LABEL_KEYS: Record<AppRole, StringKey> = {
+  ADMIN: 'roleAdmin',
+  SUPERVISOR: 'roleSupervisor',
+  INVESTIGATOR: 'roleInvestigator',
+  ANALYST: 'roleAnalyst',
+  POLICYMAKER: 'rolePolicymaker',
 };
 
 const roleTone = (role: string): 'error' | 'info' | 'neutral' =>
@@ -91,6 +97,7 @@ const UserAvatar: React.FC<{ user: UserDto }> = ({ user }) => {
 };
 
 const UsersPage: React.FC = () => {
+  const t = useT();
   const notify = useNotification();
   const currentUsername = getAuthUser()?.upn?.toLowerCase() ?? null;
 
@@ -172,7 +179,7 @@ const UsersPage: React.FC = () => {
     confirm({
       title: `Reset password for ${u.displayName || u.username}?`,
       body: 'A new temporary password will be generated. The user must change it on next login.',
-      okText: 'Reset password',
+      okText: t('resetPassword'),
       onOk: async () => {
         try {
           const { temporaryPassword } = await usersApi.resetPassword(u.id);
@@ -204,7 +211,7 @@ const UsersPage: React.FC = () => {
       title: `Delete ${u.displayName || u.username}?`,
       body: 'This permanently removes the user account. This cannot be undone.',
       danger: true,
-      okText: 'Delete',
+      okText: t('deleteAction'),
       onOk: async () => {
         try {
           await usersApi.delete(u.id);
@@ -228,6 +235,11 @@ const UsersPage: React.FC = () => {
     }
   };
 
+  const roleLabel = (role: string): string => {
+    const key = ROLE_LABEL_KEYS[role as AppRole];
+    return key ? t(key) : role;
+  };
+
   const rowMenu = (u: UserDto) => {
     const self = isSelf(u);
     return [
@@ -236,7 +248,7 @@ const UsersPage: React.FC = () => {
         label: (
           <span className={styles.menuItem}>
             <CustomIcon name="edit" size={14} />
-            Edit
+            {t('edit')}
           </span>
         ),
         onClick: () => openEdit(u),
@@ -246,7 +258,7 @@ const UsersPage: React.FC = () => {
         label: (
           <span className={styles.menuItem}>
             <CustomIcon name="key" size={14} />
-            Reset password
+            {t('resetPassword')}
           </span>
         ),
         onClick: () => doReset(u),
@@ -256,7 +268,7 @@ const UsersPage: React.FC = () => {
         label: (
           <span className={styles.menuItem}>
             <CustomIcon name={u.enabled ? 'close' : 'check'} size={14} />
-            {u.enabled ? 'Deactivate' : 'Activate'}
+            {u.enabled ? t('deactivate') : t('activate')}
           </span>
         ),
         disabled: self,
@@ -267,7 +279,7 @@ const UsersPage: React.FC = () => {
         label: (
           <span className={`${styles.menuItem} ${styles.menuItemDanger}`}>
             <CustomIcon name="delete" size={14} />
-            Delete
+            {t('deleteAction')}
           </span>
         ),
         danger: true,
@@ -279,7 +291,7 @@ const UsersPage: React.FC = () => {
 
   const columns: CustomTableColumnsType<UserDto> = [
     {
-      title: 'User',
+      title: t('roleUser'),
       key: 'user',
       render: (_: unknown, record) => (
         <div className={styles.userCell}>
@@ -287,7 +299,9 @@ const UsersPage: React.FC = () => {
           <div className={styles.userCellText}>
             <span className={styles.userCellName}>
               {record.displayName || record.username}
-              {isSelf(record) && <span className={styles.selfBadge}> · you</span>}
+              {isSelf(record) && (
+                <span className={styles.selfBadge}> · {t('youBadge')}</span>
+              )}
             </span>
             <span className={styles.userCellUsername}>@{record.username}</span>
           </div>
@@ -295,7 +309,7 @@ const UsersPage: React.FC = () => {
       ),
     },
     {
-      title: 'Email',
+      title: t('colEmail'),
       key: 'email',
       render: (_: unknown, record) =>
         record.email ? (
@@ -305,7 +319,7 @@ const UsersPage: React.FC = () => {
         ),
     },
     {
-      title: 'Roles',
+      title: t('colRoles'),
       key: 'roles',
       render: (_: unknown, record) => (
         <span className={styles.tagRow}>
@@ -314,7 +328,7 @@ const UsersPage: React.FC = () => {
           ) : (
             record.roles.map((r) => (
               <CustomTag key={r} tone={roleTone(r)}>
-                {r}
+                {roleLabel(r)}
               </CustomTag>
             ))
           )}
@@ -322,18 +336,18 @@ const UsersPage: React.FC = () => {
       ),
     },
     {
-      title: 'Status',
+      title: t('colStatus'),
       key: 'status',
       width: 110,
       render: (_: unknown, record) =>
         record.enabled ? (
-          <CustomTag tone="success">Active</CustomTag>
+          <CustomTag tone="success">{t('statusActive')}</CustomTag>
         ) : (
-          <CustomTag tone="neutral">Disabled</CustomTag>
+          <CustomTag tone="neutral">{t('statusDisabled')}</CustomTag>
         ),
     },
     {
-      title: 'Last login',
+      title: t('colLastLogin'),
       key: 'lastLogin',
       width: 130,
       render: (_: unknown, record) => (
@@ -343,7 +357,7 @@ const UsersPage: React.FC = () => {
       ),
     },
     {
-      title: 'Actions',
+      title: t('colActions'),
       key: 'actions',
       width: 52,
       align: 'center',
@@ -352,7 +366,7 @@ const UsersPage: React.FC = () => {
           <CustomButton
             variant="text"
             size="small"
-            aria-label={`Actions for ${record.username}`}
+            aria-label={`${t('colActions')} ${record.username}`}
             onClick={(e) => e.stopPropagation()}
           >
             <CustomIcon name="more" size={16} />
@@ -370,15 +384,13 @@ const UsersPage: React.FC = () => {
       <div className={styles.page}>
         <header className={styles.pageHeader}>
           <div className={styles.pageHeaderMain}>
-            <div className={styles.pageEyebrow}>Platform</div>
-            <h1 className={styles.pageTitle}>Users &amp; roles</h1>
-            <p className={styles.pageSubtitle}>
-              Manage who can sign in, their roles, and access to the platform.
-            </p>
+            <div className={styles.pageEyebrow}>{t('settingsGroupPlatform')}</div>
+            <h1 className={styles.pageTitle}>{t('usersRolesTitle')}</h1>
+            <p className={styles.pageSubtitle}>{t('usersSubtitle')}</p>
           </div>
           <CustomButton variant="primary" size="small" onClick={openCreate}>
             <CustomIcon name="plus" size={14} />
-            New user
+            {t('newUser')}
           </CustomButton>
         </header>
 
@@ -388,7 +400,7 @@ const UsersPage: React.FC = () => {
               <CustomInput
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search name, username, or email"
+                placeholder={t('searchUsersPlaceholder')}
                 allowClear
                 prefix={<CustomIcon name="search" size={14} />}
               />
@@ -397,10 +409,13 @@ const UsersPage: React.FC = () => {
               <CustomSelect
                 value={roleFilter}
                 onChange={(v) => setRoleFilter(v || 'all')}
-                placeholder="All roles"
+                placeholder={t('allRoles')}
                 options={[
-                  { value: 'all', label: 'All roles' },
-                  ...APP_ROLES.map((r) => ({ value: r, label: r })),
+                  { value: 'all', label: t('allRoles') },
+                  ...APP_ROLES.map((r) => ({
+                    value: r,
+                    label: t(ROLE_LABEL_KEYS[r]),
+                  })),
                 ]}
               />
             </div>
@@ -408,11 +423,11 @@ const UsersPage: React.FC = () => {
               <CustomSelect<StatusFilter>
                 value={statusFilter}
                 onChange={(v) => setStatusFilter(v || 'all')}
-                placeholder="All statuses"
+                placeholder={t('allStatuses')}
                 options={[
-                  { value: 'all', label: 'All statuses' },
-                  { value: 'active', label: 'Active' },
-                  { value: 'disabled', label: 'Disabled' },
+                  { value: 'all', label: t('allStatuses') },
+                  { value: 'active', label: t('statusActive') },
+                  { value: 'disabled', label: t('statusDisabled') },
                 ]}
               />
             </div>
@@ -422,17 +437,17 @@ const UsersPage: React.FC = () => {
             {!loading && filtered.length === 0 ? (
               <CustomEmptyState
                 icon={<CustomIcon name="users" size={40} />}
-                title={hasFilters ? 'No matching users' : 'No users yet'}
+                title={hasFilters ? t('noMatchingUsers') : t('noUsersYet')}
                 description={
                   hasFilters
-                    ? 'Try adjusting your search or filters.'
-                    : 'Create the first user account to get started.'
+                    ? t('tryAdjustingFilters')
+                    : t('createFirstUser')
                 }
                 action={
                   hasFilters ? undefined : (
                     <CustomButton variant="primary" onClick={openCreate}>
                       <CustomIcon name="plus" size={14} />
-                      New user
+                      {t('newUser')}
                     </CustomButton>
                   )
                 }
@@ -461,10 +476,12 @@ const UsersPage: React.FC = () => {
                   <ChevronRight className="size-4" aria-hidden />
                 )}
                 <CustomIcon name="shield" size={16} />
-                <span className={styles.rolesHeaderTitle}>Roles reference</span>
+                <span className={styles.rolesHeaderTitle}>
+                  {t('rolesReference')}
+                </span>
               </span>
               <span className={styles.rolesHeaderHint}>
-                What each role can access
+                {t('rolesReferenceHint')}
               </span>
             </button>
             {rolesOpen && (
@@ -472,10 +489,12 @@ const UsersPage: React.FC = () => {
                 {APP_ROLES.map((role) => (
                   <div key={role} className={styles.roleTile}>
                     <div className={styles.roleTileHead}>
-                      <CustomTag tone={roleTone(role)}>{role}</CustomTag>
+                      <CustomTag tone={roleTone(role)}>
+                        {t(ROLE_LABEL_KEYS[role])}
+                      </CustomTag>
                     </div>
                     <p className={styles.roleTileDesc}>
-                      {ROLE_DESCRIPTIONS[role]}
+                      {t(ROLE_DESC_KEYS[role])}
                     </p>
                   </div>
                 ))}
@@ -495,22 +514,22 @@ const UsersPage: React.FC = () => {
 
       <CustomModal
         open={!!resetResult}
-        title="Temporary password"
+        title={t('temporaryPassword')}
         onClose={() => setResetResult(null)}
         width="sm"
         footer={
           <CustomButton variant="primary" onClick={() => setResetResult(null)}>
-            Done
+            {t('done')}
           </CustomButton>
         }
       >
         <div className="flex flex-col gap-3">
           <p className="m-0 text-sm text-muted-foreground">
-            New temporary password for{' '}
+            {t('tempPasswordFor')}{' '}
             <span className="font-mono font-medium text-foreground">
               @{resetResult?.username}
             </span>
-            . Share it with the user; they must change it on first login.
+            . {t('tempPasswordShareHint')}
           </p>
           <div className="flex items-center gap-2">
             <code className="flex-1 rounded-md border border-border bg-muted px-3 py-2 font-mono text-sm text-foreground">
@@ -528,7 +547,7 @@ const UsersPage: React.FC = () => {
                 )
               }
             >
-              {copied ? 'Copied' : 'Copy'}
+              {copied ? t('copied') : t('copy')}
             </CustomButton>
           </div>
         </div>

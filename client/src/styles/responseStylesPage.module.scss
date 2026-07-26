@@ -220,16 +220,21 @@
   flex-direction: column;
   overflow: hidden;
   padding: 12px 22px 0;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
 }
 
 .formMeta {
   flex-shrink: 0;
   display: grid;
-  grid-template-columns: minmax(180px, 240px) 1fr;
-  gap: 12px 16px;
+  grid-template-columns: minmax(200px, 280px) minmax(0, 1fr);
+  gap: 12px 20px;
   align-items: end;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border, $cream_200);
+  width: 100%;
+  max-width: none;
 }
 
 @media (max-width: 720px) {

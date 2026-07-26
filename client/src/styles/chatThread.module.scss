@@ -255,8 +255,12 @@
 }
 
 .emptyHeroSub {
+  width: 100%;
+  min-width: 0;
   color: var(--text-secondary, $ink_500);
   font-size: 15px;
   line-height: 1.6;
   max-width: 460px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }

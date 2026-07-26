@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import CustomTable, { type CustomColumn } from '@atoms/CustomTable';
 import type { UsageBreakdownRowDto, UsageDailyRowDto } from '@interfaces/usage.interface';
 import { formatCurrency, formatTokens } from '@utils/usageDateRange';
+import { useT } from '@constants/translations';
 import * as pageStyles from '@styles/usage.module.scss';
 import * as modalStyles from '@styles/accountPreferencesModal.module.scss';
 
@@ -21,10 +22,12 @@ const UsageBreakdownTable: React.FC<UsageBreakdownTableProps> = ({
   rows,
   labelHeader,
   loading,
-  emptyText = 'No usage in this period',
+  emptyText,
   compact,
 }) => {
+  const t = useT();
   const styles = compact ? modalStyles : pageStyles;
+  const resolvedEmpty = emptyText ?? t('usageNoUsageInPeriod');
   const maxTokens = useMemo(
     () => Math.max(1, ...rows.map((r) => r.totalTokens)),
     [rows]
@@ -39,14 +42,14 @@ const UsageBreakdownTable: React.FC<UsageBreakdownTableProps> = ({
       ),
     },
     {
-      title: 'Requests',
+      title: t('usageRequests'),
       dataIndex: 'requestCount',
       key: 'requestCount',
       width: 100,
       align: 'right',
     },
     {
-      title: 'Total tokens',
+      title: t('usageTotalTokens'),
       dataIndex: 'totalTokens',
       key: 'totalTokens',
       width: 200,
@@ -61,7 +64,7 @@ const UsageBreakdownTable: React.FC<UsageBreakdownTableProps> = ({
       ),
     },
     {
-      title: 'Prompt',
+      title: t('usageColPrompt'),
       dataIndex: 'promptTokens',
       key: 'promptTokens',
       width: 90,
@@ -69,7 +72,7 @@ const UsageBreakdownTable: React.FC<UsageBreakdownTableProps> = ({
       render: (n: number) => formatTokens(n),
     },
     {
-      title: 'Completion',
+      title: t('usageColCompletion'),
       dataIndex: 'completionTokens',
       key: 'completionTokens',
       width: 100,
@@ -77,7 +80,7 @@ const UsageBreakdownTable: React.FC<UsageBreakdownTableProps> = ({
       render: (n: number) => formatTokens(n),
     },
     {
-      title: 'Est. cost',
+      title: t('usageEstCost'),
       dataIndex: 'estimatedCostUsd',
       key: 'estimatedCostUsd',
       width: 100,
@@ -96,7 +99,7 @@ const UsageBreakdownTable: React.FC<UsageBreakdownTableProps> = ({
       }))}
       loading={loading}
       pagination={rows.length > 12 ? { pageSize: 12, size: 'small' } : false}
-      locale={{ emptyText }}
+      locale={{ emptyText: resolvedEmpty }}
       size="middle"
     />
   );

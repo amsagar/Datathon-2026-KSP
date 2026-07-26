@@ -82,7 +82,7 @@ const AccountMenu: React.FC<AccountMenuProps> = ({
         onClick={() => goTo(settingsPath('profile'))}
       >
         <CustomIcon name="profile" size={15} />
-        My profile
+        {t('myProfile')}
       </button>
       {admin && (
         <button
@@ -107,7 +107,7 @@ const AccountMenu: React.FC<AccountMenuProps> = ({
   );
 
   const trigger = collapsed ? (
-    <button type="button" className={styles.trigger} aria-label="Account menu">
+    <button type="button" className={styles.trigger} aria-label={t('accountMenu')}>
       <CustomAvatar
         size={32}
         src={photoUrl || undefined}
@@ -117,7 +117,7 @@ const AccountMenu: React.FC<AccountMenuProps> = ({
       </CustomAvatar>
     </button>
   ) : (
-    <button type="button" className={styles.trigger} aria-label="Account menu">
+    <button type="button" className={styles.trigger} aria-label={t('accountMenu')}>
       <CustomAvatar
         size={32}
         src={photoUrl || undefined}

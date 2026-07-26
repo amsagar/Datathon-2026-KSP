@@ -13,12 +13,14 @@ import {
 } from '@apiCalls/memory';
 import { useNotification } from '@providers/NotificationProviders';
 import type { SemanticFactDto } from '@interfaces/memory.interface';
+import { useT } from '@constants/translations';
 import * as styles from '@styles/memory.module.scss';
 
 const humanFact = (f: SemanticFactDto): string =>
   `${f.subject} ${f.predicate.replace(/_/g, ' ')} ${f.object}`;
 
 const MemoriesPage: React.FC = () => {
+  const t = useT();
   const openNotification = useNotification();
   const [memories, setMemories] = useState<SemanticFactDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,9 +54,9 @@ const MemoriesPage: React.FC = () => {
 
   const handleForgetAll = () => {
     confirm({
-      title: 'Forget everything?',
-      body: 'The assistant will no longer remember any of these facts about you in future chats. This cannot be undone.',
-      okText: 'Forget all',
+      title: t('forgetEverythingTitle'),
+      body: t('forgetEverythingBody'),
+      okText: t('forgetAll'),
       danger: true,
       onOk: async () => {
         try {
@@ -72,22 +74,22 @@ const MemoriesPage: React.FC = () => {
     <div className={styles.page}>
       <div className={styles.pageHeader}>
         <div>
-          <h1 className={styles.title}>Memory</h1>
-          <p className={styles.subtitle}>
-            Facts the assistant has learned about you from past conversations and
-            uses to personalize future chats. Remove anything you don&apos;t want
-            it to remember.
-          </p>
+          <h1 className={styles.title}>{t('memoryTitle')}</h1>
+          <p className={styles.subtitle}>{t('memoriesSubtitle')}</p>
         </div>
         {memories.length > 0 && (
           <CustomButton variant="danger" onClick={handleForgetAll}>
-            Forget all
+            {t('forgetAll')}
           </CustomButton>
         )}
       </div>
 
       {loading ? (
-        <div className={styles.list} aria-busy="true" aria-label="Loading memories">
+        <div
+          className={styles.list}
+          aria-busy="true"
+          aria-label={t('loadingMemories')}
+        >
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className={styles.item}>
               <div className="min-w-0 flex-1 space-y-2.5">
@@ -101,8 +103,8 @@ const MemoriesPage: React.FC = () => {
       ) : memories.length === 0 ? (
         <CustomEmptyState
           icon={<Star size={40} strokeWidth={1.5} />}
-          title="No memories yet"
-          description="As you chat, the assistant will remember durable facts about you here."
+          title={t('noMemoriesYet')}
+          description={t('memoriesEmptyDescription')}
         />
       ) : (
         <div className={styles.list}>
@@ -112,14 +114,15 @@ const MemoriesPage: React.FC = () => {
                 <div className={styles.factText}>{humanFact(f)}</div>
                 {f.lastAccessedAt && (
                   <div className={styles.factMeta}>
-                    Last used {dayjs.unix(f.lastAccessedAt).format('MMM D, YYYY')}
+                    {t('lastUsed')}{' '}
+                    {dayjs.unix(f.lastAccessedAt).format('MMM D, YYYY')}
                   </div>
                 )}
               </div>
               <CustomButton
                 variant="secondary"
                 onClick={() => handleForget(f.id)}
-                aria-label="Forget this memory"
+                aria-label={t('forgetThisMemory')}
               >
                 <CustomIcon name="delete" size={15} />
               </CustomButton>
