@@ -36,8 +36,8 @@ export interface ChatStreamParams {
 }
 
 /**
- * Open a streaming connection to /api/chat/stream (same-origin via nginx/webpack
- * proxy by default; optional direct host when streamApiBase is set). Named SSE
+ * Open a streaming connection to /api/chat/stream (direct to API host when
+ * runtime-config sets streamApiBase; same-origin /api in local dev). Named SSE
  * events: `message` (token chunks), `status` (prep/tool progress), `tool`,
  * `tool_result`, `clarification`, `done`, `error`. Comment lines (`: keep-alive`)
  * are ignored.

@@ -166,7 +166,7 @@ Copy the UI **endpoint URL** (`UI_URL`).
 |----------|-------|
 | `BASE_URL` | the backend `BE_URL` from step 2 |
 
-`docker-defaults.sh` uses `BASE_URL` at container start to point the nginx `/api/` proxy at the backend. Chat SSE also goes through that same-origin proxy (no direct cross-origin stream).
+`docker-defaults.sh` uses `BASE_URL` at container start to (a) point the nginx `/api/` proxy at the backend and (b) set `window.__RUNTIME_CONFIG__.streamApiBase` so the browser streams SSE **directly** from the backend. Do not route SSE through the UI proxy on AppSail — the edge buffers and you get a one-shot answer instead of tokens.
 
 ---
 
@@ -197,9 +197,10 @@ Env vars persist across redeploys.
 
 - **App won't start / 502:** check the AppSail app **logs** in the console. If the container listens on a port other than what Catalyst routes to, make the declared `--port` match the container's port (both images use `8080`).
 - **Backend boots with `local` profile / can't reach DB:** `SPRING_PROFILES_ACTIVE` isn't set to `prod`.
-- **UI loads but chat/SSE fails with CORS errors:** stream should be same-origin via the UI `/api` proxy; if the browser still hits the BE host directly, clear `streamApiBase` / redeploy UI. For other cross-origin calls, set `CORS_ALLOWED_ORIGINS` to `UI_URL` (scheme + host, no trailing slash).
+- **UI loads but chat/SSE fails with CORS errors:** set `CORS_ALLOWED_ORIGINS` on the backend to exactly `UI_URL` (scheme + host, no trailing slash), then restart BE. Stream is cross-origin by design.
+- **Chat answer arrives all at once (no token stream):** SSE is going through the UI `/api` proxy — confirm `streamApiBase` is the BE URL (UI `BASE_URL`) and redeploy UI.
 - **UI 5xx on `/api`:** `BASE_URL` on the UI isn't set or points at the wrong backend URL.
-- **Chat stream dies after a long wait:** nginx/Spring async timeouts are 5h; check AppSail/gateway idle limits in front of the UI if cuts happen earlier.
+- **Chat stream dies after a long wait:** Spring/nginx timeouts are 5h; check AppSail/gateway idle limits if cuts happen earlier.
 - **`catalyst deploy` rejects the image:** it isn't `linux/amd64` — rebuild with `./scripts/build-images.sh`.
 
 ## References

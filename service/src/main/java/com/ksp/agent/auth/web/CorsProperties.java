@@ -2,6 +2,8 @@ package com.ksp.agent.auth.web;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @ConfigurationProperties(prefix = "agent.cors")
@@ -19,8 +21,28 @@ public class CorsProperties {
         return allowedOrigins;
     }
 
+    /**
+     * Accepts YAML lists or a single {@code CORS_ALLOWED_ORIGINS} env value that may be
+     * comma-separated (common on AppSail). Also strips trailing slashes so
+     * {@code https://ui.example/} still matches the browser's {@code Origin}.
+     */
     public void setAllowedOrigins(List<String> allowedOrigins) {
-        this.allowedOrigins = allowedOrigins;
+        if (allowedOrigins == null) {
+            this.allowedOrigins = List.of();
+            return;
+        }
+        List<String> normalized = new ArrayList<>();
+        for (String entry : allowedOrigins) {
+            if (entry == null || entry.isBlank()) {
+                continue;
+            }
+            Arrays.stream(entry.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .map(s -> s.endsWith("/") ? s.substring(0, s.length() - 1) : s)
+                    .forEach(normalized::add);
+        }
+        this.allowedOrigins = List.copyOf(normalized);
     }
 
     public List<String> getAllowedMethods() {

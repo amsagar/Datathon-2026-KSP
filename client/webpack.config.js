@@ -143,8 +143,10 @@ module.exports = (env, argv) => {
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(mode),
-        // Empty = same-origin /api (webpack proxy). Set STREAM_API_BASE only for direct BE.
-        'process.env.STREAM_API_BASE': JSON.stringify(process.env.STREAM_API_BASE || ''),
+        // Local: leave empty for webpack /api proxy. Prod container sets streamApiBase at runtime.
+        'process.env.STREAM_API_BASE': JSON.stringify(
+          process.env.STREAM_API_BASE || ''
+        ),
       }),
     ].filter(Boolean),
     resolve: {

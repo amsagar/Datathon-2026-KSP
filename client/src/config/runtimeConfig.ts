@@ -1,8 +1,8 @@
 /**
- * Optional override API origin for SSE. Default is empty so the browser uses
- * same-origin `/api/...` (UI nginx in prod, webpack proxy in local dev) and
- * avoids cross-origin CORS. Set `streamApiBase` / `STREAM_API_BASE` only if you
- * intentionally want the browser to call the backend host directly.
+ * Runtime API base for SSE. In production, docker-defaults.sh sets
+ * `window.__RUNTIME_CONFIG__.streamApiBase` from BASE_URL so the browser hits
+ * the BE host directly — UI nginx → AppSail buffering turns SSE into a one-shot
+ * response. When empty, requests stay same-origin `/api/...` (local webpack proxy).
  */
 declare global {
   interface Window {

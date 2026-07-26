@@ -12,12 +12,15 @@ RESOLVERS=${RESOLVERS:-"127.0.0.11"}
 
 echo "Proxying /api/* to ${BASE_URL} (resolver: ${RESOLVERS})"
 
-# Empty streamApiBase → browser uses same-origin /api (nginx proxy), avoiding CORS.
+# SSE must hit the BE host directly. Routing /api/chat/stream through UI nginx →
+# AppSail edge buffers the response until the turn finishes (one-shot), which
+# breaks token streaming. Non-stream /api/* still uses the same-origin proxy.
+STREAM_BASE="${BASE_URL%/}"
 RUNTIME_CONFIG="/usr/share/nginx/html/runtime-config.js"
 printf '%s\n' \
-  "window.__RUNTIME_CONFIG__={streamApiBase:\"\"};" \
+  "window.__RUNTIME_CONFIG__={streamApiBase:\"${STREAM_BASE}\"};" \
   > "${RUNTIME_CONFIG}"
-echo "SSE/chat via same-origin /api proxy (${RUNTIME_CONFIG})"
+echo "SSE/chat direct API base: ${STREAM_BASE} (${RUNTIME_CONFIG})"
 
 # sed to /tmp then write back: avoids needing write permission on /etc/nginx
 # (the dir is root-owned; only the file is made writable for the non-root UID).
