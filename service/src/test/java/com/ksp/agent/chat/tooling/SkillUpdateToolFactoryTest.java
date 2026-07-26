@@ -46,7 +46,7 @@ class SkillUpdateToolFactoryTest {
                 Sinks.many().multicast().onBackpressureBuffer();
         List<ToolCallback> tools = factory.callbacks(
                 "req", "user", "asst", "session", 0, "req", false, sink,
-                Sinks.EmitFailureHandler.FAIL_FAST);
+                Sinks.EmitFailureHandler.FAIL_FAST, "en");
         assertThat(tools).isEmpty();
     }
 
@@ -64,7 +64,7 @@ class SkillUpdateToolFactoryTest {
         ToolCallback tool = factory.callbacks(
                 "req", "admin", "asst-1", "session", 0, "req", true,
                 Sinks.many().multicast().onBackpressureBuffer(),
-                Sinks.EmitFailureHandler.FAIL_FAST).get(0);
+                Sinks.EmitFailureHandler.FAIL_FAST, "en").get(0);
 
         String result = tool.call("""
                 {"skillId":"skill-1","filePath":"SKILL.md","proposedContent":"same","summary":"noop"}
@@ -87,7 +87,7 @@ class SkillUpdateToolFactoryTest {
         ToolCallback tool = factory.callbacks(
                 "req", "admin", "asst-1", "session", 0, "req", true,
                 Sinks.many().multicast().onBackpressureBuffer(),
-                Sinks.EmitFailureHandler.FAIL_FAST).get(0);
+                Sinks.EmitFailureHandler.FAIL_FAST, "en").get(0);
 
         String result = tool.call("""
                 {"skillId":"skill-1","filePath":"SKILL.md","proposedContent":"new","summary":"change"}
@@ -116,7 +116,7 @@ class SkillUpdateToolFactoryTest {
         ToolCallback tool = factory.callbacks(
                 "req", "admin", "asst-1", "session", 0, "req", true,
                 Sinks.many().multicast().onBackpressureBuffer(),
-                Sinks.EmitFailureHandler.FAIL_FAST).get(0);
+                Sinks.EmitFailureHandler.FAIL_FAST, "en").get(0);
 
         String result = tool.call("""
                 {"skillId":"skill-1","filePath":"SKILL.md","proposedContent":"new","summary":"change"}
