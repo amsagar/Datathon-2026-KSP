@@ -17,8 +17,16 @@ import { useT } from '@constants/translations';
 const speechText = (markdown: string): string =>
   markdown
     .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/[*_#`>|]/g, '')
-    .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/~~(.*?)~~/g, '$1')
+    .replace(/^ {0,3}([-*_])( *\1){2,} *$/gm, ' ')
+    .replace(/^\s*\|?[\s:-]*-[\s:-]*\|[\s:|-]*$/gm, ' ')
+    .replace(/^\s*([-*+]|\d+[.)])\s+/gm, '')
+    .replace(/^\s*>+\s?/gm, '')
+    .replace(/^ {0,3}#{1,6}\s*/gm, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/[*_#`>|~]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 
